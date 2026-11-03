@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "noEmit": false,
+    "target": "esnext",
+    "module": "nodenext",
+    "lib": ["ES2022", "ESNext"],
+    "outDir": "./dist", 
+    "rootDir": "./src",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "sourceMap": true
+  },
+  "include": ["src/**/*.ts"]
+}

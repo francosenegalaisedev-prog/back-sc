@@ -1,0 +1,203 @@
+# Support Connecté — API (Node.js · Express · TypeScript · Prisma · PostgreSQL)
+
+Backend des fiches connectées : comptes clients (inscription libre), fiches, formules (Essentielle / Pro / Signature),
+abonnements et contrôle des droits par formule.
+
+## Démarrage
+
+```bash
+npm install
+cp .env.example .env          # puis mets un vrai JWT_SECRET (voir le fichier)
+docker compose up -d          # PostgreSQL local (ou utilise ta propre base : DATABASE_URL)
+
+# 1) Créer les tables — en deux temps pour ajouter l'index unique partiel (voir plus bas)
+npx prisma migrate dev --name init --create-only
+#    -> ouvre prisma/migrations/<date>_init/migration.sql et ajoute à la fin :
+#       CREATE UNIQUE INDEX "subscriptions_one_active_per_fiche"
+#       ON "subscriptions" ("ficheId") WHERE "status" = 'ACTIVE';
+npx prisma migrate dev        # applique la migration + génère le client Prisma
+
+# 2) Remplir les formules et leurs limites
+npm run prisma:seed
+
+# 3) Créer le premier compte admin
+npm run create-admin -- admin@exemple.sn "UnMotDePasseSolide"
+
+# 4) Lancer
+npm run dev                   # http://localhost:4000/api/health
+```
+
+Production : `npm run build && npm run prisma:deploy && npm start` (PM2 + Nginx comme d'habitude).
+
+## Journalisation
+
+Les logs sont produits par Winston sur la console (stdout/stderr), sans fichier local. En développement, ils sont affichés sur une ligne horodatée et colorée, avec les détails dans un format facile à lire (`INFO HTTP request completed | method="GET" statusCode=200`). En production, ils restent en JSON structuré pour les collecteurs de logs. Chaque requête HTTP est journalisée avec un identifiant de corrélation retourné dans l'en-tête `X-Request-Id`, la méthode, la route, le code HTTP et sa durée. Les erreurs techniques non gérées sont journalisées avec leurs détails côté serveur, mais l'API renvoie uniquement un message générique, quel que soit l'environnement. Les erreurs de validation et métier gardent un message adapté à l'utilisateur ; les erreurs de limitation de débit et de corps de requête ont aussi une réponse JSON claire. Les authentifications, actions sur les fiches, opérations administrateur, erreurs et tâches d'expiration importantes sont également journalisées. Les corps de requête, mots de passe, jetons et références de paiement ne sont pas consignés. Le journal d'activité persistant conserve l'identifiant, le nom et l'adresse e-mail de l'administrateur auteur, ainsi que la méthode, la route et le résultat HTTP des modifications réussies ; il n'enregistre aucun contenu de formulaire.
+
+## Médias
+
+Les images et vidéos des fiches sont envoyées en binaire sur `POST /api/fiches/:id/media`, optimisées avec FFmpeg puis stockées sur un stockage compatible S3 (variables `S3_*` du `.env`). Elles sont servies publiquement par `GET /api/media/:ficheId/:key`. Détails dans `docs/media-storage.md`.
+
+## Structure
+
+```
+prisma/
+  schema.prisma        # tables (User, Fiche, Plan, PlanLimit, Subscription, blocs de contenu…)
+  seed.ts              # les 3 formules et leurs quotas, repris de plans.js
+src/
+  server.ts            # démarrage + tâche horaire d'expiration des abonnements
+  app.ts               # helmet, cors, rate limit, routes
+  config/env.ts        # variables d'environnement validées (zod)
+  lib/                 # prisma, jwt, mots de passe, erreurs HTTP, mails (simulés), tokens
+  middlewares/         # requireAuth, requireRole, validate (zod), errorHandler
+  modules/
+    auth/              # register, login, me, vérification e-mail, mot de passe oublié
+    plans/             # GET /plans (public)
+    subscriptions/     # abonnement effectif, activation, expiration
+    fiches/            # schémas zod, contrôle des limites, DTO, service, routes
+    admin/             # slug avant création du compte, statut, activation d'une formule
+    leads/             # réception publique et boîte de réception admin des demandes
+scripts/create-admin.ts
+```
+
+## Routes (préfixe `/api`)
+
+| Méthode | Route | Accès | Rôle |
+|---|---|---|---|
+| POST | `/auth/register` | public | crée un compte CLIENT (+ e-mail de confirmation) |
+| POST | `/auth/login` | public | retourne `{ user, token }` |
+| GET | `/auth/me` | connecté | profil |
+| PATCH | `/auth/me` · `/auth/me/password` | connecté | met à jour le profil (vérification e-mail si l’adresse change) ou modifie le mot de passe avec confirmation de l’ancien |
+| POST | `/auth/verify-email` · `/auth/resend-verification` | public · connecté | confirmation d'e-mail |
+| POST | `/auth/forgot-password` · `/auth/reset-password` | public | mot de passe oublié |
+| GET | `/plans` | public | formules et limites |
+| GET | `/fiches/public/:slug` | public | la fiche affichée par le scan NFC/QR |
+| GET | `/fiches` | connecté | mes fiches (admin : toutes) |
+| GET | `/fiches/total-fiche` | connecté | nombre de fiches et places Essentielle gratuites restantes |
+| POST | `/fiches` | connecté | crée une fiche Essentielle avec une place gratuite disponible |
+| POST | `/fiches/purchases/quote` | client | calcule le devis d'une commande de fiches |
+| POST | `/fiches/purchases` | client | réserve la commande; les fiches payantes sont créées après confirmation simulée |
+| POST | `/fiches/purchases/:purchaseId/simulate-confirmation` | client | confirme la commande simulée et crée les fiches/abonnements atomiquement |
+| POST | `/leads` | public, limité en débit | enregistre un devis, une question, une demande de démonstration ou de maquette |
+| GET | `/admin/leads` | admin | recherche et filtre les demandes, avec pagination |
+| PATCH | `/admin/leads/:id` | admin | modifie le statut (`NEW`, `CONTACTED`, `CLOSED`) |
+| GET | `/admin/subscriptions` | admin | liste paginée des abonnements, filtrée par recherche, formule, statut, période et état de la fiche (`ficheSupprimee=oui|non`, `subscriptionId` pour cibler un abonnement) |
+| GET | `/admin/payments` | admin | liste paginée des paiements, filtrée par recherche, formule, statut, période et état de la fiche (`ficheSupprimee=oui|non`, `paymentId` pour cibler un paiement) |
+| POST | `/admin/users/admin` | admin | crée un compte administrateur et envoie un lien à usage unique pour définir son mot de passe |
+| GET · PATCH | `/admin/settings` | admin | lit/modifie les paramètres publics de la plateforme et son mode maintenance |
+| GET | `/admin/action-logs?page=1&limit=25` | admin | journal paginé des modifications admin réussies, sans corps de requête |
+| GET | `/admin/stats` | admin | indicateurs du back-office et les dix derniers clients inscrits / abonnements |
+| GET | `/admin/revenus?from=2026-10-01&to=2026-10-31` | admin | encaissements et nouvelles fiches par période (jour, semaine ou mois selon la plage) |
+| GET | `/public/settings` | public | paramètres publics nécessaires au site et à l’écran de maintenance |
+| GET | `/fiches/:id` | propriétaire / admin | une fiche |
+| PATCH | `/fiches/:id` | propriétaire / admin | modifie l'identité et `data` (limites de la formule vérifiées) |
+| PATCH | `/admin/fiches/:id` | admin | `slug` avant création du compte client, `statut` (`active`/`suspendue`) |
+| POST | `/admin/fiches/:id/subscription` | admin | active une formule `{ plan, endsAt?, amountFcfa?, paymentRef? }` |
+| POST | `/fiches/public/:slug/passages` | public (auth facultative) | enregistre une ouverture `{ source: qr\|nfc\|direct, idempotencyKey }` ; ignorée si le propriétaire connecté ouvre sa propre fiche |
+| POST | `/fiches/public/:slug/rappels` | public | demande de rappel `{ nom, telephone }` |
+| GET | `/fiches/rappels` | connecté | mes demandes de rappel, paginées (`page`, `limit`) |
+| GET | `/fiches/:id/rappels` | propriétaire / admin | demandes de rappel d'une fiche |
+| GET | `/fiches/:id/stats` | propriétaire / admin | passages par source et historique (`granularity=day\|month`, `date` ou `month`) |
+| POST | `/fiches/:id/media` | propriétaire / admin | upload binaire d'un média (`?purpose=`), optimisé puis stocké sur S3 |
+| GET | `/media/:ficheId/:key` | public | lecture d'un média (Range supporté) |
+| GET | `/client/dashboard/fiches` | connecté | fiches du client avec leur formule active |
+| GET | `/client/parametres` | connecté | grille des formules, durées/remises et emplacements |
+| POST | `/client/parametres/commande/tarif` | connecté | calcule un tarif pour une commande ou un upgrade unitaire |
+| GET | `/subscription/kpi` | connecté | nombre de fiches, fiches actives, fiches payantes |
+| GET | `/subscription/payments?page=1&limit=20` | client | historique paginé des paiements du client connecté (y compris les fiches supprimées dont le propriétaire est conservé) |
+| POST | `/subscription/upgrade` | client | demande de changement de formule **ou renouvellement d'une fiche échue** `{ ficheId, plan: pro\|signature, dureeMois? }` → paiement `PENDING` au prix serveur (désactivé en production) |
+| POST | `/subscription/payments/:paymentId/simulate-confirmation` | client | confirme un paiement simulé et active la formule (désactivé en production) |
+
+La migration des paiements renseigne leur propriétaire depuis la fiche lorsqu’elle est encore liée. Les paiements dont la fiche avait déjà été supprimée avant cette migration ne peuvent pas être rattachés automatiquement à un compte.
+
+> **Renouvellement d'une fiche arrivée à terme.** Il n'y a pas de route dédiée : une fiche sans abonnement valide
+> (échéance dépassée) est traitée comme Essentielle, donc `/subscription/upgrade` accepte toute formule payante, y
+> compris la même que celle qui vient de se terminer ; la confirmation crée alors un nouvel abonnement à partir de
+> « maintenant ». Tant qu'un abonnement est valide, seule une formule supérieure est acceptée
+> (`FORMULE_NON_SUPERIEURE`) : il n'y a pas de renouvellement anticipé. `GET /client/dashboard/fiches` renvoie
+> `latestSubscription.plan.type` pour proposer la formule précédente. Comportement figé par
+> `src/modules/subscriptions/subscriptions.renewal.test.ts`.
+
+Authentification : en-tête `Authorization: Bearer <token>`.
+
+### Stickers par section (demandes de devis)
+
+Le client demande un devis pour N stickers ouvrant UNE section de sa fiche ; l'administration traite la demande et
+**active la section**. Seules les sections **activées** sont servies par le front en `/s/:slug/:section` : la fiche
+publique expose `stickerSections` (clés activées ; vide si l'abonnement est échu).
+
+| Méthode | Route | Accès | Rôle |
+|---|---|---|---|
+| GET | `/fiches/:id/section-stickers` | client (propriétaire) / admin | demandes de la fiche, récentes d'abord |
+| POST | `/fiches/:id/section-stickers` | client | `{ section, quantite 1..500, message? }` → demande `demande` (Pro / Signature, fiche publiée, abonnement valide) |
+| GET | `/admin/production/section-stickers?statut=&ficheId=&limit=` | admin | toutes les demandes, avec fiche et client |
+| PATCH | `/admin/production/section-stickers/:id` | admin | `{ statut: "active" \| "desactivee" \| "refusee" }` |
+
+Statuts : `demande → active | refusee`, `active → desactivee`, `desactivee → active` (`TRANSITION_INVALIDE` sinon). Une seule
+demande ouverte (`demande` ou `active`) par fiche et par section (index unique partiel, `DEMANDE_DEJA_EN_COURS`).
+Migration : `20261029120000_section_sticker_requests` (puis `prisma generate`).
+
+### Modèles de carte (recto / verso) et demande de carte
+
+L'administration définit, **par formule** (essentielle, pro, signature), le recto et le verso de la carte que le client
+voit quand il demande une carte. Un seul modèle est **actif** par formule (index unique partiel en base ; activer un modèle
+désactive l'ancien). Les images sont **téléversées** par l'administration : même chaîne que les médias de fiche (type
+vérifié sur les premiers octets, conversion WebP par FFmpeg, stockage S3 sous `card-models/`), images seulement, 12 Mo max.
+La base garde une référence relative `/api/media/cartes/<uuid>.webp` ; les réponses la rendent absolue. Les anciens modèles
+créés avec un lien `https://` restent valides. Un fichier remplacé ou supprimé est retiré du stockage (au mieux).
+
+| Méthode | Route | Accès | Rôle |
+|---|---|---|---|
+| GET | `/admin/production/modeles-cartes` | admin | tous les modèles, par formule (actif en premier) |
+| POST | `/admin/production/modeles-cartes/images` | admin | corps binaire (JPEG, PNG, WebP) → `{ url }` à placer dans `rectoUrl` / `versoUrl` |
+| GET | `/api/media/cartes/:fileName` | public | sert l'image (balise `<img>` du client, sans jeton) |
+| POST | `/admin/production/modeles-cartes` | admin | `{ tier, nom, rectoUrl, versoUrl, actif? }` |
+| PATCH | `/admin/production/modeles-cartes/:id` | admin | `{ nom?, rectoUrl?, versoUrl?, actif? }` (`actif: true` désactive l'ancien) |
+| DELETE | `/admin/production/modeles-cartes/:id` | admin | supprime le modèle (les demandes passées ne sont pas touchées) |
+| GET | `/fiches/:id/card-request` | client | `{ carte, modele }` : `modele` = modèle actif de la formule qui sera facturée (abonnement valide, sinon essentielle), `null` si aucun n'est défini |
+
+Migration : `20261027230000_card_models` (après `prisma migrate deploy`, régénérer le client : `prisma generate`).
+
+Erreurs : toujours `{ "error": { "code", "message", "details?" } }`.
+
+```bash
+curl -X POST localhost:4000/api/auth/register -H 'Content-Type: application/json' \
+  -d '{"email":"awa@exemple.sn","password":"motdepasse123","nom":"Awa"}'
+curl -X POST localhost:4000/api/fiches -H "Authorization: Bearer $TOKEN" -H 'Content-Type: application/json' \
+  -d '{"prenom":"Awa","nom":"Ndiaye","fonction":"Coiffeuse","secteur":"beaute"}'
+```
+
+## Règles appliquées côté serveur
+
+- **Propriété** : un client ne voit et ne modifie que ses fiches (sinon 404). L'admin voit tout.
+- **Champs réservés** : `slug`, `formule`, `statut`, `dateEcheance`, `scansTotal`, `userId` sont ignorés si un client les envoie. Le slug ne peut être corrigé côté admin qu'avant la création du compte client associé, puis devient immuable afin de préserver les liens et QR codes.
+- **Formule effective** d'une fiche = son abonnement `ACTIVE` non expiré. Sans abonnement valide : la fiche n'est plus publique et sa modification est bloquée (`ABONNEMENT_EXPIRE`). Une fiche `suspendue` n'est pas publique et sa modification est bloquée pour le client. Les brouillons restent privés et modifiables afin que le client puisse les compléter avant publication.
+- **Création et emplacements** : jusqu'à `MAX_FICHES_PER_USER` fiches Essentielle gratuites par compte (3 par défaut). Une commande Essentielle consomme les places gratuites restantes avant de chiffrer les emplacements payants. Les fiches Pro/Signature utilisent le tarif configuré par durée et quantité, sans frais d'emplacement. Le devis et la confirmation sont recalculés/validés par l'API; les commandes payantes expirent après 30 minutes.
+- **Confirmation d'achat** : aucun lot n'est créé avant la confirmation du paiement simulé; la confirmation vérifie le propriétaire et l'état de la commande, puis crée fiches, abonnements et reçus dans une seule transaction. Les fiches démarrent avec le nom « Nouvelle fiche », le thème et les onglets autorisés par leur formule. Les paiements simulés restent désactivés en production.
+- **Limites par formule** (table `plan_limits`) : blocs autorisés, onglets libres, présentation, réseaux, liens, photos/vidéos, catalogue (sections, articles, prix), menu, biens, entête, thèmes. En cas de dépassement : 422 `LIMITES_DEPASSEES` avec la liste de **toutes** les violations.
+- **`PATCH /fiches/:id`** : une liste fournie (liens, galerie, onglets, catalogue, menu, biens…) **remplace** l'existante ; une liste absente n'est pas touchée.
+- **Format de la fiche** : `GET` renvoie `{ ...champs à plat, formule, dateEcheance, data: {...} }`, le même format que `src/data/fiches.js` du module front. Les ids des onglets viennent de la base (ne pas réutiliser les `o1`, `o2` du front).
+- **Sécurité** : mots de passe bcrypt, rôle `CLIENT` forcé à l'inscription, `ADMIN` seulement via le script, JWT relu en base à chaque requête, URL `javascript:` refusées, rate limit (global + `/auth`), helmet, CORS limité à `CORS_ORIGIN`.
+
+## Ce qui reste à faire / à décider
+
+1. **Envoi des e-mails** : `src/lib/mailer.ts` affiche seulement dans la console. Brancher Resend, Brevo ou SMTP.
+2. **Comptage des passages (scans)** : non implémenté. La page publique ne compte rien ; à faire sur une route dédiée NFC/QR, sans compter les aperçus admin.
+3. **Upload d'images et vidéos** : l'API reçoit des URL. Prévoir un stockage (fichiers sur le VPS ou S3) avec limite de poids ; la durée max des vidéos du menu (30 s) ne peut être vérifiée que là.
+4. **Réorganisation des blocs** (`canReorder`) : non contrôlée côté serveur ; pour l'instant l'ordre envoyé est conservé.
+5. **Paiement** : l'activation d'une formule est manuelle (route admin). Brancher Wave / Orange Money quand tu seras prêt (`paymentRef` est déjà là).
+6. **Ancien rattachement par carte** : les codes de rattachement et leur colonne historique ont été supprimés; aucun parcours de rattachement n'est proposé dans l'administration.
+7. **Tarifs d’abonnement** : les valeurs initiales sont Pro à 2 500 FCFA/mois et Signature à 5 000 FCFA/mois, avec 0/10/20 % de remise pour 1/3/12 mois et 10/20 % dès 10/50 fiches. Elles restent modifiables depuis Formules; les réglages déjà présents ne sont pas écrasés par la seed.
+8. **Paiement réel** : Wave / Orange Money restent hors périmètre; les commandes payantes sont désactivées en production jusqu’à l’intégration d’un fournisseur et de ses notifications vérifiées.
+9. **Tests automatisés** : tests ciblés présents pour les créations/commandes de fiches, les capacités des formules et les validations.
+# api-sc
+
+
+## Séparation des connexions client et admin
+
+- `POST /api/auth/client/login` : accepte uniquement un compte avec le rôle `CLIENT`.
+- `POST /api/auth/admin/login` : accepte uniquement un compte avec le rôle `ADMIN`.
+- `POST /api/auth/login` : ancienne route conservée pour compatibilité.
+- Les routes d’administration restent protégées par `requireAuth` et `requireRole("ADMIN")` côté serveur. Masquer un lien dans l’interface ne remplace jamais ces contrôles.
+
+Exemple de corps JSON pour les deux connexions : `{ "email": "...", "password": "..." }`.
+Un compte admin doit être créé avec le script `npm run create-admin` ; l’inscription publique crée toujours un compte CLIENT.

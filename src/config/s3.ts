@@ -14,7 +14,7 @@ export function getS3Client(): { s3Client: S3Client; bucketName: string } {
 
   if (!accessKeyId || !secretAccessKey || !bucketName) {
     logger.error(
-      "Configuration S3 manquante : Définissez S3_ACCESS_KEY_ID, S3_SECRET_ACCESS_KEY et S3_BUCKET_NAME dans le .env"
+      "Configuration S3 manquante : Définissez S3_ACCESS_KEY_ID, S3_SECRET_ACCESS_KEY et S3_BUCKET dans le .env"
     );
     throw new Error("Erreur de stockage");
   }

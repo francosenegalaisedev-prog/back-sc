@@ -7,3 +7,4 @@ dist
 /src/generated/prisma
 # Vitest reports and artifacts
 .vitest/
+ecosystem.config.cjs

@@ -12,8 +12,8 @@ const schema = z.object({
     .string()
     .min(32, "JWT_SECRET doit faire au moins 32 caractères"),
   JWT_EXPIRES_IN: z.string().default("7d"),
-  CORS_ORIGIN: z.string().default("http://localhost:5174"),
-  PUBLIC_SITE_URL: z.string().default("http://localhost:5173"),
+  CORS_ORIGIN: z.string(),
+  PUBLIC_SITE_URL: z.string(),
   REQUIRE_EMAIL_VERIFICATION: z
     .enum(["true", "false"])
     .default("false")
@@ -21,7 +21,7 @@ const schema = z.object({
   MAX_FICHES_PER_USER: z.coerce.number().int().positive().default(3),
 
   MAILTRAP_API_TOKEN: z.string().min(1, "MAILTRAP_API_TOKEN est requis"),
-  SERVER: z.string().default("http://localhost:4000/api"),
+  SERVER: z.string(),
   S3_ENDPOINT: z.string(),
   S3_ACCESS_KEY_ID: z.string(),
   S3_SECRET_ACCESS_KEY: z.string(),

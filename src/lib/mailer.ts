@@ -1,7 +1,6 @@
 // Envoi d'e-mails : à brancher sur ton fournisseur (Resend, Brevo, SMTP…).
 // En développement, les messages utilisent le transport SMTP de test.
 
-import { MailtrapTransport } from "mailtrap";
 import nodemailer from "nodemailer";
 import { env } from "../config/env";
 import { User } from "../database/prisma/generated/prisma/client";
@@ -20,7 +19,7 @@ type SendParams = {
 
 const LOGO_URL = "";
 
-const transport = selectTransport(env.NODE_ENV);
+const transport = selectTransport();
 
 const sender = {
   address: "no-replay@support-connecte.com",
@@ -110,23 +109,13 @@ export const sendMail = async (data: {
 };
 
 // ? Selected trasport depending on environment
-function selectTransport(nodeEnv: string) {
-  if (nodeEnv === "development") {
-    return nodemailer.createTransport({
-      host: "sandbox.smtp.mailtrap.io",
-      port: 2525,
-      auth: {
-        user: "16b2a4f2957a59",
-        pass: "35a7fc22f1f924",
-      },
-    });
-
-    // production
-  } else {
-    return nodemailer.createTransport(
-      MailtrapTransport({
-        token: env.MAILTRAP_API_TOKEN,
-      })
-    );
-  }
+function selectTransport() {
+  return nodemailer.createTransport({
+    host: env.MAILTRAP_SMTP_HOST,
+    port: parseInt(env.MAILTRAP_SMTP_PORT, 10),
+    auth: {
+      user: env.MAILTRAP_SMTP_USER,
+      pass: env.MAILTRAP_SMTP_PASSWORD,
+    },
+  });
 }

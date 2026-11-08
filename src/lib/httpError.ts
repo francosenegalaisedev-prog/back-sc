@@ -11,7 +11,6 @@ export class HttpError extends Error {
 
 export const badRequest = (code: string, msg: string, details?: unknown) =>
   new HttpError(400, code, msg, details);
-
 export const unauthorized = (msg = "Authentification requise") =>
   new HttpError(401, "NON_AUTHENTIFIE", msg);
 export const forbidden = (code: string, msg: string) =>

@@ -19,7 +19,12 @@ const schema = z.object({
     .default("false")
     .transform(v => v === "true"),
   MAX_FICHES_PER_USER: z.coerce.number().int().positive().default(3),
-
+  MAILTRAP_SMTP_HOST: z.string().min(1, "MAILTRAP_SMTP_HOST est requis"),
+  MAILTRAP_SMTP_PORT: z.string().min(1, "MAILTRAP_SMTP_PORT est requis"),
+  MAILTRAP_SMTP_USER: z.string().min(1, "MAILTRAP_SMTP_USER est requis"),
+  MAILTRAP_SMTP_PASSWORD: z
+    .string()
+    .min(1, "MAILTRAP_SMTP_PASSWORD est requis"),
   MAILTRAP_API_TOKEN: z.string().min(1, "MAILTRAP_API_TOKEN est requis"),
   SERVER: z.string(),
   S3_ENDPOINT: z.string(),
@@ -40,5 +45,4 @@ if (!parsed.success) {
   });
   process.exit(1);
 }
-
 export const env = parsed.data;

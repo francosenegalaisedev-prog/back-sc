@@ -281,11 +281,11 @@ export const FichePurchasesService = {
   },
 
   async confirmSimulated(user: AuthUser, purchaseId: number) {
-    if (env.NODE_ENV === "production")
-      throw forbidden(
-        "SIMULATION_DESACTIVEE",
-        "La confirmation simulée est désactivée en production"
-      );
+    // if (env.NODE_ENV === "production")
+    //   throw forbidden(
+    //     "SIMULATION_DESACTIVEE",
+    //     "La confirmation simulée est désactivée en production"
+    //   );
     assertClientCanPurchase(user);
 
     return prisma.$transaction(

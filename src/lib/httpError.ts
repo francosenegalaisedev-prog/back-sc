@@ -22,3 +22,6 @@ export const conflict = (code: string, msg: string) =>
   new HttpError(409, code, msg);
 export const unprocessable = (code: string, msg: string, details?: unknown) =>
   new HttpError(422, code, msg, details);
+
+export const badGateway = (code: string, msg: string) =>
+  new HttpError(502, code, msg);

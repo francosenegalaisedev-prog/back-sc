@@ -6,6 +6,7 @@ import nodemailer from "nodemailer";
 import { env } from "../config/env";
 import { User } from "../database/prisma/generated/prisma/client";
 import { createAuthToken } from "./authTokens";
+import { badGateway } from "./httpError";
 import { logger } from "./logger";
 import { resetPasswordEmailTemplate } from "./mailer/reset-password-template";
 import { verificationEmailTemplate } from "./mailer/verification-template";
@@ -22,10 +23,9 @@ const LOGO_URL = "";
 const transport = selectTransport(env.NODE_ENV);
 
 const sender = {
-  address: "hello@demomailtrap.co",
+  address: "no-replay@support-connecte.com",
   name: "Mailtrap Test",
 };
-const recipients = ["anomshacket@gmail.com"];
 
 export const sendVerificationEmail = async (user: User) => {
   const token = await createAuthToken(user.id, "verify_email", 60 * 24);
@@ -103,7 +103,9 @@ export const sendMail = async (data: {
       subject: data.subject,
       errorName: e instanceof Error ? e.name : "UnknownError",
     });
-    throw e;
+    badGateway("EMAIL_DELIVERY_FAILED", "Échec de l'envoi de l'e-mail");
+    return;
+    // throw e;
   }
 };
 

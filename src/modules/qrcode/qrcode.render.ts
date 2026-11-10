@@ -272,8 +272,8 @@ export function rendreSvg(contenu: string, s: StyleComplet, logoHref: string | n
   if (logoHref && s.logo && L > 0) {
     const lx = m + debut;
     const pad = L * 0.08;
-    const fondLogo =
-      s.logo.backgroundColor ?? (s.background === "transparent" ? "#ffffff" : s.background);
+      const fondLogo = s.logo.backgroundColor ?? s.background;
+   
     const cx = lx + L / 2;
     if (fondLogo !== "transparent")
       logo +=
@@ -338,7 +338,7 @@ export async function convertir(
 
   // density 72 : 1 unité du SVG = 1 pixel, donc l'image sort à la taille demandée.
   const image = () => sharp(source, { density: 72 });
-  const fondPlein = s.background === "transparent" ? "#ffffff" : s.background;
+  const fondPlein = s.background === "transparent" ?  "transparent": s.background;
 
   switch (format) {
     case "png":

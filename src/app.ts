@@ -54,26 +54,26 @@ app.use("/api", adminActionLogger);
 app.use("/q", qrPublicRouter);
 
 // Limite globale + limite stricte sur l'authentification (anti brute-force).
-app.use(
-  "/api",
-  rateLimit({
-    windowMs: 60_000,
-    limit: 120,
-    standardHeaders: true,
-    legacyHeaders: false,
-    handler: rateLimitHandler,
-  })
-);
-app.use(
-  "/api/auth",
-  rateLimit({
-    windowMs: 15 * 60_000,
-    limit: 30,
-    standardHeaders: true,
-    legacyHeaders: false,
-    handler: rateLimitHandler,
-  })
-);
+// app.use(
+//   "/api",
+//   rateLimit({
+//     windowMs: 60_000,
+//     limit: 120,
+//     standardHeaders: true,
+//     legacyHeaders: false,
+//     handler: rateLimitHandler,
+//   })
+// );
+// app.use(
+//   "/api/auth",
+//   rateLimit({
+//     windowMs: 15 * 60_000,
+//     limit: 30,
+//     standardHeaders: true,
+//     legacyHeaders: false,
+//     handler: rateLimitHandler,
+//   })
+// );
 
 app.get("/api/health", (_req, res) => res.json({ ok: true }));
 app.use("/api/auth", authRouter);

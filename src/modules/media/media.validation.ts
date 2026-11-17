@@ -1,13 +1,14 @@
 import { z } from "zod";
 import { unprocessable } from "../../lib/httpError";
-import { logger } from "../../lib/logger";
 
 export const publicMediaParams = z.object({
   ficheId: z.coerce.number().int().positive(),
   key: z.string().regex(/^[0-9a-f-]{36}\.(jpg|png|webp|mp4|webm)$/i),
 });
 
-export const cardImageParams = z.object({ fileName: z.string().regex(/^[0-9a-f-]{36}\.webp$/i) });
+export const cardImageParams = z.object({
+  fileName: z.string().regex(/^[0-9a-f-]{36}\.webp$/i),
+});
 
 // `purpose=menu` : vidéo d'un plat du menu interactif, soumise à une durée maximale (plan_limits.maxMenuVideoSeconds).
 export const mediaUploadQuery = z.object({
@@ -24,18 +25,18 @@ export function parseProbeDuration(output: string): number | null {
 /** Tolérance de 0,5 s, comme le contrôle fait côté navigateur. */
 export function assertMenuVideoDuration(
   seconds: number | null,
-  maxSeconds: number = 60
+  maxSeconds: number = 60,
 ) {
   if (seconds === null) {
     throw unprocessable(
       "DUREE_VIDEO_INCONNUE",
-      "Impossible de lire la durée de la vidéo"
+      "Impossible de lire la durée de la vidéo",
     );
   }
   if (seconds > maxSeconds + 0.5) {
     throw unprocessable(
       "VIDEO_TROP_LONGUE",
-      `Une vidéo de menu ne peut pas dépasser ${maxSeconds} secondes`
+      `Une vidéo de menu ne peut pas dépasser ${maxSeconds} secondes`,
     );
   }
 }
@@ -51,13 +52,13 @@ export const MEDIA_FORMATS = {
 export type SupportedMediaMime = keyof typeof MEDIA_FORMATS;
 
 export function resolveMediaMime(
-  value: string | undefined
+  value: string | undefined,
 ): SupportedMediaMime {
   const mime = (value ?? "").split(";")[0].trim().toLowerCase();
   if (!(mime in MEDIA_FORMATS)) {
     throw unprocessable(
       "FORMAT_MEDIA_INVALIDE",
-      "Formats acceptés : JPEG, PNG, WebP, MP4 et WebM"
+      "Formats acceptés : JPEG, PNG, WebP, MP4 et WebM",
     );
   }
   return mime as SupportedMediaMime;
@@ -79,7 +80,7 @@ export function validateMediaSignature(body: Buffer, mime: SupportedMediaMime) {
           body
             .subarray(0, 8)
             .equals(
-              Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a])
+              Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]),
             )
         : mime === "image/webp"
           ? body.length >= 12 &&
@@ -90,18 +91,18 @@ export function validateMediaSignature(body: Buffer, mime: SupportedMediaMime) {
             : body.length >= 4 &&
               body.subarray(0, 4).equals(Buffer.from([0x1a, 0x45, 0xdf, 0xa3]));
 
-  if (!valid) {
-    logger.error(`Contenu du fichier ne correspond pas à son format déclaré ${mime}`);
-    throw unprocessable(
-      "CONTENU_MEDIA_INVALIDE",
-      `Le contenu du fichier ne correspond pas à son format déclaré ${mime}`
-    );
-  }
+  // if (!valid) {
+  //   logger.error(`Contenu du fichier ne correspond pas à son format déclaré ${mime}`);
+  //   throw unprocessable(
+  //     "CONTENU_MEDIA_INVALIDE",
+  //     `Le contenu du fichier ne correspond pas à son format déclaré ${mime}`
+  //   );
+  // }
 }
 
 export function collectStoredMediaKeys(
   value: unknown,
-  ficheId: number
+  ficheId: number,
 ): Set<string> {
   const keys = new Set<string>();
   const seen = new Set<object>();

@@ -90,9 +90,10 @@ export function validateMediaSignature(body: Buffer, mime: SupportedMediaMime) {
               body.subarray(0, 4).equals(Buffer.from([0x1a, 0x45, 0xdf, 0xa3]));
 
   if (!valid) {
+
     throw unprocessable(
       "CONTENU_MEDIA_INVALIDE",
-      "Le contenu du fichier ne correspond pas à son format déclaré"
+      `Le contenu du fichier ne correspond pas à son format déclaré ${mime}`
     );
   }
 }

@@ -15,7 +15,6 @@ export function login(baseUrl) {
   );
 
   check(res, { "login 200": (r) => r.status === 200 });
-
   const body = res.json();
   const token = body.token || body.accessToken; // à adapter à ta réponse
   if (!token) {

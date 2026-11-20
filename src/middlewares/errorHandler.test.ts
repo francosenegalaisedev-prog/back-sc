@@ -1,5 +1,7 @@
 import type { NextFunction, Request, Response } from "express";
 import { afterEach, describe, expect, it, vi } from "vitest";
+import { z } from "zod";
+import { Prisma } from "../database/prisma/generated/prisma/client";
 import { HttpError } from "../lib/httpError";
 import { logger } from "../lib/logger";
 import { errorHandler, rateLimitHandler } from "./errorHandler";
@@ -126,6 +128,62 @@ describe("errorHandler", () => {
 
     expect(next).toHaveBeenCalledWith(error);
     expect(res.status).not.toHaveBeenCalled();
+  });
+
+  it("traduit les erreurs Zod en français clair et remonte le 1er message explicite", () => {
+    const res = response();
+    const schema = z.object({
+      email: z.string().email(),
+      nom: z.string().min(2),
+    });
+    const parsed = schema.safeParse({ email: "mauvais", nom: "A" });
+    expect(parsed.success).toBe(false);
+    if (!parsed.success) {
+      errorHandler(parsed.error, request, res, vi.fn() as NextFunction);
+    }
+
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith({
+      error: {
+        code: "DONNEES_INVALIDES",
+        message: "Veuillez saisir une adresse e-mail valide.",
+        details: [
+          { champ: "email", message: "Veuillez saisir une adresse e-mail valide." },
+          { champ: "nom", message: "Veuillez saisir au moins 2 caractères." },
+        ],
+      },
+    });
+  });
+
+  it("renvoie des messages clairs pour les erreurs Prisma P2002 et P2025 sans exposer de détails techniques", () => {
+    const resDup = response();
+    const dupErr = new Prisma.PrismaClientKnownRequestError("Unique failed", {
+      code: "P2002",
+      clientVersion: "7.0.0",
+      meta: { target: ["email"] },
+    });
+    errorHandler(dupErr, request, resDup, vi.fn() as NextFunction);
+    expect(resDup.status).toHaveBeenCalledWith(409);
+    expect(resDup.json).toHaveBeenCalledWith({
+      error: {
+        code: "DEJA_UTILISE",
+        message: "Cette adresse e-mail est déjà utilisée.",
+      },
+    });
+
+    const resMissing = response();
+    const missingErr = new Prisma.PrismaClientKnownRequestError("Not found", {
+      code: "P2025",
+      clientVersion: "7.0.0",
+    });
+    errorHandler(missingErr, request, resMissing, vi.fn() as NextFunction);
+    expect(resMissing.status).toHaveBeenCalledWith(404);
+    expect(resMissing.json).toHaveBeenCalledWith({
+      error: {
+        code: "INTROUVABLE",
+        message: "Élément introuvable ou déjà supprimé.",
+      },
+    });
   });
 });
 

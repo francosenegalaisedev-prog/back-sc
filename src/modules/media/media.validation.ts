@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { unprocessable } from "../../lib/httpError";
+import { logger } from "../../lib/logger";
 
 export const publicMediaParams = z.object({
   ficheId: z.coerce.number().int().positive(),
@@ -91,13 +92,15 @@ export function validateMediaSignature(body: Buffer, mime: SupportedMediaMime) {
             : body.length >= 4 &&
               body.subarray(0, 4).equals(Buffer.from([0x1a, 0x45, 0xdf, 0xa3]));
 
-  // if (!valid) {
-  //   logger.error(`Contenu du fichier ne correspond pas à son format déclaré ${mime}`);
-  //   throw unprocessable(
-  //     "CONTENU_MEDIA_INVALIDE",
-  //     `Le contenu du fichier ne correspond pas à son format déclaré ${mime}`
-  //   );
-  // }
+  if (!valid) {
+    logger.warn("Contenu du fichier ne correspond pas à son format déclaré", {
+      mime,
+    });
+    throw unprocessable(
+      "CONTENU_MEDIA_INVALIDE",
+      `Le contenu du fichier ne correspond pas à son format déclaré ${mime}`
+    );
+  }
 }
 
 export function collectStoredMediaKeys(

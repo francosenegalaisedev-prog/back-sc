@@ -8,10 +8,14 @@ import {
 } from "../../../lib/httpError";
 import { logger } from "../../../lib/logger";
 import { sendCallbackRequestEmail } from "../../../lib/mailer";
+import {
+  isValidPhone,
+  normalizePhone,
+  PHONE_ERROR_MESSAGE,
+} from "../../../lib/phone";
 import type { AuthUser } from "../../../types/user";
 import { getPublicSubscription } from "./fiche-public-access";
 
-const normalizePhone = (value: string) => value.replace(/[\s().-]/g, "");
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const DUPLICATE_WINDOW_MS = 10 * 60_000;
 const EXPORT_MAX_ROWS = 5000;
@@ -110,11 +114,8 @@ export const RappelService = {
     if (nom.length < 2) {
       throw badRequest("NOM_INVALIDE", "Veuillez saisir un nom valide.");
     }
-    if (!/^\+?[0-9]{7,15}$/.test(telephone)) {
-      throw badRequest(
-        "TELEPHONE_INVALIDE",
-        "Veuillez saisir un numéro de téléphone valide."
-      );
+    if (!isValidPhone(input.telephone)) {
+      throw badRequest("TELEPHONE_INVALIDE", PHONE_ERROR_MESSAGE);
     }
     if (email && !EMAIL_RE.test(email)) {
       throw badRequest(

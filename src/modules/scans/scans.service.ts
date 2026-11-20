@@ -1,3 +1,4 @@
+import { Prisma } from "../../database/prisma/generated/prisma/client";
 import { prisma } from "../../database/prisma/prisma-client";
 import { notFound } from "../../lib/httpError";
 
@@ -32,12 +33,11 @@ export const ScansService = {
     const cle = `${slug}|${ip}`;
     if (dejaCompte(cle, Date.now())) return;
 
-    // Incrément atomique côté base : deux scans simultanés comptent bien pour deux.
-    // Seule une fiche ACTIVE est comptée (une fiche suspendue est masquée au public).
-    const { count } = await prisma.fiche.updateMany({
-      where: { slug, statut: "ACTIVE" },
-      data: { scansTotal: { increment: 1 } },
-    });
+    // Incrément SQL atomique : deux scans simultanés comptent pour deux, sans modifier `updatedAt`
+    // (utilisé comme verrou optimiste par l'éditeur). Seule une fiche ACTIVE est comptée.
+    const count = await prisma.$executeRaw(
+      Prisma.sql`UPDATE "fiches" SET "scansTotal" = "scansTotal" + 1 WHERE "slug" = ${slug} AND "statut" = 'ACTIVE'::"StatutFiche"`
+    );
     if (count === 0) {
       vus.delete(cle);
       throw notFound("Fiche introuvable");

@@ -21,9 +21,37 @@ export const FicheController = {
   listAllRappels: asyncHandler(async (req, res) => {
     const page = Number(req.query.page ?? 1);
     const limit = Number(req.query.limit ?? 10);
+    const ficheId =
+      req.query.ficheId !== undefined ? Number(req.query.ficheId) : undefined;
+    const statut =
+      req.query.statut === "NOUVELLE" || req.query.statut === "TRAITEE"
+        ? req.query.statut
+        : undefined;
+    const search =
+      typeof req.query.search === "string" ? req.query.search : undefined;
     res.json({
-      rappels: await RappelService.listForUser(req.user!, page, limit),
+      rappels: await RappelService.listForUser(req.user!, page, limit, {
+        ficheId,
+        statut,
+        search,
+      }),
     });
+  }),
+
+  updateRappelStatus: asyncHandler(async (req, res) => {
+    res.json({
+      demande: await RappelService.updateStatus(
+        req.user!,
+        Number(req.params.rappelId),
+        req.body.statut
+      ),
+    });
+  }),
+
+  deleteRappel: asyncHandler(async (req, res) => {
+    res.json(
+      await RappelService.remove(req.user!, Number(req.params.rappelId))
+    );
   }),
 
   totalFiches: asyncHandler(async (req, res) => {

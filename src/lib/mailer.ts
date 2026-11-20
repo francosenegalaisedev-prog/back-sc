@@ -63,6 +63,40 @@ export const sendForgotPasswordMail = async (user: User) => {
   await sendMail(forgotPayload);
 };
 
+const escapeHtml = (value: string) =>
+  value
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+
+export const sendCallbackRequestEmail = async (params: {
+  to: string;
+  ownerName?: string | null;
+  ficheName: string;
+  visitorName: string;
+  visitorPhone: string;
+}) => {
+  const dashboardUrl = `${env.PUBLIC_SITE_URL.replace(/\/$/, "")}/espace-client/demandes-rappel`;
+  const owner = params.ownerName?.trim() || "Bonjour";
+  const safeFiche = escapeHtml(params.ficheName);
+  const safeVisitor = escapeHtml(params.visitorName);
+  const safePhone = escapeHtml(params.visitorPhone);
+  await sendMail({
+    to: params.to,
+    subject: `Nouvelle demande de rappel — ${params.ficheName}`,
+    html: `<p>Bonjour ${escapeHtml(owner)},</p>
+<p>Un visiteur a demandé à être rappelé depuis votre fiche <strong>${safeFiche}</strong> :</p>
+<ul>
+  <li><strong>Nom :</strong> ${safeVisitor}</li>
+  <li><strong>Téléphone :</strong> <a href="tel:${safePhone}">${safePhone}</a></li>
+</ul>
+<p><a href="${dashboardUrl}">Voir toutes vos demandes de rappel</a></p>`,
+    text: `Bonjour ${owner},\n\nNouvelle demande de rappel depuis votre fiche ${params.ficheName} :\n- Nom : ${params.visitorName}\n- Téléphone : ${params.visitorPhone}\n\nConsulter vos demandes : ${dashboardUrl}`,
+  });
+};
+
 export const sendAdminInvitationEmail = async (user: User) => {
   const token = await createAuthToken(user.id, "reset_password", 24 * 60);
   const setupUrl = `${env.PUBLIC_SITE_URL}/reset-password?token=${token}`;

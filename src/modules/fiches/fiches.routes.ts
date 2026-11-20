@@ -1,5 +1,7 @@
 import { Router, raw } from "express";
+import rateLimit from "express-rate-limit";
 import { optionalAuth, requireAuth } from "../../middlewares/auth";
+import { rateLimitHandler } from "../../middlewares/errorHandler";
 import { validate } from "../../middlewares/validate";
 import { MediaController } from "../media/media.controller";
 import { mediaUploadQuery } from "../media/media.validation";
@@ -12,13 +14,23 @@ import {
   createRappelSchema,
   idParam,
   passageStatsQuerySchema,
+  rappelIdParam,
   rappelListQuerySchema,
   recordPassageSchema,
   slugParam,
   updateFicheSchema,
+  updateRappelStatusSchema,
 } from "./fiches.schemas";
 
 export const fichesRouter = Router();
+
+const publicRappelLimiter = rateLimit({
+  windowMs: 15 * 60_000,
+  limit: 5,
+  standardHeaders: true,
+  legacyHeaders: false,
+  handler: rateLimitHandler,
+});
 
 // Public — page de la fiche (NFC / QR). Déclarée AVANT les routes protégées.
 fichesRouter.get(
@@ -36,9 +48,10 @@ fichesRouter.post(
   FicheController.recordPublicPassage
 );
 
-// Public — enregistre une demande de rappel pour la fiche.
+// Public — enregistre une demande de rappel pour la fiche (rate-limit anti-spam dédié).
 fichesRouter.post(
   "/public/:slug/rappels",
+  publicRappelLimiter,
   validate({ params: slugParam, body: createRappelSchema }),
   FicheController.createPublicRappel
 );
@@ -52,6 +65,18 @@ fichesRouter.get(
   "/rappels",
   validate({ query: rappelListQuerySchema }),
   FicheController.listAllRappels
+);
+
+fichesRouter.patch(
+  "/rappels/:rappelId",
+  validate({ params: rappelIdParam, body: updateRappelStatusSchema }),
+  FicheController.updateRappelStatus
+);
+
+fichesRouter.delete(
+  "/rappels/:rappelId",
+  validate({ params: rappelIdParam }),
+  FicheController.deleteRappel
 );
 
 fichesRouter.get(

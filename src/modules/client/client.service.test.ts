@@ -2,12 +2,13 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 
 const mocks = vi.hoisted(() => ({
   ficheFindMany: vi.fn(),
+  ficheCount: vi.fn(),
   subscriptionFindMany: vi.fn(),
 }));
 
 vi.mock("../../database/prisma/prisma-client", () => ({
   prisma: {
-    fiche: { findMany: mocks.ficheFindMany },
+    fiche: { findMany: mocks.ficheFindMany, count: mocks.ficheCount },
     subscription: { findMany: mocks.subscriptionFindMany },
   },
 }));
@@ -66,5 +67,29 @@ describe("ClientService.detailFiche : dernier abonnement", () => {
     expect(fiche.subscriptions[0].startsAt).toEqual(startsAt);
     expect(mocks.ficheFindMany.mock.calls[0][0].include.subscriptions.select.startsAt)
       .toBe(true);
+  });
+
+  it("prend en charge la pagination optionnelle (skip/take + métadonnées)", async () => {
+    mocks.ficheCount.mockResolvedValue(25);
+    mocks.ficheFindMany.mockResolvedValue([{ id: 4, subscriptions: [] }]);
+    mocks.subscriptionFindMany.mockResolvedValue([]);
+
+    const result = await ClientService.detailFichePaginated(user, {
+      page: 2,
+      limit: 10,
+    });
+
+    expect(mocks.ficheFindMany.mock.calls[0][0]).toMatchObject({
+      where: { userId: 7 },
+      skip: 10,
+      take: 10,
+    });
+    expect(result.pagination).toEqual({
+      page: 2,
+      limit: 10,
+      total: 25,
+      totalPages: 3,
+    });
+    expect(result.items).toHaveLength(1);
   });
 });

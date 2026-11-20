@@ -2,10 +2,27 @@ import { prisma } from "../../database/prisma/prisma-client";
 import { AuthUser } from "../../types/user";
 import { mediaUrl } from "../../lib/media";
 
+export type DashboardFichesPagination = {
+  page: number;
+  limit: number;
+};
+
+const DASHBOARD_MAX_LIMIT = 100;
+
 export const ClientService = {
-  detailFiche: async (user: AuthUser) => {
+  detailFiche: async (
+    user: AuthUser,
+    pagination?: DashboardFichesPagination
+  ) => {
+    const page = pagination ? Math.max(1, Math.floor(pagination.page)) : null;
+    const limit = pagination
+      ? Math.min(DASHBOARD_MAX_LIMIT, Math.max(1, Math.floor(pagination.limit)))
+      : null;
+
     const getFiche = await prisma.fiche.findMany({
       where: { userId: user.id },
+      orderBy: [{ updatedAt: "desc" }, { id: "desc" }],
+      ...(page && limit ? { skip: (page - 1) * limit, take: limit } : {}),
       include: {
         subscriptions: {
           where: {
@@ -55,5 +72,29 @@ export const ClientService = {
       logo: mediaUrl(fiche.logo),
       photo: mediaUrl(fiche.photo),
     }));
+  },
+
+  detailFichePaginated: async (
+    user: AuthUser,
+    pagination: DashboardFichesPagination
+  ) => {
+    const page = Math.max(1, Math.floor(pagination.page));
+    const limit = Math.min(
+      DASHBOARD_MAX_LIMIT,
+      Math.max(1, Math.floor(pagination.limit))
+    );
+    const [total, items] = await Promise.all([
+      prisma.fiche.count({ where: { userId: user.id } }),
+      ClientService.detailFiche(user, { page, limit }),
+    ]);
+    return {
+      items,
+      pagination: {
+        page,
+        limit,
+        total,
+        totalPages: total === 0 ? 0 : Math.ceil(total / limit),
+      },
+    };
   },
 };

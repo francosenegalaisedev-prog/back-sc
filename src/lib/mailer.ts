@@ -63,6 +63,63 @@ export const sendForgotPasswordMail = async (user: User) => {
   await sendMail(forgotPayload);
 };
 
+const escapeHtml = (value: string) =>
+  value
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+
+export const sendCallbackRequestEmail = async (params: {
+  to: string;
+  ownerName?: string | null;
+  ficheName: string;
+  visitorName: string;
+  visitorPhone: string;
+  visitorEmail?: string | null;
+  visitorCompany?: string | null;
+}) => {
+  const dashboardUrl = `${env.PUBLIC_SITE_URL.replace(/\/$/, "")}/espace-client/prospects`;
+  const owner = params.ownerName?.trim() || "Bonjour";
+  const safeFiche = escapeHtml(params.ficheName);
+  const safeVisitor = escapeHtml(params.visitorName);
+  const safePhone = escapeHtml(params.visitorPhone);
+  const safeEmail = params.visitorEmail ? escapeHtml(params.visitorEmail) : "";
+  const safeCompany = params.visitorCompany
+    ? escapeHtml(params.visitorCompany)
+    : "";
+
+  const extraHtml = [
+    safeEmail
+      ? `  <li><strong>E-mail :</strong> <a href="mailto:${safeEmail}">${safeEmail}</a></li>`
+      : "",
+    safeCompany ? `  <li><strong>Société :</strong> ${safeCompany}</li>` : "",
+  ]
+    .filter(Boolean)
+    .join("\n");
+
+  const extraText = [
+    params.visitorEmail ? `- E-mail : ${params.visitorEmail}` : "",
+    params.visitorCompany ? `- Société : ${params.visitorCompany}` : "",
+  ]
+    .filter(Boolean)
+    .join("\n");
+
+  await sendMail({
+    to: params.to,
+    subject: `Nouveau prospect — ${params.ficheName}`,
+    html: `<p>Bonjour ${escapeHtml(owner)},</p>
+<p>Un visiteur a partagé ses coordonnées via « Échangez contact » sur votre fiche <strong>${safeFiche}</strong> :</p>
+<ul>
+  <li><strong>Nom :</strong> ${safeVisitor}</li>
+  <li><strong>Téléphone :</strong> <a href="tel:${safePhone}">${safePhone}</a></li>${extraHtml ? `\n${extraHtml}` : ""}
+</ul>
+<p><a href="${dashboardUrl}">Voir tous vos prospects</a></p>`,
+    text: `Bonjour ${owner},\n\nNouveau prospect depuis votre fiche ${params.ficheName} :\n- Nom : ${params.visitorName}\n- Téléphone : ${params.visitorPhone}${extraText ? `\n${extraText}` : ""}\n\nConsulter vos prospects : ${dashboardUrl}`,
+  });
+};
+
 export const sendAdminInvitationEmail = async (user: User) => {
   const token = await createAuthToken(user.id, "reset_password", 24 * 60);
   const setupUrl = `${env.PUBLIC_SITE_URL}/reset-password?token=${token}`;

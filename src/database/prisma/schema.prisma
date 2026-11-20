@@ -399,16 +399,26 @@ model FichePurchase {
   @@map("fiche_purchases")
 }
 
-// Demande de rappel envoyée depuis la fiche publique (onglet RAPPEL).
+enum DemandeRappelStatus {
+  NOUVELLE
+  TRAITEE
+}
+
+// Demande de rappel envoyée depuis la fiche publique.
 model DemandeRappel {
-  id        Int      @id @default(autoincrement())
+  id        Int                 @id @default(autoincrement())
   ficheId   Int
   nom       String
   telephone String
-  createdAt DateTime @default(now())
-  fiche     Fiche    @relation(fields: [ficheId], references: [id], onDelete: Cascade)
+  email     String?
+  societe   String?
+  statut    DemandeRappelStatus @default(NOUVELLE)
+  traiteeAt DateTime?
+  createdAt DateTime            @default(now())
+  fiche     Fiche               @relation(fields: [ficheId], references: [id], onDelete: Cascade)
 
   @@index([ficheId, createdAt])
+  @@index([ficheId, statut, createdAt])
 }
 
 // Événement individuel d'ouverture publique d'une fiche (QR, NFC ou lien direct).

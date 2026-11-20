@@ -443,6 +443,10 @@ export const DemandeRappelScalarFieldEnum = {
   ficheId: 'ficheId',
   nom: 'nom',
   telephone: 'telephone',
+  email: 'email',
+  societe: 'societe',
+  statut: 'statut',
+  traiteeAt: 'traiteeAt',
   createdAt: 'createdAt'
 } as const
 

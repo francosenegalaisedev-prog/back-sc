@@ -525,6 +525,23 @@ export type EnumFichePurchaseStatusWithAggregatesFilter<$PrismaModel = never> = 
   _max?: Prisma.NestedEnumFichePurchaseStatusFilter<$PrismaModel>
 }
 
+export type EnumDemandeRappelStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.DemandeRappelStatus | Prisma.EnumDemandeRappelStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.DemandeRappelStatus[] | Prisma.ListEnumDemandeRappelStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.DemandeRappelStatus[] | Prisma.ListEnumDemandeRappelStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumDemandeRappelStatusFilter<$PrismaModel> | $Enums.DemandeRappelStatus
+}
+
+export type EnumDemandeRappelStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.DemandeRappelStatus | Prisma.EnumDemandeRappelStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.DemandeRappelStatus[] | Prisma.ListEnumDemandeRappelStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.DemandeRappelStatus[] | Prisma.ListEnumDemandeRappelStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumDemandeRappelStatusWithAggregatesFilter<$PrismaModel> | $Enums.DemandeRappelStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumDemandeRappelStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumDemandeRappelStatusFilter<$PrismaModel>
+}
+
 export type EnumFichePassageSourceFilter<$PrismaModel = never> = {
   equals?: $Enums.FichePassageSource | Prisma.EnumFichePassageSourceFieldRefInput<$PrismaModel>
   in?: $Enums.FichePassageSource[] | Prisma.ListEnumFichePassageSourceFieldRefInput<$PrismaModel>
@@ -1224,6 +1241,23 @@ export type NestedEnumFichePurchaseStatusWithAggregatesFilter<$PrismaModel = nev
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumFichePurchaseStatusFilter<$PrismaModel>
   _max?: Prisma.NestedEnumFichePurchaseStatusFilter<$PrismaModel>
+}
+
+export type NestedEnumDemandeRappelStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.DemandeRappelStatus | Prisma.EnumDemandeRappelStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.DemandeRappelStatus[] | Prisma.ListEnumDemandeRappelStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.DemandeRappelStatus[] | Prisma.ListEnumDemandeRappelStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumDemandeRappelStatusFilter<$PrismaModel> | $Enums.DemandeRappelStatus
+}
+
+export type NestedEnumDemandeRappelStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.DemandeRappelStatus | Prisma.EnumDemandeRappelStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.DemandeRappelStatus[] | Prisma.ListEnumDemandeRappelStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.DemandeRappelStatus[] | Prisma.ListEnumDemandeRappelStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumDemandeRappelStatusWithAggregatesFilter<$PrismaModel> | $Enums.DemandeRappelStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumDemandeRappelStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumDemandeRappelStatusFilter<$PrismaModel>
 }
 
 export type NestedEnumFichePassageSourceFilter<$PrismaModel = never> = {

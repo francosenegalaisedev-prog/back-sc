@@ -41,6 +41,10 @@ export type DemandeRappelMinAggregateOutputType = {
   ficheId: number | null
   nom: string | null
   telephone: string | null
+  email: string | null
+  societe: string | null
+  statut: $Enums.DemandeRappelStatus | null
+  traiteeAt: Date | null
   createdAt: Date | null
 }
 
@@ -49,6 +53,10 @@ export type DemandeRappelMaxAggregateOutputType = {
   ficheId: number | null
   nom: string | null
   telephone: string | null
+  email: string | null
+  societe: string | null
+  statut: $Enums.DemandeRappelStatus | null
+  traiteeAt: Date | null
   createdAt: Date | null
 }
 
@@ -57,6 +65,10 @@ export type DemandeRappelCountAggregateOutputType = {
   ficheId: number
   nom: number
   telephone: number
+  email: number
+  societe: number
+  statut: number
+  traiteeAt: number
   createdAt: number
   _all: number
 }
@@ -77,6 +89,10 @@ export type DemandeRappelMinAggregateInputType = {
   ficheId?: true
   nom?: true
   telephone?: true
+  email?: true
+  societe?: true
+  statut?: true
+  traiteeAt?: true
   createdAt?: true
 }
 
@@ -85,6 +101,10 @@ export type DemandeRappelMaxAggregateInputType = {
   ficheId?: true
   nom?: true
   telephone?: true
+  email?: true
+  societe?: true
+  statut?: true
+  traiteeAt?: true
   createdAt?: true
 }
 
@@ -93,6 +113,10 @@ export type DemandeRappelCountAggregateInputType = {
   ficheId?: true
   nom?: true
   telephone?: true
+  email?: true
+  societe?: true
+  statut?: true
+  traiteeAt?: true
   createdAt?: true
   _all?: true
 }
@@ -188,6 +212,10 @@ export type DemandeRappelGroupByOutputType = {
   ficheId: number
   nom: string
   telephone: string
+  email: string | null
+  societe: string | null
+  statut: $Enums.DemandeRappelStatus
+  traiteeAt: Date | null
   createdAt: Date
   _count: DemandeRappelCountAggregateOutputType | null
   _avg: DemandeRappelAvgAggregateOutputType | null
@@ -219,6 +247,10 @@ export type DemandeRappelWhereInput = {
   ficheId?: Prisma.IntFilter<"DemandeRappel"> | number
   nom?: Prisma.StringFilter<"DemandeRappel"> | string
   telephone?: Prisma.StringFilter<"DemandeRappel"> | string
+  email?: Prisma.StringNullableFilter<"DemandeRappel"> | string | null
+  societe?: Prisma.StringNullableFilter<"DemandeRappel"> | string | null
+  statut?: Prisma.EnumDemandeRappelStatusFilter<"DemandeRappel"> | $Enums.DemandeRappelStatus
+  traiteeAt?: Prisma.DateTimeNullableFilter<"DemandeRappel"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"DemandeRappel"> | Date | string
   fiche?: Prisma.XOR<Prisma.FicheScalarRelationFilter, Prisma.FicheWhereInput>
 }
@@ -228,6 +260,10 @@ export type DemandeRappelOrderByWithRelationInput = {
   ficheId?: Prisma.SortOrder
   nom?: Prisma.SortOrder
   telephone?: Prisma.SortOrder
+  email?: Prisma.SortOrderInput | Prisma.SortOrder
+  societe?: Prisma.SortOrderInput | Prisma.SortOrder
+  statut?: Prisma.SortOrder
+  traiteeAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   fiche?: Prisma.FicheOrderByWithRelationInput
 }
@@ -240,6 +276,10 @@ export type DemandeRappelWhereUniqueInput = Prisma.AtLeast<{
   ficheId?: Prisma.IntFilter<"DemandeRappel"> | number
   nom?: Prisma.StringFilter<"DemandeRappel"> | string
   telephone?: Prisma.StringFilter<"DemandeRappel"> | string
+  email?: Prisma.StringNullableFilter<"DemandeRappel"> | string | null
+  societe?: Prisma.StringNullableFilter<"DemandeRappel"> | string | null
+  statut?: Prisma.EnumDemandeRappelStatusFilter<"DemandeRappel"> | $Enums.DemandeRappelStatus
+  traiteeAt?: Prisma.DateTimeNullableFilter<"DemandeRappel"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"DemandeRappel"> | Date | string
   fiche?: Prisma.XOR<Prisma.FicheScalarRelationFilter, Prisma.FicheWhereInput>
 }, "id">
@@ -249,6 +289,10 @@ export type DemandeRappelOrderByWithAggregationInput = {
   ficheId?: Prisma.SortOrder
   nom?: Prisma.SortOrder
   telephone?: Prisma.SortOrder
+  email?: Prisma.SortOrderInput | Prisma.SortOrder
+  societe?: Prisma.SortOrderInput | Prisma.SortOrder
+  statut?: Prisma.SortOrder
+  traiteeAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   _count?: Prisma.DemandeRappelCountOrderByAggregateInput
   _avg?: Prisma.DemandeRappelAvgOrderByAggregateInput
@@ -265,12 +309,20 @@ export type DemandeRappelScalarWhereWithAggregatesInput = {
   ficheId?: Prisma.IntWithAggregatesFilter<"DemandeRappel"> | number
   nom?: Prisma.StringWithAggregatesFilter<"DemandeRappel"> | string
   telephone?: Prisma.StringWithAggregatesFilter<"DemandeRappel"> | string
+  email?: Prisma.StringNullableWithAggregatesFilter<"DemandeRappel"> | string | null
+  societe?: Prisma.StringNullableWithAggregatesFilter<"DemandeRappel"> | string | null
+  statut?: Prisma.EnumDemandeRappelStatusWithAggregatesFilter<"DemandeRappel"> | $Enums.DemandeRappelStatus
+  traiteeAt?: Prisma.DateTimeNullableWithAggregatesFilter<"DemandeRappel"> | Date | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"DemandeRappel"> | Date | string
 }
 
 export type DemandeRappelCreateInput = {
   nom: string
   telephone: string
+  email?: string | null
+  societe?: string | null
+  statut?: $Enums.DemandeRappelStatus
+  traiteeAt?: Date | string | null
   createdAt?: Date | string
   fiche: Prisma.FicheCreateNestedOneWithoutDemandeRappelsInput
 }
@@ -280,12 +332,20 @@ export type DemandeRappelUncheckedCreateInput = {
   ficheId: number
   nom: string
   telephone: string
+  email?: string | null
+  societe?: string | null
+  statut?: $Enums.DemandeRappelStatus
+  traiteeAt?: Date | string | null
   createdAt?: Date | string
 }
 
 export type DemandeRappelUpdateInput = {
   nom?: Prisma.StringFieldUpdateOperationsInput | string
   telephone?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  societe?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  statut?: Prisma.EnumDemandeRappelStatusFieldUpdateOperationsInput | $Enums.DemandeRappelStatus
+  traiteeAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   fiche?: Prisma.FicheUpdateOneRequiredWithoutDemandeRappelsNestedInput
 }
@@ -295,6 +355,10 @@ export type DemandeRappelUncheckedUpdateInput = {
   ficheId?: Prisma.IntFieldUpdateOperationsInput | number
   nom?: Prisma.StringFieldUpdateOperationsInput | string
   telephone?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  societe?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  statut?: Prisma.EnumDemandeRappelStatusFieldUpdateOperationsInput | $Enums.DemandeRappelStatus
+  traiteeAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -303,12 +367,20 @@ export type DemandeRappelCreateManyInput = {
   ficheId: number
   nom: string
   telephone: string
+  email?: string | null
+  societe?: string | null
+  statut?: $Enums.DemandeRappelStatus
+  traiteeAt?: Date | string | null
   createdAt?: Date | string
 }
 
 export type DemandeRappelUpdateManyMutationInput = {
   nom?: Prisma.StringFieldUpdateOperationsInput | string
   telephone?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  societe?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  statut?: Prisma.EnumDemandeRappelStatusFieldUpdateOperationsInput | $Enums.DemandeRappelStatus
+  traiteeAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -317,6 +389,10 @@ export type DemandeRappelUncheckedUpdateManyInput = {
   ficheId?: Prisma.IntFieldUpdateOperationsInput | number
   nom?: Prisma.StringFieldUpdateOperationsInput | string
   telephone?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  societe?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  statut?: Prisma.EnumDemandeRappelStatusFieldUpdateOperationsInput | $Enums.DemandeRappelStatus
+  traiteeAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -335,6 +411,10 @@ export type DemandeRappelCountOrderByAggregateInput = {
   ficheId?: Prisma.SortOrder
   nom?: Prisma.SortOrder
   telephone?: Prisma.SortOrder
+  email?: Prisma.SortOrder
+  societe?: Prisma.SortOrder
+  statut?: Prisma.SortOrder
+  traiteeAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -348,6 +428,10 @@ export type DemandeRappelMaxOrderByAggregateInput = {
   ficheId?: Prisma.SortOrder
   nom?: Prisma.SortOrder
   telephone?: Prisma.SortOrder
+  email?: Prisma.SortOrder
+  societe?: Prisma.SortOrder
+  statut?: Prisma.SortOrder
+  traiteeAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -356,6 +440,10 @@ export type DemandeRappelMinOrderByAggregateInput = {
   ficheId?: Prisma.SortOrder
   nom?: Prisma.SortOrder
   telephone?: Prisma.SortOrder
+  email?: Prisma.SortOrder
+  societe?: Prisma.SortOrder
+  statut?: Prisma.SortOrder
+  traiteeAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -406,9 +494,17 @@ export type DemandeRappelUncheckedUpdateManyWithoutFicheNestedInput = {
   deleteMany?: Prisma.DemandeRappelScalarWhereInput | Prisma.DemandeRappelScalarWhereInput[]
 }
 
+export type EnumDemandeRappelStatusFieldUpdateOperationsInput = {
+  set?: $Enums.DemandeRappelStatus
+}
+
 export type DemandeRappelCreateWithoutFicheInput = {
   nom: string
   telephone: string
+  email?: string | null
+  societe?: string | null
+  statut?: $Enums.DemandeRappelStatus
+  traiteeAt?: Date | string | null
   createdAt?: Date | string
 }
 
@@ -416,6 +512,10 @@ export type DemandeRappelUncheckedCreateWithoutFicheInput = {
   id?: number
   nom: string
   telephone: string
+  email?: string | null
+  societe?: string | null
+  statut?: $Enums.DemandeRappelStatus
+  traiteeAt?: Date | string | null
   createdAt?: Date | string
 }
 
@@ -453,6 +553,10 @@ export type DemandeRappelScalarWhereInput = {
   ficheId?: Prisma.IntFilter<"DemandeRappel"> | number
   nom?: Prisma.StringFilter<"DemandeRappel"> | string
   telephone?: Prisma.StringFilter<"DemandeRappel"> | string
+  email?: Prisma.StringNullableFilter<"DemandeRappel"> | string | null
+  societe?: Prisma.StringNullableFilter<"DemandeRappel"> | string | null
+  statut?: Prisma.EnumDemandeRappelStatusFilter<"DemandeRappel"> | $Enums.DemandeRappelStatus
+  traiteeAt?: Prisma.DateTimeNullableFilter<"DemandeRappel"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"DemandeRappel"> | Date | string
 }
 
@@ -460,12 +564,20 @@ export type DemandeRappelCreateManyFicheInput = {
   id?: number
   nom: string
   telephone: string
+  email?: string | null
+  societe?: string | null
+  statut?: $Enums.DemandeRappelStatus
+  traiteeAt?: Date | string | null
   createdAt?: Date | string
 }
 
 export type DemandeRappelUpdateWithoutFicheInput = {
   nom?: Prisma.StringFieldUpdateOperationsInput | string
   telephone?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  societe?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  statut?: Prisma.EnumDemandeRappelStatusFieldUpdateOperationsInput | $Enums.DemandeRappelStatus
+  traiteeAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -473,6 +585,10 @@ export type DemandeRappelUncheckedUpdateWithoutFicheInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   nom?: Prisma.StringFieldUpdateOperationsInput | string
   telephone?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  societe?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  statut?: Prisma.EnumDemandeRappelStatusFieldUpdateOperationsInput | $Enums.DemandeRappelStatus
+  traiteeAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -480,6 +596,10 @@ export type DemandeRappelUncheckedUpdateManyWithoutFicheInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   nom?: Prisma.StringFieldUpdateOperationsInput | string
   telephone?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  societe?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  statut?: Prisma.EnumDemandeRappelStatusFieldUpdateOperationsInput | $Enums.DemandeRappelStatus
+  traiteeAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -490,6 +610,10 @@ export type DemandeRappelSelect<ExtArgs extends runtime.Types.Extensions.Interna
   ficheId?: boolean
   nom?: boolean
   telephone?: boolean
+  email?: boolean
+  societe?: boolean
+  statut?: boolean
+  traiteeAt?: boolean
   createdAt?: boolean
   fiche?: boolean | Prisma.FicheDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["demandeRappel"]>
@@ -499,6 +623,10 @@ export type DemandeRappelSelectCreateManyAndReturn<ExtArgs extends runtime.Types
   ficheId?: boolean
   nom?: boolean
   telephone?: boolean
+  email?: boolean
+  societe?: boolean
+  statut?: boolean
+  traiteeAt?: boolean
   createdAt?: boolean
   fiche?: boolean | Prisma.FicheDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["demandeRappel"]>
@@ -508,6 +636,10 @@ export type DemandeRappelSelectUpdateManyAndReturn<ExtArgs extends runtime.Types
   ficheId?: boolean
   nom?: boolean
   telephone?: boolean
+  email?: boolean
+  societe?: boolean
+  statut?: boolean
+  traiteeAt?: boolean
   createdAt?: boolean
   fiche?: boolean | Prisma.FicheDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["demandeRappel"]>
@@ -517,10 +649,14 @@ export type DemandeRappelSelectScalar = {
   ficheId?: boolean
   nom?: boolean
   telephone?: boolean
+  email?: boolean
+  societe?: boolean
+  statut?: boolean
+  traiteeAt?: boolean
   createdAt?: boolean
 }
 
-export type DemandeRappelOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "ficheId" | "nom" | "telephone" | "createdAt", ExtArgs["result"]["demandeRappel"]>
+export type DemandeRappelOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "ficheId" | "nom" | "telephone" | "email" | "societe" | "statut" | "traiteeAt" | "createdAt", ExtArgs["result"]["demandeRappel"]>
 export type DemandeRappelInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   fiche?: boolean | Prisma.FicheDefaultArgs<ExtArgs>
 }
@@ -541,6 +677,10 @@ export type $DemandeRappelPayload<ExtArgs extends runtime.Types.Extensions.Inter
     ficheId: number
     nom: string
     telephone: string
+    email: string | null
+    societe: string | null
+    statut: $Enums.DemandeRappelStatus
+    traiteeAt: Date | null
     createdAt: Date
   }, ExtArgs["result"]["demandeRappel"]>
   composites: {}
@@ -970,6 +1110,10 @@ export interface DemandeRappelFieldRefs {
   readonly ficheId: Prisma.FieldRef<"DemandeRappel", 'Int'>
   readonly nom: Prisma.FieldRef<"DemandeRappel", 'String'>
   readonly telephone: Prisma.FieldRef<"DemandeRappel", 'String'>
+  readonly email: Prisma.FieldRef<"DemandeRappel", 'String'>
+  readonly societe: Prisma.FieldRef<"DemandeRappel", 'String'>
+  readonly statut: Prisma.FieldRef<"DemandeRappel", 'DemandeRappelStatus'>
+  readonly traiteeAt: Prisma.FieldRef<"DemandeRappel", 'DateTime'>
   readonly createdAt: Prisma.FieldRef<"DemandeRappel", 'DateTime'>
 }
     

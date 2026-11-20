@@ -21,9 +21,60 @@ export const FicheController = {
   listAllRappels: asyncHandler(async (req, res) => {
     const page = Number(req.query.page ?? 1);
     const limit = Number(req.query.limit ?? 10);
+    const ficheId =
+      req.query.ficheId !== undefined ? Number(req.query.ficheId) : undefined;
+    const statut =
+      req.query.statut === "NOUVELLE" || req.query.statut === "TRAITEE"
+        ? req.query.statut
+        : undefined;
+    const search =
+      typeof req.query.search === "string" ? req.query.search : undefined;
     res.json({
-      rappels: await RappelService.listForUser(req.user!, page, limit),
+      rappels: await RappelService.listForUser(req.user!, page, limit, {
+        ficheId,
+        statut,
+        search,
+      }),
     });
+  }),
+
+  exportRappelsCsv: asyncHandler(async (req, res) => {
+    const ficheId =
+      req.query.ficheId !== undefined ? Number(req.query.ficheId) : undefined;
+    const statut =
+      req.query.statut === "NOUVELLE" || req.query.statut === "TRAITEE"
+        ? req.query.statut
+        : undefined;
+    const search =
+      typeof req.query.search === "string" ? req.query.search : undefined;
+    const csv = await RappelService.exportCsvForUser(req.user!, {
+      ficheId,
+      statut,
+      search,
+    });
+    const dateTag = new Date().toISOString().slice(0, 10);
+    res.setHeader("Content-Type", "text/csv; charset=utf-8");
+    res.setHeader(
+      "Content-Disposition",
+      `attachment; filename="prospects-${dateTag}.csv"`
+    );
+    res.send(csv);
+  }),
+
+  updateRappelStatus: asyncHandler(async (req, res) => {
+    res.json({
+      demande: await RappelService.updateStatus(
+        req.user!,
+        Number(req.params.rappelId),
+        req.body.statut
+      ),
+    });
+  }),
+
+  deleteRappel: asyncHandler(async (req, res) => {
+    res.json(
+      await RappelService.remove(req.user!, Number(req.params.rappelId))
+    );
   }),
 
   totalFiches: asyncHandler(async (req, res) => {

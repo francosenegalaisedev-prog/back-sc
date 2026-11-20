@@ -7,7 +7,6 @@ import {
 } from "../../infrastructure/storage/s3.storage";
 import { forbidden, notFound, unprocessable } from "../../lib/httpError";
 import type { AuthUser } from "../../types/user";
-import { getPublicSubscription } from "../fiches/services/fiche-public-access";
 import { getEffectiveSubscription } from "../subscriptions/subscriptions.service";
 import { optimizeMedia, probeDurationSeconds } from "./media.processor";
 import {
@@ -137,8 +136,9 @@ export const MediaService = {
       select: { id: true, statut: true },
     });
 
-    console.log(fiche);
-    if (!fiche || !(await getPublicSubscription(fiche.id, fiche.statut))) {
+    const isPreviewable =
+      fiche && (fiche.statut === "ACTIVE" || fiche.statut === "BROUILLON");
+    if (!isPreviewable || !(await getEffectiveSubscription(fiche.id))) {
       throw notFound("Média introuvable");
     }
 

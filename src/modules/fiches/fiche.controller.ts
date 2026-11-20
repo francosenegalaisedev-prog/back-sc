@@ -121,7 +121,10 @@ export const FicheController = {
 
   getPublicFiche: asyncHandler(async (req, res) => {
     res.json({
-      fiche: await FicheService.getPublicFiche(String(req.params.slug)),
+      fiche: await FicheService.getPublicFiche(
+        String(req.params.slug),
+        req.user
+      ),
     });
   }),
 

@@ -23,6 +23,7 @@ export const fichesRouter = Router();
 // Public — page de la fiche (NFC / QR). Déclarée AVANT les routes protégées.
 fichesRouter.get(
   "/public/:slug",
+  optionalAuth,
   validate({ params: slugParam }),
   FicheController.getPublicFiche
 );

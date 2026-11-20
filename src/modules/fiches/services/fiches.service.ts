@@ -338,7 +338,7 @@ export const FicheService = {
   // ───────── Lecture ─────────
 
   // Page publique (scan NFC / QR). Ne compte PAS de passage : le comptage doit être fait ailleurs, de façon fiable.
-  getPublicFiche: async (slug: string) => {
+  getPublicFiche: async (slug: string, user?: AuthUser) => {
     const fiche = await prisma.fiche.findUnique({
       where: { slug },
       include: ficheInclude,
@@ -358,7 +358,10 @@ export const FicheService = {
         "FICHE_INDISPONIBLE",
         "Cette fiche est momentanément indisponible"
       );
-    return toFicheDto(fiche, subscription);
+    return {
+      ...toFicheDto(fiche, subscription),
+      isOwner: Boolean(user && fiche.userId === user.id),
+    };
   },
 
   publishFiche: async (user: AuthUser, id: number) => {

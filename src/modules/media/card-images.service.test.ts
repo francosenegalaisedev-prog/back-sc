@@ -9,6 +9,11 @@ const mocks = vi.hoisted(() => ({
 
 vi.mock("../../config/env", () => ({ env: { SERVER: "http://localhost:4000/api" } }));
 vi.mock("../../infrastructure/storage/s3.storage", () => ({
+  s3Storage: () => ({
+    put: mocks.put,
+    get: mocks.get,
+    delete: mocks.del,
+  }),
   S3StorageProvider: class {
     put = mocks.put;
     get = mocks.get;

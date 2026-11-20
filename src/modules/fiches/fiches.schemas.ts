@@ -154,6 +154,13 @@ export const slugParam = z.object({ slug: z.string().min(1).max(80) });
 export const createRappelSchema = z.object({
   nom: text(100).min(2, "Le nom doit contenir au moins 2 caractères."),
   telephone: text(30).min(7).max(25),
+  email: text(160)
+    .refine(
+      v => v === "" || z.string().email().safeParse(v).success,
+      "Veuillez saisir une adresse e-mail valide."
+    )
+    .optional(),
+  societe: text(120).optional(),
   website: z.string().max(200).optional(),
 });
 

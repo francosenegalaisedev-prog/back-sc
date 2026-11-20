@@ -404,12 +404,14 @@ enum DemandeRappelStatus {
   TRAITEE
 }
 
-// Demande de rappel envoyée depuis la fiche publique (onglet RAPPEL).
+// Demande de rappel envoyée depuis la fiche publique.
 model DemandeRappel {
   id        Int                 @id @default(autoincrement())
   ficheId   Int
   nom       String
   telephone String
+  email     String?
+  societe   String?
   statut    DemandeRappelStatus @default(NOUVELLE)
   traiteeAt DateTime?
   createdAt DateTime            @default(now())

@@ -9,6 +9,14 @@
 * 🟢 You can import this file directly.
 */
 
+export const DemandeRappelStatus = {
+  NOUVELLE: 'NOUVELLE',
+  TRAITEE: 'TRAITEE'
+} as const
+
+export type DemandeRappelStatus = (typeof DemandeRappelStatus)[keyof typeof DemandeRappelStatus]
+
+
 export const PlanType = {
   ESSENTIELLE: 'ESSENTIELLE',
   PRO: 'PRO',

@@ -3345,6 +3345,10 @@ export const DemandeRappelScalarFieldEnum = {
   ficheId: 'ficheId',
   nom: 'nom',
   telephone: 'telephone',
+  email: 'email',
+  societe: 'societe',
+  statut: 'statut',
+  traiteeAt: 'traiteeAt',
   createdAt: 'createdAt'
 } as const
 
@@ -3877,6 +3881,20 @@ export type EnumFichePurchaseStatusFieldRefInput<$PrismaModel> = FieldRefInputTy
  * Reference to a field of type 'FichePurchaseStatus[]'
  */
 export type ListEnumFichePurchaseStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'FichePurchaseStatus[]'>
+    
+
+
+/**
+ * Reference to a field of type 'DemandeRappelStatus'
+ */
+export type EnumDemandeRappelStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DemandeRappelStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'DemandeRappelStatus[]'
+ */
+export type ListEnumDemandeRappelStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DemandeRappelStatus[]'>
     
 
 

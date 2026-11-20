@@ -12,6 +12,7 @@ import type { AuthUser } from "../../../types/user";
 import { getPublicSubscription } from "./fiche-public-access";
 
 const normalizePhone = (value: string) => value.replace(/[\s().-]/g, "");
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const DUPLICATE_WINDOW_MS = 10 * 60_000;
 
 export type RappelListFilters = {
@@ -23,7 +24,13 @@ export type RappelListFilters = {
 export const RappelService = {
   async createPublic(
     slug: string,
-    input: { nom: string; telephone: string; website?: string }
+    input: {
+      nom: string;
+      telephone: string;
+      email?: string;
+      societe?: string;
+      website?: string;
+    }
   ) {
     // Champ honeypot anti-bot : un robot remplit le champ caché, on ignore sans écrire en base.
     if (input.website?.trim()) {
@@ -71,6 +78,8 @@ export const RappelService = {
 
     const nom = input.nom.trim();
     const telephone = normalizePhone(input.telephone.trim());
+    const email = input.email?.trim() || null;
+    const societe = input.societe?.trim() || null;
     if (nom.length < 2) {
       throw badRequest("NOM_INVALIDE", "Veuillez saisir un nom valide.");
     }
@@ -78,6 +87,12 @@ export const RappelService = {
       throw badRequest(
         "TELEPHONE_INVALIDE",
         "Veuillez saisir un numéro de téléphone valide."
+      );
+    }
+    if (email && !EMAIL_RE.test(email)) {
+      throw badRequest(
+        "EMAIL_INVALIDE",
+        "Veuillez saisir une adresse e-mail valide."
       );
     }
 
@@ -98,7 +113,7 @@ export const RappelService = {
     }
 
     const demande = await prisma.demandeRappel.create({
-      data: { ficheId: fiche.id, nom, telephone },
+      data: { ficheId: fiche.id, nom, telephone, email, societe },
       select: { id: true, statut: true, createdAt: true },
     });
 
@@ -113,6 +128,8 @@ export const RappelService = {
         ficheName,
         visitorName: nom,
         visitorPhone: telephone,
+        visitorEmail: email,
+        visitorCompany: societe,
       }).catch(error => {
         logger.warn("Callback request notification email failed", {
           ficheId: fiche.id,
@@ -143,6 +160,8 @@ export const RappelService = {
           id: true,
           nom: true,
           telephone: true,
+          email: true,
+          societe: true,
           statut: true,
           traiteeAt: true,
           createdAt: true,
@@ -171,6 +190,8 @@ export const RappelService = {
             OR: [
               { nom: { contains: search, mode: "insensitive" as const } },
               { telephone: { contains: search, mode: "insensitive" as const } },
+              { email: { contains: search, mode: "insensitive" as const } },
+              { societe: { contains: search, mode: "insensitive" as const } },
             ],
           }
         : {}),
@@ -187,6 +208,8 @@ export const RappelService = {
           id: true,
           nom: true,
           telephone: true,
+          email: true,
+          societe: true,
           statut: true,
           traiteeAt: true,
           createdAt: true,
@@ -238,6 +261,8 @@ export const RappelService = {
         ficheId: true,
         nom: true,
         telephone: true,
+        email: true,
+        societe: true,
         statut: true,
         traiteeAt: true,
         createdAt: true,

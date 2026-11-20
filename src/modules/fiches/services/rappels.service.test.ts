@@ -130,12 +130,20 @@ describe("RappelService", () => {
     const res = await RappelService.createPublic("le-sunset", {
       nom: "  Moussa Diop  ",
       telephone: "+221 77 123-45.67",
+      email: "  moussa@exemple.sn ",
+      societe: "  Atelier Dakar ",
     });
 
     expect(res).toEqual({ id: 42, statut: "NOUVELLE", createdAt });
     expect(mocks.rappelCreate).toHaveBeenCalledWith(
       expect.objectContaining({
-        data: { ficheId: 10, nom: "Moussa Diop", telephone: "+221771234567" },
+        data: {
+          ficheId: 10,
+          nom: "Moussa Diop",
+          telephone: "+221771234567",
+          email: "moussa@exemple.sn",
+          societe: "Atelier Dakar",
+        },
       })
     );
     expect(mocks.sendCallbackRequestEmail).toHaveBeenCalledWith({
@@ -144,7 +152,25 @@ describe("RappelService", () => {
       ficheName: "Le Sunset",
       visitorName: "Moussa Diop",
       visitorPhone: "+221771234567",
+      visitorEmail: "moussa@exemple.sn",
+      visitorCompany: "Atelier Dakar",
     });
+  });
+
+  it("refuse un e-mail invalide s'il est renseigné", async () => {
+    mocks.ficheFindUnique.mockResolvedValue(activeFiche);
+    mocks.getPublicSubscription.mockResolvedValue({
+      plan: { limits: { hasForm: true } },
+    });
+
+    await expect(
+      RappelService.createPublic("le-sunset", {
+        nom: "Moussa",
+        telephone: "+221 77 123 45 67",
+        email: "pas-un-email",
+      })
+    ).rejects.toMatchObject({ status: 400, code: "EMAIL_INVALIDE" });
+    expect(mocks.rappelCreate).not.toHaveBeenCalled();
   });
 
   it("met à jour le statut uniquement pour le propriétaire (ou ADMIN)", async () => {

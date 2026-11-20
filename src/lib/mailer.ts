@@ -77,12 +77,35 @@ export const sendCallbackRequestEmail = async (params: {
   ficheName: string;
   visitorName: string;
   visitorPhone: string;
+  visitorEmail?: string | null;
+  visitorCompany?: string | null;
 }) => {
   const dashboardUrl = `${env.PUBLIC_SITE_URL.replace(/\/$/, "")}/espace-client/demandes-rappel`;
   const owner = params.ownerName?.trim() || "Bonjour";
   const safeFiche = escapeHtml(params.ficheName);
   const safeVisitor = escapeHtml(params.visitorName);
   const safePhone = escapeHtml(params.visitorPhone);
+  const safeEmail = params.visitorEmail ? escapeHtml(params.visitorEmail) : "";
+  const safeCompany = params.visitorCompany
+    ? escapeHtml(params.visitorCompany)
+    : "";
+
+  const extraHtml = [
+    safeEmail
+      ? `  <li><strong>E-mail :</strong> <a href="mailto:${safeEmail}">${safeEmail}</a></li>`
+      : "",
+    safeCompany ? `  <li><strong>Société :</strong> ${safeCompany}</li>` : "",
+  ]
+    .filter(Boolean)
+    .join("\n");
+
+  const extraText = [
+    params.visitorEmail ? `- E-mail : ${params.visitorEmail}` : "",
+    params.visitorCompany ? `- Société : ${params.visitorCompany}` : "",
+  ]
+    .filter(Boolean)
+    .join("\n");
+
   await sendMail({
     to: params.to,
     subject: `Nouvelle demande de rappel — ${params.ficheName}`,
@@ -90,10 +113,10 @@ export const sendCallbackRequestEmail = async (params: {
 <p>Un visiteur a demandé à être rappelé depuis votre fiche <strong>${safeFiche}</strong> :</p>
 <ul>
   <li><strong>Nom :</strong> ${safeVisitor}</li>
-  <li><strong>Téléphone :</strong> <a href="tel:${safePhone}">${safePhone}</a></li>
+  <li><strong>Téléphone :</strong> <a href="tel:${safePhone}">${safePhone}</a></li>${extraHtml ? `\n${extraHtml}` : ""}
 </ul>
 <p><a href="${dashboardUrl}">Voir toutes vos demandes de rappel</a></p>`,
-    text: `Bonjour ${owner},\n\nNouvelle demande de rappel depuis votre fiche ${params.ficheName} :\n- Nom : ${params.visitorName}\n- Téléphone : ${params.visitorPhone}\n\nConsulter vos demandes : ${dashboardUrl}`,
+    text: `Bonjour ${owner},\n\nNouvelle demande de rappel depuis votre fiche ${params.ficheName} :\n- Nom : ${params.visitorName}\n- Téléphone : ${params.visitorPhone}${extraText ? `\n${extraText}` : ""}\n\nConsulter vos demandes : ${dashboardUrl}`,
   });
 };
 

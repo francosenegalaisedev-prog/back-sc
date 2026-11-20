@@ -37,7 +37,7 @@ import {
   productionRouter,
   qrPublicRouter,
 } from "./modules/production/production.routes";
-import subscriptionRoute from "./modules/subscriptions/subsctiption.route";
+import subscriptionRoute from "./modules/subscriptions/subscription.route";
 
 export const app = express();
 

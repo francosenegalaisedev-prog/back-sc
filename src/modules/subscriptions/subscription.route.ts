@@ -2,7 +2,7 @@ import { Router } from "express";
 import { z } from "zod";
 import { requireAuth } from "../../middlewares/auth";
 import { validate } from "../../middlewares/validate";
-import { SubscriptionController } from "./subsctiption.controller";
+import { SubscriptionController } from "./subscription.controller";
 
 const subscriptionRoute = Router();
 

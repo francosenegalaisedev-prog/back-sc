@@ -63,7 +63,7 @@ export const RappelService = {
     if (!subscription.plan.limits?.hasForm) {
       throw forbidden(
         "FORMULAIRE_INDISPONIBLE",
-        "Le formulaire de rappel n'est pas activé pour cette fiche."
+        "Le formulaire « Échangez contact » n'est pas activé pour cette fiche."
       );
     }
     if (
@@ -72,7 +72,7 @@ export const RappelService = {
     ) {
       throw forbidden(
         "FORMULAIRE_INDISPONIBLE",
-        "Le formulaire de rappel n'est pas activé pour cette fiche."
+        "Le formulaire « Échangez contact » n'est pas activé pour cette fiche."
       );
     }
 
@@ -108,7 +108,7 @@ export const RappelService = {
       throw new HttpError(
         429,
         "DEMANDE_DEJA_ENVOYEE",
-        "Une demande de rappel a déjà été envoyée récemment avec ce numéro."
+        "Vos coordonnées ont déjà été envoyées récemment avec ce numéro."
       );
     }
 
@@ -247,7 +247,7 @@ export const RappelService = {
       !existing ||
       (user.role !== "ADMIN" && existing.fiche.userId !== user.id)
     ) {
-      throw notFound("Demande de rappel introuvable");
+      throw notFound("Prospect introuvable");
     }
 
     return prisma.demandeRappel.update({
@@ -279,7 +279,7 @@ export const RappelService = {
       !existing ||
       (user.role !== "ADMIN" && existing.fiche.userId !== user.id)
     ) {
-      throw notFound("Demande de rappel introuvable");
+      throw notFound("Prospect introuvable");
     }
 
     await prisma.demandeRappel.delete({ where: { id: rappelId } });

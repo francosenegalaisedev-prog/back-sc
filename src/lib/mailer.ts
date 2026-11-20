@@ -80,7 +80,7 @@ export const sendCallbackRequestEmail = async (params: {
   visitorEmail?: string | null;
   visitorCompany?: string | null;
 }) => {
-  const dashboardUrl = `${env.PUBLIC_SITE_URL.replace(/\/$/, "")}/espace-client/demandes-rappel`;
+  const dashboardUrl = `${env.PUBLIC_SITE_URL.replace(/\/$/, "")}/espace-client/prospects`;
   const owner = params.ownerName?.trim() || "Bonjour";
   const safeFiche = escapeHtml(params.ficheName);
   const safeVisitor = escapeHtml(params.visitorName);
@@ -108,15 +108,15 @@ export const sendCallbackRequestEmail = async (params: {
 
   await sendMail({
     to: params.to,
-    subject: `Nouvelle demande de rappel — ${params.ficheName}`,
+    subject: `Nouveau prospect — ${params.ficheName}`,
     html: `<p>Bonjour ${escapeHtml(owner)},</p>
-<p>Un visiteur a demandé à être rappelé depuis votre fiche <strong>${safeFiche}</strong> :</p>
+<p>Un visiteur a partagé ses coordonnées via « Échangez contact » sur votre fiche <strong>${safeFiche}</strong> :</p>
 <ul>
   <li><strong>Nom :</strong> ${safeVisitor}</li>
   <li><strong>Téléphone :</strong> <a href="tel:${safePhone}">${safePhone}</a></li>${extraHtml ? `\n${extraHtml}` : ""}
 </ul>
-<p><a href="${dashboardUrl}">Voir toutes vos demandes de rappel</a></p>`,
-    text: `Bonjour ${owner},\n\nNouvelle demande de rappel depuis votre fiche ${params.ficheName} :\n- Nom : ${params.visitorName}\n- Téléphone : ${params.visitorPhone}${extraText ? `\n${extraText}` : ""}\n\nConsulter vos demandes : ${dashboardUrl}`,
+<p><a href="${dashboardUrl}">Voir tous vos prospects</a></p>`,
+    text: `Bonjour ${owner},\n\nNouveau prospect depuis votre fiche ${params.ficheName} :\n- Nom : ${params.visitorName}\n- Téléphone : ${params.visitorPhone}${extraText ? `\n${extraText}` : ""}\n\nConsulter vos prospects : ${dashboardUrl}`,
   });
 };
 

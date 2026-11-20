@@ -120,10 +120,10 @@ export const PassageService = {
         );
       }
 
-      await tx.fiche.update({
-        where: { id: fiche.id },
-        data: { scansTotal: { increment: 1 } },
-      });
+      // Incrément SQL direct afin de ne PAS modifier `updatedAt` (verrou optimiste de l'éditeur).
+      await tx.$executeRaw(
+        Prisma.sql`UPDATE "fiches" SET "scansTotal" = "scansTotal" + 1 WHERE "id" = ${fiche.id}`
+      );
       return { recorded: true };
     });
   },

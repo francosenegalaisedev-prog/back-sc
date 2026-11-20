@@ -213,4 +213,30 @@ describe("RappelService", () => {
     expect(result).toEqual({ deleted: true, id: 42 });
     expect(mocks.rappelDelete).toHaveBeenCalledWith({ where: { id: 42 } });
   });
+
+  it("exporte les prospects en CSV UTF-8 BOM en neutralisant les formules", async () => {
+    mocks.rappelFindMany.mockResolvedValue([
+      {
+        nom: "=CMD|test",
+        societe: 'Atelier "Dakar"',
+        telephone: "+221771234567",
+        email: "contact@atelier.sn",
+        statut: "NOUVELLE",
+        createdAt: new Date("2026-11-20T12:00:00Z"),
+        fiche: { slug: "le-sunset", prenom: "Awa", nom: "Ndiaye" },
+      },
+    ]);
+
+    const csv = await RappelService.exportCsvForUser(
+      { id: 7, role: "CLIENT" } as never,
+      { statut: "NOUVELLE" }
+    );
+
+    expect(csv.startsWith("\uFEFF")).toBe(true);
+    expect(csv).toContain('"Nom";"Société";"Téléphone";"E-mail";"Fiche";"Statut";"Date de réception"');
+    expect(csv).toContain('"\'=CMD|test"');
+    expect(csv).toContain('"Atelier ""Dakar"""');
+    expect(csv).toContain('"\'+221771234567"');
+    expect(csv).toContain('"contact@atelier.sn"');
+  });
 });

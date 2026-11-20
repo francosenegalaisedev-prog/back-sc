@@ -14,6 +14,7 @@ import {
   createRappelSchema,
   idParam,
   passageStatsQuerySchema,
+  rappelExportQuerySchema,
   rappelIdParam,
   rappelListQuerySchema,
   recordPassageSchema,
@@ -65,6 +66,12 @@ fichesRouter.get(
   "/rappels",
   validate({ query: rappelListQuerySchema }),
   FicheController.listAllRappels
+);
+
+fichesRouter.get(
+  "/rappels/export",
+  validate({ query: rappelExportQuerySchema }),
+  FicheController.exportRappelsCsv
 );
 
 fichesRouter.patch(

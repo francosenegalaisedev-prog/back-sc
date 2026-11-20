@@ -14,6 +14,33 @@ import { getPublicSubscription } from "./fiche-public-access";
 const normalizePhone = (value: string) => value.replace(/[\s().-]/g, "");
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const DUPLICATE_WINDOW_MS = 10 * 60_000;
+const EXPORT_MAX_ROWS = 5000;
+
+const csvCell = (value: string | null | undefined) => {
+  const raw = value ?? "";
+  // Protection contre l'injection de formules CSV dans Excel/LibreOffice
+  const safe = /^[=+\-@\t\r]/.test(raw) ? `'${raw}` : raw;
+  return `"${safe.replace(/"/g, '""')}"`;
+};
+
+const buildUserRappelWhere = (userId: number, filters: RappelListFilters = {}) => {
+  const search = filters.search?.trim();
+  return {
+    fiche: { userId },
+    ...(filters.ficheId ? { ficheId: filters.ficheId } : {}),
+    ...(filters.statut ? { statut: filters.statut } : {}),
+    ...(search
+      ? {
+          OR: [
+            { nom: { contains: search, mode: "insensitive" as const } },
+            { telephone: { contains: search, mode: "insensitive" as const } },
+            { email: { contains: search, mode: "insensitive" as const } },
+            { societe: { contains: search, mode: "insensitive" as const } },
+          ],
+        }
+      : {}),
+  };
+};
 
 export type RappelListFilters = {
   ficheId?: number;
@@ -179,23 +206,8 @@ export const RappelService = {
     limit: number,
     filters: RappelListFilters = {}
   ) {
-    const search = filters.search?.trim();
     const baseWhere = { fiche: { userId: user.id } };
-    const where = {
-      ...baseWhere,
-      ...(filters.ficheId ? { ficheId: filters.ficheId } : {}),
-      ...(filters.statut ? { statut: filters.statut } : {}),
-      ...(search
-        ? {
-            OR: [
-              { nom: { contains: search, mode: "insensitive" as const } },
-              { telephone: { contains: search, mode: "insensitive" as const } },
-              { email: { contains: search, mode: "insensitive" as const } },
-              { societe: { contains: search, mode: "insensitive" as const } },
-            ],
-          }
-        : {}),
-    };
+    const where = buildUserRappelWhere(user.id, filters);
 
     const [total, nouvellesCount, demandes] = await prisma.$transaction([
       prisma.demandeRappel.count({ where }),
@@ -284,5 +296,58 @@ export const RappelService = {
 
     await prisma.demandeRappel.delete({ where: { id: rappelId } });
     return { deleted: true, id: rappelId };
+  },
+
+  async exportCsvForUser(user: AuthUser, filters: RappelListFilters = {}) {
+    const where = buildUserRappelWhere(user.id, filters);
+    const demandes = await prisma.demandeRappel.findMany({
+      where,
+      select: {
+        nom: true,
+        societe: true,
+        telephone: true,
+        email: true,
+        statut: true,
+        createdAt: true,
+        fiche: { select: { slug: true, prenom: true, nom: true } },
+      },
+      orderBy: { createdAt: "desc" },
+      take: EXPORT_MAX_ROWS,
+    });
+
+    const header = [
+      "Nom",
+      "Société",
+      "Téléphone",
+      "E-mail",
+      "Fiche",
+      "Statut",
+      "Date de réception",
+    ]
+      .map(csvCell)
+      .join(";");
+
+    const lines = demandes.map(d => {
+      const ficheName =
+        [d.fiche.prenom, d.fiche.nom].filter(Boolean).join(" ") || d.fiche.slug;
+      const statutLabel = d.statut === "TRAITEE" ? "Traité" : "Nouveau";
+      const dateStr = new Intl.DateTimeFormat("fr-FR", {
+        dateStyle: "short",
+        timeStyle: "short",
+      }).format(d.createdAt);
+      return [
+        d.nom,
+        d.societe ?? "",
+        d.telephone,
+        d.email ?? "",
+        ficheName,
+        statutLabel,
+        dateStr,
+      ]
+        .map(csvCell)
+        .join(";");
+    });
+
+    return `\uFEFF${[header, ...lines].join("\r\n")}\r\n`;
   },
 };

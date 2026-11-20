@@ -38,6 +38,29 @@ export const FicheController = {
     });
   }),
 
+  exportRappelsCsv: asyncHandler(async (req, res) => {
+    const ficheId =
+      req.query.ficheId !== undefined ? Number(req.query.ficheId) : undefined;
+    const statut =
+      req.query.statut === "NOUVELLE" || req.query.statut === "TRAITEE"
+        ? req.query.statut
+        : undefined;
+    const search =
+      typeof req.query.search === "string" ? req.query.search : undefined;
+    const csv = await RappelService.exportCsvForUser(req.user!, {
+      ficheId,
+      statut,
+      search,
+    });
+    const dateTag = new Date().toISOString().slice(0, 10);
+    res.setHeader("Content-Type", "text/csv; charset=utf-8");
+    res.setHeader(
+      "Content-Disposition",
+      `attachment; filename="prospects-${dateTag}.csv"`
+    );
+    res.send(csv);
+  }),
+
   updateRappelStatus: asyncHandler(async (req, res) => {
     res.json({
       demande: await RappelService.updateStatus(

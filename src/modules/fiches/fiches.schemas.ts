@@ -179,3 +179,9 @@ export const rappelListQuerySchema = z.object({
   statut: z.enum(["NOUVELLE", "TRAITEE"]).optional(),
   search: z.string().trim().max(100).optional(),
 });
+
+export const rappelExportQuerySchema = z.object({
+  ficheId: z.coerce.number().int().positive().optional(),
+  statut: z.enum(["NOUVELLE", "TRAITEE"]).optional(),
+  search: z.string().trim().max(100).optional(),
+});

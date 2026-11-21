@@ -21,11 +21,12 @@ const PROSPECT_MEDIA_REF =
   /^(?:https?:\/\/[^/\s]+)?(\/api\/media\/prospects\/([0-9a-f-]{36}\.(jpg|png|webp|webm|m4a|ogg|mp3)))$/i;
 
 const AUDIO_FORMATS = {
-  "audio/webm": { extension: "webm" },
-  "audio/mp4": { extension: "m4a" },
-  "audio/x-m4a": { extension: "m4a" },
-  "audio/ogg": { extension: "ogg" },
-  "audio/mpeg": { extension: "mp3" },
+  "audio/webm": { extension: "webm", storedMime: "audio/webm" },
+  "video/webm": { extension: "webm", storedMime: "audio/webm" },
+  "audio/mp4": { extension: "m4a", storedMime: "audio/mp4" },
+  "audio/x-m4a": { extension: "m4a", storedMime: "audio/mp4" },
+  "audio/ogg": { extension: "ogg", storedMime: "audio/ogg" },
+  "audio/mpeg": { extension: "mp3", storedMime: "audio/mpeg" },
 } as const;
 
 type SupportedAudioMime = keyof typeof AUDIO_FORMATS;
@@ -34,7 +35,7 @@ const apiOrigin = () => env.SERVER.replace(/\/api\/?$/, "").replace(/\/$/, "");
 
 function hasAudioSignature(buffer: Buffer, mime: SupportedAudioMime): boolean {
   if (buffer.length < 4) return false;
-  if (mime === "audio/webm") {
+  if (mime === "audio/webm" || mime === "video/webm") {
     return (
       buffer[0] === 0x1a &&
       buffer[1] === 0x45 &&
@@ -96,20 +97,20 @@ export const ProspectMediaService = {
           "Le fichier audio ne correspond pas au format déclaré."
         );
       }
-      const { extension } = AUDIO_FORMATS[audioMime];
+      const { extension, storedMime } = AUDIO_FORMATS[audioMime];
       const fileName = `${randomUUID()}.${extension}`;
       const storageKey = `${PREFIX}${fileName}`;
       await s3Storage().put({
         key: storageKey,
         body,
-        contentType: audioMime,
+        contentType: storedMime,
       });
       const ref = `/api/media/prospects/${fileName}`;
       return {
         kind: "audio" as const,
         ref,
         url: `${apiOrigin()}${ref}`,
-        contentType: audioMime,
+        contentType: storedMime,
         sizeBytes: body.length,
       };
     }

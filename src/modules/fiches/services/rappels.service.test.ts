@@ -12,6 +12,7 @@ const mocks = vi.hoisted(() => ({
   transaction: vi.fn(),
   getPublicSubscription: vi.fn(),
   sendCallbackRequestEmail: vi.fn(),
+  deleteProspectMedia: vi.fn(),
 }));
 
 vi.mock("../../../database/prisma/prisma-client", () => ({
@@ -36,6 +37,17 @@ vi.mock("./fiche-public-access", () => ({
 
 vi.mock("../../../lib/mailer", () => ({
   sendCallbackRequestEmail: mocks.sendCallbackRequestEmail,
+}));
+
+vi.mock("../../media/prospect-media.service", () => ({
+  ProspectMediaService: {
+    extractRef: (v: string | null | undefined) =>
+      v && v.includes("/api/media/prospects/")
+        ? v.slice(v.indexOf("/api/media/prospects/"))
+        : null,
+    toAbsolute: (v: string | null | undefined) => v ?? null,
+    deleteRef: mocks.deleteProspectMedia,
+  },
 }));
 
 import { RappelService } from "./rappels.service";
@@ -233,10 +245,108 @@ describe("RappelService", () => {
     );
 
     expect(csv.startsWith("\uFEFF")).toBe(true);
-    expect(csv).toContain('"Nom";"Société";"Téléphone";"E-mail";"Fiche";"Statut";"Date de réception"');
+    expect(csv).toContain(
+      '"Nom";"Société";"Téléphone";"E-mail";"Fiche";"Source";"Note";"Statut";"Date de réception"'
+    );
     expect(csv).toContain('"\'=CMD|test"');
     expect(csv).toContain('"Atelier ""Dakar"""');
     expect(csv).toContain('"\'+221771234567"');
     expect(csv).toContain('"contact@atelier.sn"');
+  });
+
+  it("crée un prospect SCAN avec photo et note écrite pour le propriétaire", async () => {
+    mocks.ficheFindUnique.mockResolvedValue({ id: 10, userId: 7 });
+    mocks.rappelCreate.mockResolvedValue({
+      id: 55,
+      ficheId: 10,
+      source: "SCAN",
+      nom: null,
+      telephone: null,
+      email: null,
+      societe: null,
+      photoUrl: "/api/media/prospects/0a1b2c3d-0000-4000-8000-000000000001.webp",
+      noteTexte: "Rencontré au salon",
+      noteAudioUrl: null,
+      statut: "NOUVELLE",
+      traiteeAt: null,
+      createdAt: new Date("2026-11-21T20:00:00Z"),
+    });
+
+    const created = await RappelService.createForUser(
+      { id: 7, role: "CLIENT" } as never,
+      {
+        ficheId: 10,
+        source: "SCAN",
+        photoUrl:
+          "https://api.example.com/api/media/prospects/0a1b2c3d-0000-4000-8000-000000000001.webp",
+        noteTexte: "Rencontré au salon",
+      }
+    );
+
+    expect(created.source).toBe("SCAN");
+    expect(mocks.rappelCreate).toHaveBeenCalledWith(
+      expect.objectContaining({
+        data: expect.objectContaining({
+          source: "SCAN",
+          photoUrl:
+            "/api/media/prospects/0a1b2c3d-0000-4000-8000-000000000001.webp",
+          noteTexte: "Rencontré au salon",
+        }),
+      })
+    );
+  });
+
+  it("convertit un scan en prospect manuel et supprime la photo uniquement si demandé", async () => {
+    mocks.rappelFindUnique.mockResolvedValue({
+      id: 55,
+      source: "SCAN",
+      photoUrl: "/api/media/prospects/0a1b2c3d-0000-4000-8000-000000000001.webp",
+      fiche: { userId: 7 },
+    });
+    mocks.rappelUpdate.mockResolvedValue({
+      id: 55,
+      ficheId: 10,
+      source: "MANUEL",
+      nom: "Ousmane Ba",
+      telephone: "771234567",
+      email: null,
+      societe: "Ba Services",
+      photoUrl: null,
+      noteTexte: null,
+      noteAudioUrl: null,
+      statut: "NOUVELLE",
+      traiteeAt: null,
+      createdAt: new Date("2026-11-21T20:00:00Z"),
+    });
+
+    const converted = await RappelService.updateForUser(
+      { id: 7, role: "CLIENT" } as never,
+      55,
+      {
+        nom: "Ousmane Ba",
+        telephone: "77 123 45 67",
+        societe: "Ba Services",
+        deletePhoto: true,
+      }
+    );
+
+    expect(converted.source).toBe("MANUEL");
+    expect(mocks.deleteProspectMedia).toHaveBeenCalledWith(
+      "/api/media/prospects/0a1b2c3d-0000-4000-8000-000000000001.webp"
+    );
+  });
+
+  it("refuse de supprimer la photo tant que le prospect n'a pas été converti manuellement", async () => {
+    mocks.rappelFindUnique.mockResolvedValue({
+      id: 55,
+      nom: null,
+      telephone: null,
+      photoUrl: "/api/media/prospects/0a1b2c3d-0000-4000-8000-000000000001.webp",
+      fiche: { userId: 7 },
+    });
+
+    await expect(
+      RappelService.deletePhotoForUser({ id: 7, role: "CLIENT" } as never, 55)
+    ).rejects.toMatchObject({ status: 400, code: "CONVERSION_REQUISE" });
   });
 });

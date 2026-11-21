@@ -10,6 +10,7 @@ import { createSectionStickerSchema } from "../production/section-stickers.schem
 import { fichePurchaseId, fichePurchaseInput } from "./fiche-purchases.schemas";
 import { FicheController } from "./fiche.controller";
 import {
+  createClientRappelSchema,
   createFicheSchema,
   createRappelSchema,
   idParam,
@@ -19,6 +20,7 @@ import {
   rappelListQuerySchema,
   recordPassageSchema,
   slugParam,
+  updateClientRappelSchema,
   updateFicheSchema,
   updateRappelStatusSchema,
 } from "./fiches.schemas";
@@ -72,6 +74,30 @@ fichesRouter.get(
   "/rappels/export",
   validate({ query: rappelExportQuerySchema }),
   FicheController.exportRappelsCsv
+);
+
+fichesRouter.post(
+  "/rappels/media",
+  raw({ limit: "13mb", type: () => true }),
+  FicheController.uploadRappelMedia
+);
+
+fichesRouter.post(
+  "/rappels",
+  validate({ body: createClientRappelSchema }),
+  FicheController.createClientRappel
+);
+
+fichesRouter.put(
+  "/rappels/:rappelId",
+  validate({ params: rappelIdParam, body: updateClientRappelSchema }),
+  FicheController.updateClientRappel
+);
+
+fichesRouter.delete(
+  "/rappels/:rappelId/photo",
+  validate({ params: rappelIdParam }),
+  FicheController.deleteRappelPhoto
 );
 
 fichesRouter.patch(

@@ -3343,10 +3343,14 @@ export type FichePurchaseScalarFieldEnum = (typeof FichePurchaseScalarFieldEnum)
 export const DemandeRappelScalarFieldEnum = {
   id: 'id',
   ficheId: 'ficheId',
+  source: 'source',
   nom: 'nom',
   telephone: 'telephone',
   email: 'email',
   societe: 'societe',
+  photoUrl: 'photoUrl',
+  noteTexte: 'noteTexte',
+  noteAudioUrl: 'noteAudioUrl',
   statut: 'statut',
   traiteeAt: 'traiteeAt',
   createdAt: 'createdAt'
@@ -3881,6 +3885,20 @@ export type EnumFichePurchaseStatusFieldRefInput<$PrismaModel> = FieldRefInputTy
  * Reference to a field of type 'FichePurchaseStatus[]'
  */
 export type ListEnumFichePurchaseStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'FichePurchaseStatus[]'>
+    
+
+
+/**
+ * Reference to a field of type 'DemandeRappelSource'
+ */
+export type EnumDemandeRappelSourceFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DemandeRappelSource'>
+    
+
+
+/**
+ * Reference to a field of type 'DemandeRappelSource[]'
+ */
+export type ListEnumDemandeRappelSourceFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DemandeRappelSource[]'>
     
 
 

@@ -404,18 +404,28 @@ enum DemandeRappelStatus {
   TRAITEE
 }
 
-// Demande de rappel envoyée depuis la fiche publique.
+enum DemandeRappelSource {
+  PUBLIC
+  MANUEL
+  SCAN
+}
+
+// Prospect / demande de contact (formulaire public, ajout manuel ou scan de carte physique).
 model DemandeRappel {
-  id        Int                 @id @default(autoincrement())
-  ficheId   Int
-  nom       String
-  telephone String
-  email     String?
-  societe   String?
-  statut    DemandeRappelStatus @default(NOUVELLE)
-  traiteeAt DateTime?
-  createdAt DateTime            @default(now())
-  fiche     Fiche               @relation(fields: [ficheId], references: [id], onDelete: Cascade)
+  id           Int                 @id @default(autoincrement())
+  ficheId      Int
+  source       DemandeRappelSource @default(PUBLIC)
+  nom          String?
+  telephone    String?
+  email        String?
+  societe      String?
+  photoUrl     String?
+  noteTexte    String?
+  noteAudioUrl String?
+  statut       DemandeRappelStatus @default(NOUVELLE)
+  traiteeAt    DateTime?
+  createdAt    DateTime            @default(now())
+  fiche        Fiche               @relation(fields: [ficheId], references: [id], onDelete: Cascade)
 
   @@index([ficheId, createdAt])
   @@index([ficheId, statut, createdAt])

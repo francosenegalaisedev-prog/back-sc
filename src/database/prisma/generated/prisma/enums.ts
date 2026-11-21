@@ -17,6 +17,15 @@ export const DemandeRappelStatus = {
 export type DemandeRappelStatus = (typeof DemandeRappelStatus)[keyof typeof DemandeRappelStatus]
 
 
+export const DemandeRappelSource = {
+  PUBLIC: 'PUBLIC',
+  MANUEL: 'MANUEL',
+  SCAN: 'SCAN'
+} as const
+
+export type DemandeRappelSource = (typeof DemandeRappelSource)[keyof typeof DemandeRappelSource]
+
+
 export const PlanType = {
   ESSENTIELLE: 'ESSENTIELLE',
   PRO: 'PRO',

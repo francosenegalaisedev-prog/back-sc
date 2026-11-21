@@ -3,6 +3,7 @@ import { asyncHandler } from "../../lib/asyncHandler";
 import { HttpError } from "../../lib/httpError";
 import { CardImageService } from "./card-images.service";
 import { MediaService } from "./media.service";
+import { ProspectMediaService } from "./prospect-media.service";
 import type { MediaPurpose } from "./media.validation";
 
 type PublicMedia = Awaited<ReturnType<typeof MediaService.getPublic>>;
@@ -62,6 +63,15 @@ export const MediaController = {
   /** Image d'un modèle de carte (publique : chargée par une balise <img>, sans jeton). */
   getCardImage: asyncHandler(async (req: Request, res: Response) => {
     const media = await CardImageService.getPublic(
+      String(req.params.fileName),
+      typeof req.headers.range === "string" ? req.headers.range : undefined
+    );
+    streamPublicMedia(res, media);
+  }),
+
+  /** Média d'un prospect (photo de carte de visite ou note vocale). */
+  getProspectMedia: asyncHandler(async (req: Request, res: Response) => {
+    const media = await ProspectMediaService.getPublic(
       String(req.params.fileName),
       typeof req.headers.range === "string" ? req.headers.range : undefined
     );

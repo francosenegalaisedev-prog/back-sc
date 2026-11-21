@@ -441,10 +441,14 @@ export type FichePurchaseScalarFieldEnum = (typeof FichePurchaseScalarFieldEnum)
 export const DemandeRappelScalarFieldEnum = {
   id: 'id',
   ficheId: 'ficheId',
+  source: 'source',
   nom: 'nom',
   telephone: 'telephone',
   email: 'email',
   societe: 'societe',
+  photoUrl: 'photoUrl',
+  noteTexte: 'noteTexte',
+  noteAudioUrl: 'noteAudioUrl',
   statut: 'statut',
   traiteeAt: 'traiteeAt',
   createdAt: 'createdAt'

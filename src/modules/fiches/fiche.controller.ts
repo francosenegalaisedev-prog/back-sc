@@ -1,4 +1,6 @@
 import { asyncHandler } from "../../lib/asyncHandler";
+import { HttpError } from "../../lib/httpError";
+import { ProspectMediaService } from "../media/prospect-media.service";
 import { ProductionService } from "../production/production.service";
 import { SectionStickerService } from "../production/section-stickers.service";
 import { FichePurchasesService } from "./services/fiche-purchases.service";
@@ -75,6 +77,44 @@ export const FicheController = {
     res.json(
       await RappelService.remove(req.user!, Number(req.params.rappelId))
     );
+  }),
+
+  uploadRappelMedia: asyncHandler(async (req, res) => {
+    if (!Buffer.isBuffer(req.body)) {
+      throw new HttpError(
+        400,
+        "CORPS_MEDIA_INVALIDE",
+        "Le fichier doit être envoyé en binaire."
+      );
+    }
+    const contentType = req.headers["content-type"];
+    const media = await ProspectMediaService.upload(
+      req.body,
+      Array.isArray(contentType) ? contentType[0] : contentType
+    );
+    res.status(201).json({ media });
+  }),
+
+  createClientRappel: asyncHandler(async (req, res) => {
+    const demande = await RappelService.createForUser(req.user!, req.body);
+    res.status(201).json({ ok: true, demande });
+  }),
+
+  updateClientRappel: asyncHandler(async (req, res) => {
+    const demande = await RappelService.updateForUser(
+      req.user!,
+      Number(req.params.rappelId),
+      req.body
+    );
+    res.json({ ok: true, demande });
+  }),
+
+  deleteRappelPhoto: asyncHandler(async (req, res) => {
+    const demande = await RappelService.deletePhotoForUser(
+      req.user!,
+      Number(req.params.rappelId)
+    );
+    res.json({ ok: true, demande });
   }),
 
   totalFiches: asyncHandler(async (req, res) => {

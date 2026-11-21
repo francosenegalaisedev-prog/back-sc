@@ -336,3 +336,72 @@ export const rappelExportQuerySchema = z.object({
   statut: enumFr(["NOUVELLE", "TRAITEE"]).optional(),
   search: text(100).optional(),
 });
+
+export const createClientRappelSchema = z
+  .object({
+    ficheId: z.coerce.number().int().positive("Veuillez sélectionner une fiche."),
+    source: enumFr(["MANUEL", "SCAN"]),
+    nom: text(100).optional(),
+    telephone: phoneOptional.optional(),
+    email: text(160)
+      .refine(
+        v => v === "" || z.string().email().safeParse(v).success,
+        "Veuillez saisir une adresse e-mail valide."
+      )
+      .optional(),
+    societe: text(120).optional(),
+    photoUrl: url.optional(),
+    noteTexte: longText(300).optional(),
+    noteAudioUrl: url.optional(),
+  })
+  .superRefine((data, ctx) => {
+    if (data.source === "MANUEL") {
+      if (!data.nom || data.nom.length < 2) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ["nom"],
+          message: "Veuillez saisir un nom (2 caractères minimum).",
+        });
+      }
+      if (!data.telephone) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ["telephone"],
+          message: "Veuillez saisir un numéro de téléphone.",
+        });
+      }
+    }
+    if (data.source === "SCAN" && !data.photoUrl) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["photoUrl"],
+        message: "Veuillez prendre ou sélectionner une photo de la carte.",
+      });
+    }
+    if (data.noteTexte && data.noteAudioUrl) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["noteTexte"],
+        message: "Choisissez soit une note écrite, soit une note vocale.",
+      });
+    }
+  });
+
+export const updateClientRappelSchema = z.object({
+  nom: textRequired(100, 2),
+  telephone: z.preprocess(
+    sanitizeSingleLine,
+    strSchema()
+      .max(30, "30 caractères maximum.")
+      .refine(isValidPhone, PHONE_ERROR_MESSAGE)
+  ),
+  email: text(160)
+    .refine(
+      v => v === "" || z.string().email().safeParse(v).success,
+      "Veuillez saisir une adresse e-mail valide."
+    )
+    .optional(),
+  societe: text(120).optional(),
+  noteTexte: longText(300).optional(),
+  deletePhoto: z.boolean().optional(),
+});

@@ -44,7 +44,28 @@ export const app = express();
 app.set("trust proxy", 1); // derrière Nginx : indispensable pour que le rate limit voie la vraie IP
 app.use(requestLogger);
 app.use(helmet());
-app.use(cors({ origin: env.CORS_ORIGIN.split(",").map(o => o.trim()) }));
+const allowedOrigins = env.CORS_ORIGIN.split(",")
+  .map(o => o.trim())
+  .filter(Boolean);
+const isDevTunnelOrigin = (origin: string) =>
+  env.NODE_ENV !== "production" &&
+  /^https:\/\/[a-z0-9-]+\.trycloudflare\.com$/i.test(origin);
+
+app.use(
+  cors({
+    origin: (origin, cb) => {
+      if (
+        !origin ||
+        allowedOrigins.includes(origin) ||
+        isDevTunnelOrigin(origin)
+      ) {
+        cb(null, true);
+        return;
+      }
+      cb(null, false);
+    },
+  })
+);
 // app.use(cors({ origin: "*" }));
 
 app.use(express.json({ limit: "1mb" }));

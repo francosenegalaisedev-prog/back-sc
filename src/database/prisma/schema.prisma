@@ -213,8 +213,9 @@ model BienPhoto {
 
 model User {
   id              Int         @id @default(autoincrement())
+  googleId String? @unique
   email           String      @unique
-  passwordHash    String
+  passwordHash    String?
   role            Role        @default(CLIENT)
   nom             String?
   emailVerifiedAt DateTime?

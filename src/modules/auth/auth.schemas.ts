@@ -35,3 +35,7 @@ export const changePasswordSchema = z
     password: z.string().min(8).max(128),
   })
   .strict();
+
+  export const googleLoginSchema = z.object({
+      credential: z.string().trim().min(20, "Jeton Google invalide.").max(4096),
+    });

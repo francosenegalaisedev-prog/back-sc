@@ -278,6 +278,7 @@ export type BienPhotoScalarFieldEnum = (typeof BienPhotoScalarFieldEnum)[keyof t
 
 export const UserScalarFieldEnum = {
   id: 'id',
+  googleId: 'googleId',
   email: 'email',
   passwordHash: 'passwordHash',
   role: 'role',

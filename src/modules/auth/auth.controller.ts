@@ -16,6 +16,11 @@ export const AuthController = {
   }),
 
   // Connexion dédiée à l’espace client : seuls les comptes CLIENT sont acceptés.
+  googleLogin: asyncHandler(async (req: Request, res: Response) => {
+    res.json(await auth.loginWithGoogle(req.body.credential));
+  }),
+
+  // Connexion dédiée à l’espace client : seuls les comptes CLIENT sont acceptés.
   clientLogin: asyncHandler(async (req: Request, res: Response) => {
     res.json(await auth.login(req.body, "CLIENT"));
   }),

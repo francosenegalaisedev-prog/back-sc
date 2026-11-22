@@ -5,6 +5,7 @@ import { AuthController } from "./auth.controller";
 import {
   changePasswordSchema,
   emailOnlySchema,
+  googleLoginSchema,
   loginSchema,
   registerSchema,
   resetPasswordSchema,
@@ -17,36 +18,54 @@ export const authRouter = Router();
 authRouter.post(
   "/register",
   validate({ body: registerSchema }),
-  AuthController.register
+  AuthController.register,
+);
+
+authRouter.post(
+  "/google",
+  validate({ body: googleLoginSchema }),
+  AuthController.googleLogin,
 );
 
 // Les deux espaces utilisent le même système d’identités, mais des connexions séparées.
-authRouter.post("/login", validate({ body: loginSchema }), AuthController.login);
-authRouter.post("/client/login", validate({ body: loginSchema }), AuthController.clientLogin);
-authRouter.post("/admin/login", validate({ body: loginSchema }), AuthController.adminLogin);
+authRouter.post(
+  "/login",
+  validate({ body: loginSchema }),
+  AuthController.login,
+);
+authRouter.post(
+  "/client/login",
+  validate({ body: loginSchema }),
+  AuthController.clientLogin,
+);
+authRouter.post(
+  "/admin/login",
+  validate({ body: loginSchema }),
+  AuthController.adminLogin,
+);
 
 authRouter.post(
   "/verify-email",
   validate({ body: tokenSchema }),
-  AuthController.verifyEmail
+  AuthController.verifyEmail,
 );
 
 authRouter.post(
   "/resend-verification",
   requireAuth,
-  AuthController.resendVerificationEmail
+  AuthController.resendVerificationEmail,
 );
 
 authRouter.post(
   "/forgot-password",
   validate({ body: emailOnlySchema }),
-  AuthController.forgotPassword
+  AuthController.forgotPassword,
 );
 
 authRouter.post(
   "/reset-password",
   validate({ body: resetPasswordSchema }),
-  AuthController.resetPassword
+  AuthController.resetPassword,
 );
 
 authRouter.get("/me", requireAuth, AuthController.me);
@@ -54,11 +73,11 @@ authRouter.patch(
   "/me",
   requireAuth,
   validate({ body: updateProfileSchema }),
-  AuthController.updateProfile
+  AuthController.updateProfile,
 );
 authRouter.patch(
   "/me/password",
   requireAuth,
   validate({ body: changePasswordSchema }),
-  AuthController.changePassword
+  AuthController.changePassword,
 );

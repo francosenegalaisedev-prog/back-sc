@@ -17,7 +17,7 @@ const schema = z.object({
   REQUIRE_EMAIL_VERIFICATION: z
     .enum(["true", "false"])
     .default("false")
-    .transform(v => v === "true"),
+    .transform((v) => v === "true"),
   MAX_FICHES_PER_USER: z.coerce.number().int().positive().default(3),
   MAILTRAP_SMTP_HOST: z.string().min(1, "MAILTRAP_SMTP_HOST est requis"),
   MAILTRAP_SMTP_PORT: z.string().min(1, "MAILTRAP_SMTP_PORT est requis"),
@@ -33,6 +33,8 @@ const schema = z.object({
   S3_REGION: z.string(),
   S3_BUCKET: z.string().default("ficheImage"),
   FFMPEG_PATH: z.string().default("/usr/bin/ffmpeg"),
+  GOOGLE_CLIENT_ID: z.string().min(1, "GOOGLE_CLIENT_ID est requis"),
+  GOOGLE_CLIENT_SECRET: z.string().min(1, "GOOGLE_CLIENT_SECRET est requis"),
 
   // lOGO PATH
   LOGO_PATH: z.string().default(`${process.env.SERVER}/logo.png`),

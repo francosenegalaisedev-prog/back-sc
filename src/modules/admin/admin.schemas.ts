@@ -85,6 +85,18 @@ export const adminStatusSchema = z.object({
   active: z.boolean(),
 });
 
+export const clientStatusSchema = z
+  .object({
+    active: z.boolean(),
+    reason: z.string().trim().max(500).optional(),
+  })
+  .strict();
+
+export const permanentDeleteClientQuery = z.object({
+  confirmer: z.string().trim().min(1),
+  raison: z.string().trim().max(500).optional(),
+});
+
 const listBillingQuery = z.object({
   search: z.string().trim().min(1).max(100).optional(),
   formule: z.enum(FORMULES).optional(),
@@ -116,5 +128,9 @@ export type ListAdminActionLogsQuery = z.infer<
 >;
 export type CreateAdminInput = z.infer<typeof createAdminSchema>;
 export type AdminStatusInput = z.infer<typeof adminStatusSchema>;
+export type ClientStatusInput = z.infer<typeof clientStatusSchema>;
+export type PermanentDeleteClientQuery = z.infer<
+  typeof permanentDeleteClientQuery
+>;
 export type ListSubscriptionsQuery = z.infer<typeof listSubscriptionsQuery>;
 export type ListPaymentsQuery = z.infer<typeof listPaymentsQuery>;

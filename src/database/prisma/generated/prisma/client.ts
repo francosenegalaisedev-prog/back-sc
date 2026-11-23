@@ -105,6 +105,11 @@ export type BienPhoto = Prisma.BienPhotoModel
  */
 export type User = Prisma.UserModel
 /**
+ * Model AccountDeletionLog
+ * 
+ */
+export type AccountDeletionLog = Prisma.AccountDeletionLogModel
+/**
  * Model AdminActionLog
  * 
  */

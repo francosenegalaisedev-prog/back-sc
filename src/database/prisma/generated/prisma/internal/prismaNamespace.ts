@@ -410,6 +410,7 @@ export const ModelName = {
   Bien: 'Bien',
   BienPhoto: 'BienPhoto',
   User: 'User',
+  AccountDeletionLog: 'AccountDeletionLog',
   AdminActionLog: 'AdminActionLog',
   AppSetting: 'AppSetting',
   AuthToken: 'AuthToken',
@@ -446,7 +447,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "fiche" | "ficheOnglet" | "ficheReseau" | "ficheLien" | "ficheHoraire" | "ficheMedia" | "catalogueSection" | "catalogueArticle" | "menuSection" | "menuPlat" | "bien" | "bienPhoto" | "user" | "adminActionLog" | "appSetting" | "authToken" | "plan" | "planLimit" | "subscription" | "payment" | "fichePurchase" | "demandeRappel" | "fichePassage" | "cardModel" | "printJob" | "stickerOrder" | "sectionStickerRequest" | "qrLink" | "planDuree" | "planRemise" | "emplacementConfig" | "emplacementPack" | "qrStyle" | "leadRequest"
+    modelProps: "fiche" | "ficheOnglet" | "ficheReseau" | "ficheLien" | "ficheHoraire" | "ficheMedia" | "catalogueSection" | "catalogueArticle" | "menuSection" | "menuPlat" | "bien" | "bienPhoto" | "user" | "accountDeletionLog" | "adminActionLog" | "appSetting" | "authToken" | "plan" | "planLimit" | "subscription" | "payment" | "fichePurchase" | "demandeRappel" | "fichePassage" | "cardModel" | "printJob" | "stickerOrder" | "sectionStickerRequest" | "qrLink" | "planDuree" | "planRemise" | "emplacementConfig" | "emplacementPack" | "qrStyle" | "leadRequest"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -1409,6 +1410,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.UserCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.UserCountAggregateOutputType> | number
+        }
+      }
+    }
+    AccountDeletionLog: {
+      payload: Prisma.$AccountDeletionLogPayload<ExtArgs>
+      fields: Prisma.AccountDeletionLogFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.AccountDeletionLogFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AccountDeletionLogPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.AccountDeletionLogFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AccountDeletionLogPayload>
+        }
+        findFirst: {
+          args: Prisma.AccountDeletionLogFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AccountDeletionLogPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.AccountDeletionLogFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AccountDeletionLogPayload>
+        }
+        findMany: {
+          args: Prisma.AccountDeletionLogFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AccountDeletionLogPayload>[]
+        }
+        create: {
+          args: Prisma.AccountDeletionLogCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AccountDeletionLogPayload>
+        }
+        createMany: {
+          args: Prisma.AccountDeletionLogCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.AccountDeletionLogCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AccountDeletionLogPayload>[]
+        }
+        delete: {
+          args: Prisma.AccountDeletionLogDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AccountDeletionLogPayload>
+        }
+        update: {
+          args: Prisma.AccountDeletionLogUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AccountDeletionLogPayload>
+        }
+        deleteMany: {
+          args: Prisma.AccountDeletionLogDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.AccountDeletionLogUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.AccountDeletionLogUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AccountDeletionLogPayload>[]
+        }
+        upsert: {
+          args: Prisma.AccountDeletionLogUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AccountDeletionLogPayload>
+        }
+        aggregate: {
+          args: Prisma.AccountDeletionLogAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateAccountDeletionLog>
+        }
+        groupBy: {
+          args: Prisma.AccountDeletionLogGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AccountDeletionLogGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.AccountDeletionLogCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AccountDeletionLogCountAggregateOutputType> | number
         }
       }
     }
@@ -3187,10 +3262,33 @@ export const UserScalarFieldEnum = {
   nom: 'nom',
   emailVerifiedAt: 'emailVerifiedAt',
   active: 'active',
+  deletionRequestedAt: 'deletionRequestedAt',
+  deletionScheduledAt: 'deletionScheduledAt',
+  deletionRequestedBy: 'deletionRequestedBy',
   createdAt: 'createdAt'
 } as const
 
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
+
+
+export const AccountDeletionLogScalarFieldEnum = {
+  id: 'id',
+  targetUserId: 'targetUserId',
+  targetEmailHash: 'targetEmailHash',
+  targetRole: 'targetRole',
+  action: 'action',
+  initiatedBy: 'initiatedBy',
+  executedBy: 'executedBy',
+  actorAdminId: 'actorAdminId',
+  actorAdminEmail: 'actorAdminEmail',
+  reason: 'reason',
+  fichesDeletedCount: 'fichesDeletedCount',
+  paymentsPreservedCount: 'paymentsPreservedCount',
+  scheduledFor: 'scheduledFor',
+  createdAt: 'createdAt'
+} as const
+
+export type AccountDeletionLogScalarFieldEnum = (typeof AccountDeletionLogScalarFieldEnum)[keyof typeof AccountDeletionLogScalarFieldEnum]
 
 
 export const AdminActionLogScalarFieldEnum = {
@@ -4206,6 +4304,7 @@ export type GlobalOmitConfig = {
   bien?: Prisma.BienOmit
   bienPhoto?: Prisma.BienPhotoOmit
   user?: Prisma.UserOmit
+  accountDeletionLog?: Prisma.AccountDeletionLogOmit
   adminActionLog?: Prisma.AdminActionLogOmit
   appSetting?: Prisma.AppSettingOmit
   authToken?: Prisma.AuthTokenOmit

@@ -5,6 +5,10 @@ import {
   clearSessionCookie,
   setSessionCookie,
 } from "../../lib/sessionCookie";
+import {
+  cancelSelfDeletion,
+  requestSelfDeletion,
+} from "./accountDeletion.service";
 import { AuthService as auth, publicUser } from "./auth.service";
 
 export const AuthController = {
@@ -82,5 +86,17 @@ export const AuthController = {
   changePassword: asyncHandler(async (req: Request, res: Response) => {
     await auth.changePassword(req.user!.id, req.body);
     res.json({ ok: true });
+  }),
+
+  requestAccountDeletion: asyncHandler(async (req: Request, res: Response) => {
+    const result = await requestSelfDeletion(req.user!.id, req.body);
+    clearSessionCookie(res);
+    res.json({ ok: true, ...result });
+  }),
+
+  cancelAccountDeletion: asyncHandler(async (req: Request, res: Response) => {
+    const result = await cancelSelfDeletion(req.body);
+    setSessionCookie(res, result.token);
+    res.json(result);
   }),
 };

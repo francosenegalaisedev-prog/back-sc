@@ -123,6 +123,9 @@ export const AdminService = {
       clients,
       demandesSticker,
       demandesCarte,
+      suppressionsEnAttente,
+      comptesSupprimesTotal,
+      comptesSupprimesSur30Jours,
       derniersClients,
       derniersAbonnements,
     ] = await Promise.all([
@@ -140,6 +143,13 @@ export const AdminService = {
       prisma.sectionStickerRequest.count({ where: { statut: "DEMANDE" } }),
       prisma.printJob.count({
         where: { statut: { in: ["A_IMPRIMER", "IMPRIMEE", "ENCODEE", "TESTEE"] } },
+      }),
+      prisma.user.count({
+        where: { role: "CLIENT", deletionScheduledAt: { not: null } },
+      }),
+      prisma.accountDeletionLog.count({ where: { action: "PURGED" } }),
+      prisma.accountDeletionLog.count({
+        where: { action: "PURGED", createdAt: { gte: il_y_a_30_jours } },
       }),
       prisma.user.findMany({
         where: { role: "CLIENT" },
@@ -183,6 +193,11 @@ export const AdminService = {
       clients,
       demandesSticker: demandesSticker,
       demandesCarte,
+      suppressions: {
+        enAttente: suppressionsEnAttente,
+        supprimesTotal: comptesSupprimesTotal,
+        supprimesSur30Jours: comptesSupprimesSur30Jours,
+      },
       derniersClients: derniersClients.map(client => ({
         id: client.id,
         nom: client.nom,
@@ -670,6 +685,15 @@ export const AdminService = {
       where.OR = [{ email: contient }, { nom: contient }];
     }
     if (q.role) where.role = upper<Role>(q.role);
+    if (q.statut === "actif") {
+      where.active = true;
+      where.deletionScheduledAt = null;
+    } else if (q.statut === "desactive") {
+      where.active = false;
+      where.deletionScheduledAt = null;
+    } else if (q.statut === "suppression") {
+      where.deletionScheduledAt = { not: null };
+    }
 
     const [users, total] = await prisma.$transaction([
       prisma.user.findMany({

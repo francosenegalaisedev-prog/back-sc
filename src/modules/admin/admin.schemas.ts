@@ -66,10 +66,11 @@ export const subscriptionSchema = z.object({
 
 // ───────── Utilisateurs ─────────
 
-// GET /admin/users?search=sambou&role=client
+// GET /admin/users?search=sambou&role=client&statut=suppression
 export const listUsersQuery = z.object({
   search: z.string().trim().min(1).max(100).optional(),
   role: z.enum(["client", "admin"]).optional(),
+  statut: z.enum(["actif", "desactive", "suppression"]).optional(),
   page,
   limit,
 });

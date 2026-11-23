@@ -43,6 +43,7 @@ authRouter.post(
   validate({ body: loginSchema }),
   AuthController.adminLogin,
 );
+authRouter.post("/logout", AuthController.logout);
 
 authRouter.post(
   "/verify-email",

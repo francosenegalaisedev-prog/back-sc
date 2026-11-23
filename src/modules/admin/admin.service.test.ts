@@ -24,6 +24,7 @@ const mocks = vi.hoisted(() => ({
   paymentCount: vi.fn(),
   actionLogFindMany: vi.fn(),
   actionLogCount: vi.fn(),
+  accountDeletionLogCount: vi.fn(),
   transaction: vi.fn(),
   toFicheDto: vi.fn(() => ({ id: 12 })),
 }));
@@ -56,6 +57,9 @@ vi.mock("../../database/prisma/prisma-client", () => ({
     adminActionLog: {
       findMany: mocks.actionLogFindMany,
       count: mocks.actionLogCount,
+    },
+    accountDeletionLog: {
+      count: mocks.accountDeletionLogCount,
     },
     sectionStickerRequest: { count: mocks.sectionStickerCount },
     $transaction: mocks.transaction,

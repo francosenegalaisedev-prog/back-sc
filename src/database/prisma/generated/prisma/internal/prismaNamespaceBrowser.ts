@@ -64,6 +64,7 @@ export const ModelName = {
   Bien: 'Bien',
   BienPhoto: 'BienPhoto',
   User: 'User',
+  AccountDeletionLog: 'AccountDeletionLog',
   AdminActionLog: 'AdminActionLog',
   AppSetting: 'AppSetting',
   AuthToken: 'AuthToken',
@@ -285,10 +286,33 @@ export const UserScalarFieldEnum = {
   nom: 'nom',
   emailVerifiedAt: 'emailVerifiedAt',
   active: 'active',
+  deletionRequestedAt: 'deletionRequestedAt',
+  deletionScheduledAt: 'deletionScheduledAt',
+  deletionRequestedBy: 'deletionRequestedBy',
   createdAt: 'createdAt'
 } as const
 
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
+
+
+export const AccountDeletionLogScalarFieldEnum = {
+  id: 'id',
+  targetUserId: 'targetUserId',
+  targetEmailHash: 'targetEmailHash',
+  targetRole: 'targetRole',
+  action: 'action',
+  initiatedBy: 'initiatedBy',
+  executedBy: 'executedBy',
+  actorAdminId: 'actorAdminId',
+  actorAdminEmail: 'actorAdminEmail',
+  reason: 'reason',
+  fichesDeletedCount: 'fichesDeletedCount',
+  paymentsPreservedCount: 'paymentsPreservedCount',
+  scheduledFor: 'scheduledFor',
+  createdAt: 'createdAt'
+} as const
+
+export type AccountDeletionLogScalarFieldEnum = (typeof AccountDeletionLogScalarFieldEnum)[keyof typeof AccountDeletionLogScalarFieldEnum]
 
 
 export const AdminActionLogScalarFieldEnum = {

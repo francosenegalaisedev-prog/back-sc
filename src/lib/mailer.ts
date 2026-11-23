@@ -138,6 +138,55 @@ export const sendAdminInvitationEmail = async (user: User) => {
   });
 };
 
+export const sendAccountDeletionScheduledEmail = async (params: {
+  to: string;
+  name?: string | null;
+  scheduledAt: Date;
+  graceDays: number;
+}) => {
+  const loginUrl = `${env.PUBLIC_SITE_URL.replace(/\/$/, "")}/login`;
+  const owner = params.name?.trim() || "Bonjour";
+  const formattedDate = new Intl.DateTimeFormat("fr-FR", {
+    dateStyle: "long",
+  }).format(params.scheduledAt);
+
+  await sendMail({
+    to: params.to,
+    subject: "Demande de suppression de votre compte Support Connecté",
+    html: `<p>Bonjour ${escapeHtml(owner)},</p>
+<p>Nous avons bien enregistré votre demande de suppression de compte. Votre compte est désormais désactivé et vos fiches ne sont plus accessibles en ligne.</p>
+<p><strong>Suppression définitive prévue le ${escapeHtml(formattedDate)}</strong> (délai de grâce de ${params.graceDays} jours).</p>
+<p>Si vous changez d’avis ou si vous n’êtes pas à l’origine de cette demande, reconnectez-vous simplement avant cette date pour annuler la suppression et restaurer votre compte :</p>
+<p><a href="${loginUrl}">Annuler la suppression en me reconnectant</a></p>
+<p>Passé ce délai, votre compte, vos fiches, médias et prospects seront définitivement effacés. Les justificatifs de paiement seront conservés de façon anonymisée pour nos obligations comptables.</p>`,
+    text: `Bonjour ${owner},\n\nVotre demande de suppression de compte est enregistrée. Votre compte est désactivé et vos fiches sont suspendues.\nSuppression définitive prévue le ${formattedDate} (délai de grâce de ${params.graceDays} jours).\nPour annuler avant cette date, reconnectez-vous sur : ${loginUrl}\n\nPassé ce délai, vos données personnelles et fiches seront supprimées définitivement (seul l'historique comptable anonymisé est conservé).`,
+  });
+};
+
+export const sendAccountDeletedByAdminEmail = async (params: {
+  to: string;
+  name?: string | null;
+  reason?: string | null;
+}) => {
+  const owner = params.name?.trim() || "Bonjour";
+  const safeReason = params.reason?.trim()
+    ? escapeHtml(params.reason.trim())
+    : "";
+
+  await sendMail({
+    to: params.to,
+    subject: "Suppression définitive de votre compte Support Connecté",
+    html: `<p>Bonjour ${escapeHtml(owner)},</p>
+<p>Votre compte Support Connecté ainsi que les fiches associées ont été supprimés définitivement par un administrateur.</p>${
+      safeReason ? `\n<p><strong>Motif :</strong> ${safeReason}</p>` : ""
+    }
+<p>Conformément aux obligations comptables, l’historique de facturation est conservé de manière anonymisée.</p>`,
+    text: `Bonjour ${owner},\n\nVotre compte Support Connecté et ses fiches associées ont été supprimés définitivement par un administrateur.${
+      params.reason?.trim() ? `\nMotif : ${params.reason.trim()}` : ""
+    }\nL'historique comptable est conservé de manière anonymisée.`,
+  });
+};
+
 // ? dynamic send email function
 export const sendMail = async (data: {
   to: string;

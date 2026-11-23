@@ -4,6 +4,7 @@ import { prisma } from "./database/prisma/prisma-client";
 import { logger } from "./lib/logger";
 import { expireDueSubscriptions } from "./modules/subscriptions/subscriptions.service";
 import { cleanupOrphanedMedia } from "./modules/media/media.cleanup";
+import { purgeDueAccounts } from "./modules/auth/accountDeletion.service";
 
 const server = app.listen(env.PORT, () => {
   logger.info("API server listening", {
@@ -41,11 +42,27 @@ const runMediaCleanup = () =>
 const mediaCleanupTimer = setInterval(runMediaCleanup, 24 * 60 * 60_000);
 const mediaCleanupInitialTimer = setTimeout(runMediaCleanup, 10 * 60_000);
 
+// Purge les comptes clients dont le délai de grâce de suppression (30 jours) est écoulé.
+const runAccountPurge = () =>
+  purgeDueAccounts()
+    .then(count => {
+      if (count > 0) logger.info("Purged scheduled user accounts", { count });
+    })
+    .catch(error => {
+      logger.error("Account deletion purge job failed", {
+        error: error instanceof Error ? error.message : String(error),
+      });
+    });
+const accountPurgeTimer = setInterval(runAccountPurge, 6 * 60 * 60_000);
+const accountPurgeInitialTimer = setTimeout(runAccountPurge, 2 * 60_000);
+
 const shutdown = async () => {
   logger.info("API server shutting down");
   clearInterval(timer);
   clearInterval(mediaCleanupTimer);
   clearTimeout(mediaCleanupInitialTimer);
+  clearInterval(accountPurgeTimer);
+  clearTimeout(accountPurgeInitialTimer);
   server.close();
   await prisma.$disconnect();
   process.exit(0);

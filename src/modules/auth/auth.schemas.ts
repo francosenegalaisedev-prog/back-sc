@@ -36,6 +36,26 @@ export const changePasswordSchema = z
   })
   .strict();
 
-  export const googleLoginSchema = z.object({
-      credential: z.string().trim().min(20, "Jeton Google invalide.").max(4096),
-    });
+export const googleLoginSchema = z.object({
+  credential: z.string().trim().min(20, "Jeton Google invalide.").max(4096),
+});
+
+export const deleteAccountRequestSchema = z
+  .object({
+    password: z.string().min(1).max(128).optional(),
+    confirmEmail: z.string().trim().toLowerCase().email().max(254).optional(),
+    reason: z.string().trim().max(500).optional(),
+  })
+  .strict();
+
+export const cancelDeletionSchema = z
+  .object({
+    email: z.string().trim().toLowerCase().email().max(254).optional(),
+    password: z.string().min(1).max(128).optional(),
+    credential: z.string().trim().min(20).max(4096).optional(),
+  })
+  .strict()
+  .refine(
+    data => Boolean(data.credential) || Boolean(data.email && data.password),
+    "Fournissez vos identifiants ou votre connexion Google."
+  );

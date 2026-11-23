@@ -212,23 +212,50 @@ model BienPhoto {
 }
 
 model User {
-  id              Int         @id @default(autoincrement())
-  googleId String? @unique
-  email           String      @unique
-  passwordHash    String?
-  role            Role        @default(CLIENT)
-  nom             String?
-  emailVerifiedAt DateTime?
-  active          Boolean     @default(true)
-  createdAt       DateTime    @default(now())
-  tokens          AuthToken[]
-  fiches          Fiche[]
-  sectionStickers SectionStickerRequest[]
-  qrStyles        QrStyle[]
-  fichePurchases  FichePurchase[]
-  payments        Payment[]
-  adminActionLogs AdminActionLog[]
+  id                  Int                     @id @default(autoincrement())
+  googleId            String?                 @unique
+  email               String                  @unique
+  passwordHash        String?
+  role                Role                    @default(CLIENT)
+  nom                 String?
+  emailVerifiedAt     DateTime?
+  active              Boolean                 @default(true)
+  deletionRequestedAt DateTime?
+  deletionScheduledAt DateTime?
+  deletionRequestedBy String?
+  createdAt           DateTime                @default(now())
+  tokens              AuthToken[]
+  fiches              Fiche[]
+  sectionStickers     SectionStickerRequest[]
+  qrStyles            QrStyle[]
+  fichePurchases      FichePurchase[]
+  payments            Payment[]
+  adminActionLogs     AdminActionLog[]
+
+  @@index([deletionScheduledAt])
   @@map("users")
+}
+
+model AccountDeletionLog {
+  id                     Int      @id @default(autoincrement())
+  targetUserId           Int
+  targetEmailHash        String
+  targetRole             Role
+  action                 String
+  initiatedBy            String
+  executedBy             String
+  actorAdminId           Int?
+  actorAdminEmail        String?
+  reason                 String?
+  fichesDeletedCount     Int      @default(0)
+  paymentsPreservedCount Int      @default(0)
+  scheduledFor           DateTime?
+  createdAt              DateTime @default(now())
+
+  @@index([createdAt])
+  @@index([targetUserId, createdAt])
+  @@index([action, createdAt])
+  @@map("account_deletion_logs")
 }
 
 model AdminActionLog {

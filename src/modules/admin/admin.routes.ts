@@ -5,6 +5,7 @@ import { idParam } from "../fiches/fiches.schemas";
 import { AdminController } from "./admin.controller";
 import {
   adminStatusSchema,
+  clientStatusSchema,
   deleteFicheQuery,
   createAdminSchema,
   listFichesQuery,
@@ -13,6 +14,7 @@ import {
   listSubscriptionsQuery,
   listUsersQuery,
   patchFicheSchema,
+  permanentDeleteClientQuery,
   subscriptionParams,
   subscriptionSchema,
 } from "./admin.schemas";
@@ -116,4 +118,19 @@ adminRouter.delete(
   "/users/:id",
   validate({ params: idParam }),
   AdminController.deleteAdmin
+);
+adminRouter.patch(
+  "/users/:id/client-status",
+  validate({ params: idParam, body: clientStatusSchema }),
+  AdminController.setClientStatus
+);
+adminRouter.delete(
+  "/users/:id/permanent",
+  validate({ params: idParam, query: permanentDeleteClientQuery }),
+  AdminController.permanentlyDeleteClient
+);
+adminRouter.get(
+  "/account-deletions",
+  validate({ query: listAdminActionLogsQuery }),
+  AdminController.listAccountDeletionLogs
 );

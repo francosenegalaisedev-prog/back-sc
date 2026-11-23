@@ -3,7 +3,9 @@ import { requireAuth } from "../../middlewares/auth";
 import { validate } from "../../middlewares/validate";
 import { AuthController } from "./auth.controller";
 import {
+  cancelDeletionSchema,
   changePasswordSchema,
+  deleteAccountRequestSchema,
   emailOnlySchema,
   googleLoginSchema,
   loginSchema,
@@ -81,4 +83,15 @@ authRouter.patch(
   requireAuth,
   validate({ body: changePasswordSchema }),
   AuthController.changePassword,
+);
+authRouter.post(
+  "/me/delete-request",
+  requireAuth,
+  validate({ body: deleteAccountRequestSchema }),
+  AuthController.requestAccountDeletion,
+);
+authRouter.post(
+  "/cancel-deletion",
+  validate({ body: cancelDeletionSchema }),
+  AuthController.cancelAccountDeletion,
 );

@@ -5,6 +5,7 @@ import { verifyGoogleIdToken } from "../../lib/googleAuth";
 import {
   badRequest,
   conflict,
+  forbidden,
   notFound,
   unauthorized,
   unprocessable,
@@ -23,6 +24,7 @@ export const publicUser = (u: User) => ({
   nom: u.nom,
   role: u.role,
   emailVerified: u.emailVerifiedAt !== null,
+  hasPassword: u.passwordHash !== null,
 });
 
 // Hash factice : on compare toujours un mot de passe, même si l'e-mail n'existe pas (limite l'énumération par le temps de réponse).
@@ -72,8 +74,32 @@ export const AuthService = {
       input.password,
       user?.passwordHash ?? DUMMY_HASH,
     );
-    if (!user || !user.active || !ok) {
+    if (!user || !ok) {
       logger.warn("Authentication failed", { reason: "invalid_credentials" });
+      throw unauthorized("E-mail ou mot de passe incorrect");
+    }
+    if (!user.active) {
+      if (
+        user.deletionScheduledAt &&
+        user.deletionRequestedBy === "USER" &&
+        user.deletionScheduledAt > new Date()
+      ) {
+        const formatted = new Intl.DateTimeFormat("fr-FR", {
+          dateStyle: "long",
+        }).format(user.deletionScheduledAt);
+        throw forbidden(
+          "COMPTE_EN_COURS_DE_SUPPRESSION",
+          `Votre compte est programmé pour suppression définitive le ${formatted}. Vous pouvez annuler cette demande pour le réactiver.`,
+          {
+            deletionScheduledAt: user.deletionScheduledAt.toISOString(),
+            canCancel: true,
+          },
+        );
+      }
+      logger.warn("Authentication failed", {
+        reason: "account_disabled",
+        userId: user.id,
+      });
       throw unauthorized("E-mail ou mot de passe incorrect");
     }
     // Un espace ne peut accepter que le rôle prévu : un client ne peut pas entrer dans /admin.
@@ -141,6 +167,23 @@ export const AuthService = {
     }
 
     if (!user.active) {
+      if (
+        user.deletionScheduledAt &&
+        user.deletionRequestedBy === "USER" &&
+        user.deletionScheduledAt > new Date()
+      ) {
+        const formatted = new Intl.DateTimeFormat("fr-FR", {
+          dateStyle: "long",
+        }).format(user.deletionScheduledAt);
+        throw forbidden(
+          "COMPTE_EN_COURS_DE_SUPPRESSION",
+          `Votre compte est programmé pour suppression définitive le ${formatted}. Vous pouvez annuler cette demande pour le réactiver.`,
+          {
+            deletionScheduledAt: user.deletionScheduledAt.toISOString(),
+            canCancel: true,
+          },
+        );
+      }
       throw unauthorized("Ce compte est désactivé.");
     }
     if (user.role !== "CLIENT") {

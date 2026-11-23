@@ -8,8 +8,15 @@ import type {
   ListUsersQuery,
   CreateAdminInput,
   AdminStatusInput,
+  ClientStatusInput,
+  PermanentDeleteClientQuery,
 } from "./admin.schemas";
 import { AdminService } from "./admin.service";
+import {
+  listAccountDeletionLogs,
+  permanentlyDeleteClientByAdmin,
+  setClientAccountStatus,
+} from "../auth/accountDeletion.service";
 
 // Un controller ne fait que 3 choses : lire la requête, appeler le service, répondre.
 // asyncHandler = pour que les erreurs (404, 409...) arrivent bien dans errorHandler.
@@ -107,5 +114,33 @@ export const AdminController = {
   deleteAdmin: asyncHandler(async (req, res) => {
     await AdminService.deleteAdmin(Number(req.params.id), req.user!.id);
     res.json({ ok: true });
+  }),
+
+  setClientStatus: asyncHandler(async (req, res) => {
+    const body = req.body as ClientStatusInput;
+    await setClientAccountStatus(
+      Number(req.params.id),
+      { id: req.user!.id, email: req.user!.email ?? "" },
+      body.active,
+      body.reason
+    );
+    res.json({ ok: true });
+  }),
+
+  permanentlyDeleteClient: asyncHandler(async (req, res) => {
+    const { confirmer, raison } =
+      req.query as unknown as PermanentDeleteClientQuery;
+    const result = await permanentlyDeleteClientByAdmin(
+      Number(req.params.id),
+      { id: req.user!.id, email: req.user!.email ?? "" },
+      confirmer,
+      raison
+    );
+    res.json({ ok: true, ...result });
+  }),
+
+  listAccountDeletionLogs: asyncHandler(async (req, res) => {
+    const filtres = req.query as unknown as ListAdminActionLogsQuery;
+    res.json(await listAccountDeletionLogs(filtres));
   }),
 };

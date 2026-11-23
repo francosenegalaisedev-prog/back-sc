@@ -295,6 +295,12 @@ export const ProductionService = {
             where: { tier: plan, actif: true },
             select: { rectoUrl: true, versoUrl: true },
           });
+          const rectoUrl = input.rectoUrl
+            ? CardImageService.toStoredRef(input.rectoUrl)
+            : (modele?.rectoUrl ?? null);
+          const versoUrl = input.versoUrl
+            ? CardImageService.toStoredRef(input.versoUrl)
+            : (modele?.versoUrl ?? null);
           const job = await tx.printJob.create({
             data: {
               ficheId,
@@ -303,8 +309,11 @@ export const ProductionService = {
               slug: fiche.slug,
               nfcUrl: ficheUrl(fiche.slug),
               ...instantane(fiche),
-              rectoUrl: modele?.rectoUrl ?? null,
-              versoUrl: modele?.versoUrl ?? null,
+              rectoUrl,
+              versoUrl,
+              ...(input.design !== undefined && {
+                design: input.design as Prisma.InputJsonValue,
+              }),
               deliveryAddress: input.adresseLivraison,
               deliveryTelephone: input.telephoneLivraison,
               clientNotes: input.notesClient || null,
@@ -324,6 +333,20 @@ export const ProductionService = {
         );
       throw error;
     }
+  },
+
+  async uploadClientCardImage(
+    user: AuthUser,
+    ficheId: number,
+    body: Buffer,
+    rawMime?: string,
+  ) {
+    const fiche = await prisma.fiche.findFirst({
+      where: { id: ficheId, userId: user.id },
+      select: { id: true },
+    });
+    if (!fiche) throw notFound("Fiche introuvable");
+    return CardImageService.upload(body, rawMime);
   },
 
   async updateCarte(id: number, input: PatchCarteInput) {

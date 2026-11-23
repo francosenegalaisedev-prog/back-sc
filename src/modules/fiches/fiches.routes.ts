@@ -182,6 +182,13 @@ fichesRouter.get(
 );
 
 fichesRouter.post(
+  "/:id/card-request/images",
+  validate({ params: idParam }),
+  raw({ type: () => true, limit: "13mb" }),
+  FicheController.uploadCardRequestImage
+);
+
+fichesRouter.post(
   "/:id/card-request",
   validate({ params: idParam, body: clientCarteRequestSchema }),
   FicheController.createCardRequest

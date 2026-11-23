@@ -1,11 +1,4 @@
 import { asyncHandler } from "../../lib/asyncHandler";
-import { HttpError } from "../../lib/httpError";
-import { CardImageService } from "../media/card-images.service";
-import type {
-  CreateModeleCarteInput,
-  PatchModeleCarteInput,
-} from "./card-models.schemas";
-import { CardModelService } from "./card-models.service";
 import type { ListSectionStickersQuery, PatchSectionStickerInput } from "./section-stickers.schemas";
 import { SectionStickerService } from "./section-stickers.service";
 import type {
@@ -46,46 +39,6 @@ export const ProductionController = {
   }),
   updateSectionSticker: asyncHandler(async (req, res) => {
     res.json(await SectionStickerService.adminSetStatus(Number(req.params.id), req.body as PatchSectionStickerInput));
-  }),
-
-  // ───── Modèles de carte (recto / verso) ─────
-  listModelesCartes: asyncHandler(async (_req, res) => {
-    res.json(await CardModelService.list());
-  }),
-  createModeleCarte: asyncHandler(async (req, res) => {
-    res
-      .status(201)
-      .json(await CardModelService.create(req.body as CreateModeleCarteInput));
-  }),
-  updateModeleCarte: asyncHandler(async (req, res) => {
-    res.json(
-      await CardModelService.update(
-        Number(req.params.id),
-        req.body as PatchModeleCarteInput
-      )
-    );
-  }),
-  /** Envoi d'une image de carte (corps binaire, comme l'envoi de médias de fiche). Renvoie `{ url }`. */
-  uploadModeleCarteImage: asyncHandler(async (req, res) => {
-    if (!Buffer.isBuffer(req.body)) {
-      throw new HttpError(
-        400,
-        "CORPS_MEDIA_INVALIDE",
-        "Le fichier doit être envoyé en binaire"
-      );
-    }
-    const contentType = req.headers["content-type"];
-    res
-      .status(201)
-      .json(
-        await CardImageService.upload(
-          req.body,
-          Array.isArray(contentType) ? contentType[0] : contentType
-        )
-      );
-  }),
-  deleteModeleCarte: asyncHandler(async (req, res) => {
-    res.json(await CardModelService.remove(Number(req.params.id)));
   }),
 
   // ───── Stickers ─────

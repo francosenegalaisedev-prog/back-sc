@@ -159,10 +159,6 @@ export const FicheController = {
     res.json(await SectionStickerService.listForFiche(req.user!, Number(req.params.id)));
   }),
 
-  createSectionSticker: asyncHandler(async (req, res) => {
-    res.status(201).json(await SectionStickerService.create(req.user!, Number(req.params.id), req.body));
-  }),
-
   getCardRequest: asyncHandler(async (req, res) => {
     res.json(
       await ProductionService.getClientCardRequest(

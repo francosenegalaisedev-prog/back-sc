@@ -21,8 +21,8 @@ describe("createAdminSchema", () => {
 
 describe("listFichesQuery", () => {
   it("accepts the pending sticker request filter only", () => {
-    expect(listFichesQuery.safeParse({ sticker: "demande" }).success).toBe(true);
-    expect(listFichesQuery.safeParse({ sticker: "active" }).success).toBe(false);
+    expect(listFichesQuery.safeParse({ sticker: "actif" }).success).toBe(true);
+    expect(listFichesQuery.safeParse({ sticker: "demande" }).success).toBe(false);
   });
 });
 

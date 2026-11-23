@@ -4,7 +4,11 @@ import { requireAuth, requireRole } from "../../middlewares/auth";
 import { rateLimitHandler } from "../../middlewares/errorHandler";
 import { validate } from "../../middlewares/validate";
 import { idParam } from "../fiches/fiches.schemas";
-import { listSectionStickersQuery, patchSectionStickerSchema } from "./section-stickers.schemas";
+import {
+  adminCreateSectionStickerSchema,
+  listSectionStickersQuery,
+  patchSectionStickerSchema,
+} from "./section-stickers.schemas";
 import { ProductionController } from "./production.controller";
 import {
   codeParams,
@@ -29,10 +33,12 @@ productionRouter.get("/cartes", validate({ query: listCartesQuery }), Production
 // PATCH /cartes/:id                       { statut?, notes?, design? }
 productionRouter.patch("/cartes/:id", validate({ params: idParam, body: patchCarteSchema }), ProductionController.updateCarte);
 
-// Stickers « par section » : demandes de devis des clients ; activer une demande ouvre la section en page publique
+// Stickers « par section » : générés et activés par l'administration ; ouvrent /s/:slug/:section
 // GET   /section-stickers?statut=&ficheId=&limit=
 productionRouter.get("/section-stickers", validate({ query: listSectionStickersQuery }), ProductionController.listSectionStickers);
-// PATCH /section-stickers/:id             { statut: "active" | "desactivee" | "refusee" }
+// POST  /section-stickers                 { ficheId, section }
+productionRouter.post("/section-stickers", validate({ body: adminCreateSectionStickerSchema }), ProductionController.createSectionSticker);
+// PATCH /section-stickers/:id             { statut: "active" | "desactivee" }
 productionRouter.patch("/section-stickers/:id", validate({ params: idParam, body: patchSectionStickerSchema }), ProductionController.updateSectionSticker);
 
 // Stickers

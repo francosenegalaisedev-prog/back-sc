@@ -30,14 +30,12 @@ export type SectionStickerRequestAvgAggregateOutputType = {
   id: number | null
   ficheId: number | null
   userId: number | null
-  quantite: number | null
 }
 
 export type SectionStickerRequestSumAggregateOutputType = {
   id: number | null
   ficheId: number | null
   userId: number | null
-  quantite: number | null
 }
 
 export type SectionStickerRequestMinAggregateOutputType = {
@@ -45,8 +43,6 @@ export type SectionStickerRequestMinAggregateOutputType = {
   ficheId: number | null
   userId: number | null
   section: string | null
-  quantite: number | null
-  message: string | null
   statut: $Enums.SectionStickerStatus | null
   activatedAt: Date | null
   createdAt: Date | null
@@ -58,8 +54,6 @@ export type SectionStickerRequestMaxAggregateOutputType = {
   ficheId: number | null
   userId: number | null
   section: string | null
-  quantite: number | null
-  message: string | null
   statut: $Enums.SectionStickerStatus | null
   activatedAt: Date | null
   createdAt: Date | null
@@ -71,8 +65,6 @@ export type SectionStickerRequestCountAggregateOutputType = {
   ficheId: number
   userId: number
   section: number
-  quantite: number
-  message: number
   statut: number
   activatedAt: number
   createdAt: number
@@ -85,14 +77,12 @@ export type SectionStickerRequestAvgAggregateInputType = {
   id?: true
   ficheId?: true
   userId?: true
-  quantite?: true
 }
 
 export type SectionStickerRequestSumAggregateInputType = {
   id?: true
   ficheId?: true
   userId?: true
-  quantite?: true
 }
 
 export type SectionStickerRequestMinAggregateInputType = {
@@ -100,8 +90,6 @@ export type SectionStickerRequestMinAggregateInputType = {
   ficheId?: true
   userId?: true
   section?: true
-  quantite?: true
-  message?: true
   statut?: true
   activatedAt?: true
   createdAt?: true
@@ -113,8 +101,6 @@ export type SectionStickerRequestMaxAggregateInputType = {
   ficheId?: true
   userId?: true
   section?: true
-  quantite?: true
-  message?: true
   statut?: true
   activatedAt?: true
   createdAt?: true
@@ -126,8 +112,6 @@ export type SectionStickerRequestCountAggregateInputType = {
   ficheId?: true
   userId?: true
   section?: true
-  quantite?: true
-  message?: true
   statut?: true
   activatedAt?: true
   createdAt?: true
@@ -226,8 +210,6 @@ export type SectionStickerRequestGroupByOutputType = {
   ficheId: number
   userId: number | null
   section: string
-  quantite: number
-  message: string | null
   statut: $Enums.SectionStickerStatus
   activatedAt: Date | null
   createdAt: Date
@@ -262,8 +244,6 @@ export type SectionStickerRequestWhereInput = {
   ficheId?: Prisma.IntFilter<"SectionStickerRequest"> | number
   userId?: Prisma.IntNullableFilter<"SectionStickerRequest"> | number | null
   section?: Prisma.StringFilter<"SectionStickerRequest"> | string
-  quantite?: Prisma.IntFilter<"SectionStickerRequest"> | number
-  message?: Prisma.StringNullableFilter<"SectionStickerRequest"> | string | null
   statut?: Prisma.EnumSectionStickerStatusFilter<"SectionStickerRequest"> | $Enums.SectionStickerStatus
   activatedAt?: Prisma.DateTimeNullableFilter<"SectionStickerRequest"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"SectionStickerRequest"> | Date | string
@@ -277,8 +257,6 @@ export type SectionStickerRequestOrderByWithRelationInput = {
   ficheId?: Prisma.SortOrder
   userId?: Prisma.SortOrderInput | Prisma.SortOrder
   section?: Prisma.SortOrder
-  quantite?: Prisma.SortOrder
-  message?: Prisma.SortOrderInput | Prisma.SortOrder
   statut?: Prisma.SortOrder
   activatedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -295,8 +273,6 @@ export type SectionStickerRequestWhereUniqueInput = Prisma.AtLeast<{
   ficheId?: Prisma.IntFilter<"SectionStickerRequest"> | number
   userId?: Prisma.IntNullableFilter<"SectionStickerRequest"> | number | null
   section?: Prisma.StringFilter<"SectionStickerRequest"> | string
-  quantite?: Prisma.IntFilter<"SectionStickerRequest"> | number
-  message?: Prisma.StringNullableFilter<"SectionStickerRequest"> | string | null
   statut?: Prisma.EnumSectionStickerStatusFilter<"SectionStickerRequest"> | $Enums.SectionStickerStatus
   activatedAt?: Prisma.DateTimeNullableFilter<"SectionStickerRequest"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"SectionStickerRequest"> | Date | string
@@ -310,8 +286,6 @@ export type SectionStickerRequestOrderByWithAggregationInput = {
   ficheId?: Prisma.SortOrder
   userId?: Prisma.SortOrderInput | Prisma.SortOrder
   section?: Prisma.SortOrder
-  quantite?: Prisma.SortOrder
-  message?: Prisma.SortOrderInput | Prisma.SortOrder
   statut?: Prisma.SortOrder
   activatedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -331,8 +305,6 @@ export type SectionStickerRequestScalarWhereWithAggregatesInput = {
   ficheId?: Prisma.IntWithAggregatesFilter<"SectionStickerRequest"> | number
   userId?: Prisma.IntNullableWithAggregatesFilter<"SectionStickerRequest"> | number | null
   section?: Prisma.StringWithAggregatesFilter<"SectionStickerRequest"> | string
-  quantite?: Prisma.IntWithAggregatesFilter<"SectionStickerRequest"> | number
-  message?: Prisma.StringNullableWithAggregatesFilter<"SectionStickerRequest"> | string | null
   statut?: Prisma.EnumSectionStickerStatusWithAggregatesFilter<"SectionStickerRequest"> | $Enums.SectionStickerStatus
   activatedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"SectionStickerRequest"> | Date | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"SectionStickerRequest"> | Date | string
@@ -341,8 +313,6 @@ export type SectionStickerRequestScalarWhereWithAggregatesInput = {
 
 export type SectionStickerRequestCreateInput = {
   section: string
-  quantite: number
-  message?: string | null
   statut?: $Enums.SectionStickerStatus
   activatedAt?: Date | string | null
   createdAt?: Date | string
@@ -356,8 +326,6 @@ export type SectionStickerRequestUncheckedCreateInput = {
   ficheId: number
   userId?: number | null
   section: string
-  quantite: number
-  message?: string | null
   statut?: $Enums.SectionStickerStatus
   activatedAt?: Date | string | null
   createdAt?: Date | string
@@ -366,8 +334,6 @@ export type SectionStickerRequestUncheckedCreateInput = {
 
 export type SectionStickerRequestUpdateInput = {
   section?: Prisma.StringFieldUpdateOperationsInput | string
-  quantite?: Prisma.IntFieldUpdateOperationsInput | number
-  message?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   statut?: Prisma.EnumSectionStickerStatusFieldUpdateOperationsInput | $Enums.SectionStickerStatus
   activatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -381,8 +347,6 @@ export type SectionStickerRequestUncheckedUpdateInput = {
   ficheId?: Prisma.IntFieldUpdateOperationsInput | number
   userId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   section?: Prisma.StringFieldUpdateOperationsInput | string
-  quantite?: Prisma.IntFieldUpdateOperationsInput | number
-  message?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   statut?: Prisma.EnumSectionStickerStatusFieldUpdateOperationsInput | $Enums.SectionStickerStatus
   activatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -394,8 +358,6 @@ export type SectionStickerRequestCreateManyInput = {
   ficheId: number
   userId?: number | null
   section: string
-  quantite: number
-  message?: string | null
   statut?: $Enums.SectionStickerStatus
   activatedAt?: Date | string | null
   createdAt?: Date | string
@@ -404,8 +366,6 @@ export type SectionStickerRequestCreateManyInput = {
 
 export type SectionStickerRequestUpdateManyMutationInput = {
   section?: Prisma.StringFieldUpdateOperationsInput | string
-  quantite?: Prisma.IntFieldUpdateOperationsInput | number
-  message?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   statut?: Prisma.EnumSectionStickerStatusFieldUpdateOperationsInput | $Enums.SectionStickerStatus
   activatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -417,8 +377,6 @@ export type SectionStickerRequestUncheckedUpdateManyInput = {
   ficheId?: Prisma.IntFieldUpdateOperationsInput | number
   userId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   section?: Prisma.StringFieldUpdateOperationsInput | string
-  quantite?: Prisma.IntFieldUpdateOperationsInput | number
-  message?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   statut?: Prisma.EnumSectionStickerStatusFieldUpdateOperationsInput | $Enums.SectionStickerStatus
   activatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -440,8 +398,6 @@ export type SectionStickerRequestCountOrderByAggregateInput = {
   ficheId?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   section?: Prisma.SortOrder
-  quantite?: Prisma.SortOrder
-  message?: Prisma.SortOrder
   statut?: Prisma.SortOrder
   activatedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -452,7 +408,6 @@ export type SectionStickerRequestAvgOrderByAggregateInput = {
   id?: Prisma.SortOrder
   ficheId?: Prisma.SortOrder
   userId?: Prisma.SortOrder
-  quantite?: Prisma.SortOrder
 }
 
 export type SectionStickerRequestMaxOrderByAggregateInput = {
@@ -460,8 +415,6 @@ export type SectionStickerRequestMaxOrderByAggregateInput = {
   ficheId?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   section?: Prisma.SortOrder
-  quantite?: Prisma.SortOrder
-  message?: Prisma.SortOrder
   statut?: Prisma.SortOrder
   activatedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -473,8 +426,6 @@ export type SectionStickerRequestMinOrderByAggregateInput = {
   ficheId?: Prisma.SortOrder
   userId?: Prisma.SortOrder
   section?: Prisma.SortOrder
-  quantite?: Prisma.SortOrder
-  message?: Prisma.SortOrder
   statut?: Prisma.SortOrder
   activatedAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -485,7 +436,6 @@ export type SectionStickerRequestSumOrderByAggregateInput = {
   id?: Prisma.SortOrder
   ficheId?: Prisma.SortOrder
   userId?: Prisma.SortOrder
-  quantite?: Prisma.SortOrder
 }
 
 export type SectionStickerRequestCreateNestedManyWithoutFicheInput = {
@@ -578,8 +528,6 @@ export type EnumSectionStickerStatusFieldUpdateOperationsInput = {
 
 export type SectionStickerRequestCreateWithoutFicheInput = {
   section: string
-  quantite: number
-  message?: string | null
   statut?: $Enums.SectionStickerStatus
   activatedAt?: Date | string | null
   createdAt?: Date | string
@@ -591,8 +539,6 @@ export type SectionStickerRequestUncheckedCreateWithoutFicheInput = {
   id?: number
   userId?: number | null
   section: string
-  quantite: number
-  message?: string | null
   statut?: $Enums.SectionStickerStatus
   activatedAt?: Date | string | null
   createdAt?: Date | string
@@ -633,8 +579,6 @@ export type SectionStickerRequestScalarWhereInput = {
   ficheId?: Prisma.IntFilter<"SectionStickerRequest"> | number
   userId?: Prisma.IntNullableFilter<"SectionStickerRequest"> | number | null
   section?: Prisma.StringFilter<"SectionStickerRequest"> | string
-  quantite?: Prisma.IntFilter<"SectionStickerRequest"> | number
-  message?: Prisma.StringNullableFilter<"SectionStickerRequest"> | string | null
   statut?: Prisma.EnumSectionStickerStatusFilter<"SectionStickerRequest"> | $Enums.SectionStickerStatus
   activatedAt?: Prisma.DateTimeNullableFilter<"SectionStickerRequest"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"SectionStickerRequest"> | Date | string
@@ -643,8 +587,6 @@ export type SectionStickerRequestScalarWhereInput = {
 
 export type SectionStickerRequestCreateWithoutUserInput = {
   section: string
-  quantite: number
-  message?: string | null
   statut?: $Enums.SectionStickerStatus
   activatedAt?: Date | string | null
   createdAt?: Date | string
@@ -656,8 +598,6 @@ export type SectionStickerRequestUncheckedCreateWithoutUserInput = {
   id?: number
   ficheId: number
   section: string
-  quantite: number
-  message?: string | null
   statut?: $Enums.SectionStickerStatus
   activatedAt?: Date | string | null
   createdAt?: Date | string
@@ -694,8 +634,6 @@ export type SectionStickerRequestCreateManyFicheInput = {
   id?: number
   userId?: number | null
   section: string
-  quantite: number
-  message?: string | null
   statut?: $Enums.SectionStickerStatus
   activatedAt?: Date | string | null
   createdAt?: Date | string
@@ -704,8 +642,6 @@ export type SectionStickerRequestCreateManyFicheInput = {
 
 export type SectionStickerRequestUpdateWithoutFicheInput = {
   section?: Prisma.StringFieldUpdateOperationsInput | string
-  quantite?: Prisma.IntFieldUpdateOperationsInput | number
-  message?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   statut?: Prisma.EnumSectionStickerStatusFieldUpdateOperationsInput | $Enums.SectionStickerStatus
   activatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -717,8 +653,6 @@ export type SectionStickerRequestUncheckedUpdateWithoutFicheInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   userId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   section?: Prisma.StringFieldUpdateOperationsInput | string
-  quantite?: Prisma.IntFieldUpdateOperationsInput | number
-  message?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   statut?: Prisma.EnumSectionStickerStatusFieldUpdateOperationsInput | $Enums.SectionStickerStatus
   activatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -729,8 +663,6 @@ export type SectionStickerRequestUncheckedUpdateManyWithoutFicheInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   userId?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   section?: Prisma.StringFieldUpdateOperationsInput | string
-  quantite?: Prisma.IntFieldUpdateOperationsInput | number
-  message?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   statut?: Prisma.EnumSectionStickerStatusFieldUpdateOperationsInput | $Enums.SectionStickerStatus
   activatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -741,8 +673,6 @@ export type SectionStickerRequestCreateManyUserInput = {
   id?: number
   ficheId: number
   section: string
-  quantite: number
-  message?: string | null
   statut?: $Enums.SectionStickerStatus
   activatedAt?: Date | string | null
   createdAt?: Date | string
@@ -751,8 +681,6 @@ export type SectionStickerRequestCreateManyUserInput = {
 
 export type SectionStickerRequestUpdateWithoutUserInput = {
   section?: Prisma.StringFieldUpdateOperationsInput | string
-  quantite?: Prisma.IntFieldUpdateOperationsInput | number
-  message?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   statut?: Prisma.EnumSectionStickerStatusFieldUpdateOperationsInput | $Enums.SectionStickerStatus
   activatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -764,8 +692,6 @@ export type SectionStickerRequestUncheckedUpdateWithoutUserInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   ficheId?: Prisma.IntFieldUpdateOperationsInput | number
   section?: Prisma.StringFieldUpdateOperationsInput | string
-  quantite?: Prisma.IntFieldUpdateOperationsInput | number
-  message?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   statut?: Prisma.EnumSectionStickerStatusFieldUpdateOperationsInput | $Enums.SectionStickerStatus
   activatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -776,8 +702,6 @@ export type SectionStickerRequestUncheckedUpdateManyWithoutUserInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   ficheId?: Prisma.IntFieldUpdateOperationsInput | number
   section?: Prisma.StringFieldUpdateOperationsInput | string
-  quantite?: Prisma.IntFieldUpdateOperationsInput | number
-  message?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   statut?: Prisma.EnumSectionStickerStatusFieldUpdateOperationsInput | $Enums.SectionStickerStatus
   activatedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -791,8 +715,6 @@ export type SectionStickerRequestSelect<ExtArgs extends runtime.Types.Extensions
   ficheId?: boolean
   userId?: boolean
   section?: boolean
-  quantite?: boolean
-  message?: boolean
   statut?: boolean
   activatedAt?: boolean
   createdAt?: boolean
@@ -806,8 +728,6 @@ export type SectionStickerRequestSelectCreateManyAndReturn<ExtArgs extends runti
   ficheId?: boolean
   userId?: boolean
   section?: boolean
-  quantite?: boolean
-  message?: boolean
   statut?: boolean
   activatedAt?: boolean
   createdAt?: boolean
@@ -821,8 +741,6 @@ export type SectionStickerRequestSelectUpdateManyAndReturn<ExtArgs extends runti
   ficheId?: boolean
   userId?: boolean
   section?: boolean
-  quantite?: boolean
-  message?: boolean
   statut?: boolean
   activatedAt?: boolean
   createdAt?: boolean
@@ -836,15 +754,13 @@ export type SectionStickerRequestSelectScalar = {
   ficheId?: boolean
   userId?: boolean
   section?: boolean
-  quantite?: boolean
-  message?: boolean
   statut?: boolean
   activatedAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type SectionStickerRequestOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "ficheId" | "userId" | "section" | "quantite" | "message" | "statut" | "activatedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["sectionStickerRequest"]>
+export type SectionStickerRequestOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "ficheId" | "userId" | "section" | "statut" | "activatedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["sectionStickerRequest"]>
 export type SectionStickerRequestInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   fiche?: boolean | Prisma.FicheDefaultArgs<ExtArgs>
   user?: boolean | Prisma.SectionStickerRequest$userArgs<ExtArgs>
@@ -869,8 +785,6 @@ export type $SectionStickerRequestPayload<ExtArgs extends runtime.Types.Extensio
     ficheId: number
     userId: number | null
     section: string
-    quantite: number
-    message: string | null
     statut: $Enums.SectionStickerStatus
     activatedAt: Date | null
     createdAt: Date
@@ -1304,8 +1218,6 @@ export interface SectionStickerRequestFieldRefs {
   readonly ficheId: Prisma.FieldRef<"SectionStickerRequest", 'Int'>
   readonly userId: Prisma.FieldRef<"SectionStickerRequest", 'Int'>
   readonly section: Prisma.FieldRef<"SectionStickerRequest", 'String'>
-  readonly quantite: Prisma.FieldRef<"SectionStickerRequest", 'Int'>
-  readonly message: Prisma.FieldRef<"SectionStickerRequest", 'String'>
   readonly statut: Prisma.FieldRef<"SectionStickerRequest", 'SectionStickerStatus'>
   readonly activatedAt: Prisma.FieldRef<"SectionStickerRequest", 'DateTime'>
   readonly createdAt: Prisma.FieldRef<"SectionStickerRequest", 'DateTime'>

@@ -187,6 +187,29 @@ export const sendAccountDeletedByAdminEmail = async (params: {
   });
 };
 
+export const sendSectionStickerActivatedEmail = async (params: {
+  to: string;
+  ownerName?: string | null;
+  ficheName: string;
+  sectionLabel: string;
+  stickerUrl: string;
+}) => {
+  const owner = params.ownerName?.trim() || "Bonjour";
+  const safeFiche = escapeHtml(params.ficheName);
+  const safeSection = escapeHtml(params.sectionLabel);
+  const safeUrl = escapeHtml(params.stickerUrl);
+
+  await sendMail({
+    to: params.to,
+    subject: `Votre sticker « ${params.sectionLabel} » est activé — ${params.ficheName}`,
+    html: `<p>Bonjour ${escapeHtml(owner)},</p>
+<p>Notre équipe a généré et activé le sticker de la section <strong>${safeSection}</strong> pour votre fiche <strong>${safeFiche}</strong>.</p>
+<p>Votre lien direct et votre QR code sont désormais disponibles dans votre espace client :</p>
+<p><a href="${safeUrl}">${safeUrl}</a></p>`,
+    text: `Bonjour ${owner},\n\nLe sticker de la section « ${params.sectionLabel} » pour votre fiche ${params.ficheName} est désormais actif.\nLien direct : ${params.stickerUrl}`,
+  });
+};
+
 // ? dynamic send email function
 export const sendMail = async (data: {
   to: string;

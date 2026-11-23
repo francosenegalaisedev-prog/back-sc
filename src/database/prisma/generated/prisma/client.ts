@@ -160,11 +160,6 @@ export type DemandeRappel = Prisma.DemandeRappelModel
  */
 export type FichePassage = Prisma.FichePassageModel
 /**
- * Model CardModel
- * 
- */
-export type CardModel = Prisma.CardModelModel
-/**
  * Model PrintJob
  * 
  */

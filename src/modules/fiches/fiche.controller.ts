@@ -184,6 +184,29 @@ export const FicheController = {
       );
   }),
 
+  uploadCardRequestImage: asyncHandler(async (req, res) => {
+    if (!Buffer.isBuffer(req.body)) {
+      res.status(400).json({
+        error: {
+          code: "CORPS_MEDIA_INVALIDE",
+          message: "Le fichier doit être envoyé en binaire",
+        },
+      });
+      return;
+    }
+    const contentType = req.headers["content-type"];
+    res
+      .status(201)
+      .json(
+        await ProductionService.uploadClientCardImage(
+          req.user!,
+          Number(req.params.id),
+          req.body,
+          Array.isArray(contentType) ? contentType[0] : contentType
+        )
+      );
+  }),
+
   recordPublicPassage: asyncHandler(async (req, res) => {
     const source = String(req.body.source).toUpperCase() as PassageSource;
     const result = await PassageService.record(

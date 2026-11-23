@@ -4,9 +4,7 @@ import { requireAuth, requireRole } from "../../middlewares/auth";
 import { rateLimitHandler } from "../../middlewares/errorHandler";
 import { validate } from "../../middlewares/validate";
 import { idParam } from "../fiches/fiches.schemas";
-import { raw } from "express";
 import { listSectionStickersQuery, patchSectionStickerSchema } from "./section-stickers.schemas";
-import { createModeleCarteSchema, patchModeleCarteSchema } from "./card-models.schemas";
 import { ProductionController } from "./production.controller";
 import {
   codeParams,
@@ -36,18 +34,6 @@ productionRouter.patch("/cartes/:id", validate({ params: idParam, body: patchCar
 productionRouter.get("/section-stickers", validate({ query: listSectionStickersQuery }), ProductionController.listSectionStickers);
 // PATCH /section-stickers/:id             { statut: "active" | "desactivee" | "refusee" }
 productionRouter.patch("/section-stickers/:id", validate({ params: idParam, body: patchSectionStickerSchema }), ProductionController.updateSectionSticker);
-
-// Modèles de carte (recto / verso affichés au client dans sa demande de carte) — un seul actif par formule
-// GET    /modeles-cartes
-productionRouter.get("/modeles-cartes", ProductionController.listModelesCartes);
-// POST   /modeles-cartes/images           corps binaire (JPEG, PNG ou WebP, 12 Mo max) → { url } à mettre dans rectoUrl / versoUrl
-productionRouter.post("/modeles-cartes/images", raw({ type: () => true, limit: "13mb" }), ProductionController.uploadModeleCarteImage);
-// POST   /modeles-cartes                  { tier, nom, rectoUrl, versoUrl, actif? }  (image = url renvoyée ci-dessus, ou lien https)
-productionRouter.post("/modeles-cartes", validate({ body: createModeleCarteSchema }), ProductionController.createModeleCarte);
-// PATCH  /modeles-cartes/:id              { nom?, rectoUrl?, versoUrl?, actif? }   actif:true désactive l'ancien
-productionRouter.patch("/modeles-cartes/:id", validate({ params: idParam, body: patchModeleCarteSchema }), ProductionController.updateModeleCarte);
-// DELETE /modeles-cartes/:id
-productionRouter.delete("/modeles-cartes/:id", validate({ params: idParam }), ProductionController.deleteModeleCarte);
 
 // Stickers
 // GET   /stickers?kind=&statut=&limit=

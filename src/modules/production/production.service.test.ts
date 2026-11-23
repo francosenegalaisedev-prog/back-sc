@@ -7,7 +7,6 @@ const mocks = vi.hoisted(() => ({
   printFindUnique: vi.fn(),
   printUpdate: vi.fn(),
   printCreate: vi.fn(),
-  cardModelFindFirst: vi.fn(),
   transaction: vi.fn(),
 }));
 
@@ -20,7 +19,6 @@ vi.mock("../../database/prisma/prisma-client", () => ({
       create: mocks.printCreate,
       update: mocks.printUpdate,
     },
-    cardModel: { findFirst: mocks.cardModelFindFirst },
     $transaction: mocks.transaction,
   },
 }));
@@ -78,7 +76,6 @@ const tx = {
     create: mocks.printCreate,
     update: mocks.printUpdate,
   },
-  cardModel: { findFirst: mocks.cardModelFindFirst },
 };
 
 beforeEach(() => {
@@ -89,10 +86,6 @@ beforeEach(() => {
   mocks.ficheFindFirst.mockResolvedValue(fiche);
   mocks.ficheFindUnique.mockResolvedValue(fiche);
   mocks.printFindFirst.mockResolvedValue(null);
-  mocks.cardModelFindFirst.mockResolvedValue({
-    rectoUrl: "/api/media/cartes/0a1b2c3d-0000-4000-8000-000000000001.webp",
-    versoUrl: "/api/media/cartes/0a1b2c3d-0000-4000-8000-000000000002.webp",
-  });
   mocks.printFindUnique.mockResolvedValue({
     statut: "A_IMPRIMER",
     printedAt: null,
@@ -116,12 +109,13 @@ describe("ProductionService.requestClientCarte", () => {
     telephoneLivraison: "770000000",
   };
 
-  it("creates a card using the fiche subscription and server price", async () => {
-    const result = await ProductionService.requestClientCarte(
-      user,
-      fiche.id,
-      input
-    );
+  it("creates a card using the fiche subscription, server price, previews and design metadata", async () => {
+    const result = await ProductionService.requestClientCarte(user, fiche.id, {
+      ...input,
+      rectoUrl: "/api/media/cartes/0a1b2c3d-0000-4000-8000-000000000001.webp",
+      versoUrl: "/api/media/cartes/0a1b2c3d-0000-4000-8000-000000000002.webp",
+      design: { couleurAccentHex: "#EF1733", fondRecto: "noir" },
+    });
 
     expect(mocks.transaction).toHaveBeenCalledWith(expect.any(Function), {
       isolationLevel: "Serializable",
@@ -134,6 +128,7 @@ describe("ProductionService.requestClientCarte", () => {
           tier: "PRO",
           rectoUrl: "/api/media/cartes/0a1b2c3d-0000-4000-8000-000000000001.webp",
           versoUrl: "/api/media/cartes/0a1b2c3d-0000-4000-8000-000000000002.webp",
+          design: { couleurAccentHex: "#EF1733", fondRecto: "noir" },
           amountFcfa: 12_000,
           deliveryAddress: input.adresseLivraison,
           deliveryTelephone: input.telephoneLivraison,
@@ -149,9 +144,7 @@ describe("ProductionService.requestClientCarte", () => {
     });
   });
 
-  it("keeps no card-model images when the formula has no active model", async () => {
-    mocks.cardModelFindFirst.mockResolvedValue(null);
-
+  it("creates a card with null previews when none are provided", async () => {
     await ProductionService.requestClientCarte(user, fiche.id, input);
 
     expect(mocks.printCreate).toHaveBeenCalledWith(

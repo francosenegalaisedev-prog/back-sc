@@ -48,6 +48,12 @@ export const clientCarteRequestSchema = z
       .max(30)
       .refine(value => value.replace(/\D/g, "").length >= 6, "Numéro de téléphone invalide"),
     notesClient: z.string().trim().max(1000).optional(),
+    rectoUrl: cardImageRef.optional(),
+    versoUrl: cardImageRef.optional(),
+    design: z
+      .record(z.string(), z.unknown())
+      .refine(jsonLeger(20_000), "design trop volumineux")
+      .optional(),
   })
   .strict();
 

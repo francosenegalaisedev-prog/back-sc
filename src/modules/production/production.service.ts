@@ -7,8 +7,7 @@ import type {
   StickerStatus,
 } from "../../database/prisma/generated/prisma/client";
 import { prisma } from "../../database/prisma/prisma-client";
-import { CardImageService } from "../media/card-images.service";
-import { CardModelService } from "./card-models.service";
+import { CardImageService, isCardImageRef } from "../media/card-images.service";
 import { conflict, forbidden, notFound, unprocessable } from "../../lib/httpError";
 import type { AuthUser } from "../../types/user";
 import type {
@@ -187,6 +186,24 @@ const isSerializationConflict = (error: unknown) =>
   error instanceof Prisma.PrismaClientKnownRequestError &&
   error.code === "P2034";
 
+const releaseUnusedCardImages = async (refs: string[]) => {
+  for (const ref of new Set(refs)) {
+    if (!isCardImageRef(ref)) continue;
+    const absoluteRef = CardImageService.toAbsolute(ref);
+    const jobCount = await prisma.printJob.count({
+      where: {
+        OR: [
+          { rectoUrl: ref },
+          { versoUrl: ref },
+          { rectoUrl: absoluteRef },
+          { versoUrl: absoluteRef },
+        ],
+      },
+    });
+    if (jobCount === 0) await CardImageService.deleteRef(ref);
+  }
+};
+
 export const ProductionService = {
   // ───────── Chiffres de l'en-tête ─────────
   async summary() {
@@ -236,10 +253,7 @@ export const ProductionService = {
       orderBy: [{ createdAt: "desc" }, { id: "desc" }],
       include: { fiche: { select: FICHE_SELECT } },
     });
-    // Modèle (recto / verso) défini par l'administration pour la formule qui sera facturée (celle de l'abonnement
-    // valide, sinon Essentielle) : même règle que la demande. null = aucun modèle défini → aperçu par défaut.
-    const tier: PlanType = fiche.subscriptions[0]?.plan.type ?? "ESSENTIELLE";
-    return { carte: job ? carteDto(job) : null, modele: await CardModelService.activeFor(tier) };
+    return { carte: job ? carteDto(job) : null };
   },
 
   async requestClientCarte(
@@ -291,10 +305,12 @@ export const ProductionService = {
               "Une demande de carte est déjà en cours pour cette fiche.",
             );
 
-          const modele = await tx.cardModel.findFirst({
-            where: { tier: plan, actif: true },
-            select: { rectoUrl: true, versoUrl: true },
-          });
+          const rectoUrl = input.rectoUrl
+            ? CardImageService.toStoredRef(input.rectoUrl)
+            : null;
+          const versoUrl = input.versoUrl
+            ? CardImageService.toStoredRef(input.versoUrl)
+            : null;
           const job = await tx.printJob.create({
             data: {
               ficheId,
@@ -303,8 +319,11 @@ export const ProductionService = {
               slug: fiche.slug,
               nfcUrl: ficheUrl(fiche.slug),
               ...instantane(fiche),
-              rectoUrl: modele?.rectoUrl ?? null,
-              versoUrl: modele?.versoUrl ?? null,
+              rectoUrl,
+              versoUrl,
+              ...(input.design !== undefined && {
+                design: input.design as Prisma.InputJsonValue,
+              }),
               deliveryAddress: input.adresseLivraison,
               deliveryTelephone: input.telephoneLivraison,
               clientNotes: input.notesClient || null,
@@ -324,6 +343,20 @@ export const ProductionService = {
         );
       throw error;
     }
+  },
+
+  async uploadClientCardImage(
+    user: AuthUser,
+    ficheId: number,
+    body: Buffer,
+    rawMime?: string,
+  ) {
+    const fiche = await prisma.fiche.findFirst({
+      where: { id: ficheId, userId: user.id },
+      select: { id: true },
+    });
+    if (!fiche) throw notFound("Fiche introuvable");
+    return CardImageService.upload(body, rawMime);
   },
 
   async updateCarte(id: number, input: PatchCarteInput) {
@@ -389,7 +422,7 @@ export const ProductionService = {
         ? [actuel.versoUrl]
         : []),
     ];
-    if (replaced.length) await CardModelService.releaseUnusedImages(replaced);
+    if (replaced.length) await releaseUnusedCardImages(replaced);
     return { carte: carteDto(job) };
   },
 

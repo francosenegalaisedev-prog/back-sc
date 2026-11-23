@@ -1,33 +1,50 @@
 import type { Request, Response } from "express";
 import { prisma } from "../../database/prisma/prisma-client";
 import { asyncHandler } from "../../lib/asyncHandler";
+import {
+  clearSessionCookie,
+  setSessionCookie,
+} from "../../lib/sessionCookie";
 import { AuthService as auth, publicUser } from "./auth.service";
 
 export const AuthController = {
   register: asyncHandler(async (req: Request, res: Response) => {
     const result = await auth.register(req.body);
-
+    setSessionCookie(res, result.token);
     return res.status(201).json({ status: "ok", data: result });
   }),
 
   // Connexion classique conservée pour compatibilité avec les clients existants.
   login: asyncHandler(async (req: Request, res: Response) => {
-    res.json(await auth.login(req.body));
+    const result = await auth.login(req.body);
+    setSessionCookie(res, result.token);
+    res.json(result);
   }),
 
   // Connexion dédiée à l’espace client : seuls les comptes CLIENT sont acceptés.
   googleLogin: asyncHandler(async (req: Request, res: Response) => {
-    res.json(await auth.loginWithGoogle(req.body.credential));
+    const result = await auth.loginWithGoogle(req.body.credential);
+    setSessionCookie(res, result.token);
+    res.json(result);
   }),
 
   // Connexion dédiée à l’espace client : seuls les comptes CLIENT sont acceptés.
   clientLogin: asyncHandler(async (req: Request, res: Response) => {
-    res.json(await auth.login(req.body, "CLIENT"));
+    const result = await auth.login(req.body, "CLIENT");
+    setSessionCookie(res, result.token);
+    res.json(result);
   }),
 
   // Connexion dédiée à l’espace administration : seuls les comptes ADMIN sont acceptés.
   adminLogin: asyncHandler(async (req: Request, res: Response) => {
-    res.json(await auth.login(req.body, "ADMIN"));
+    const result = await auth.login(req.body, "ADMIN");
+    setSessionCookie(res, result.token);
+    res.json(result);
+  }),
+
+  logout: asyncHandler(async (_req: Request, res: Response) => {
+    clearSessionCookie(res);
+    res.json({ ok: true });
   }),
 
   verifyEmail: asyncHandler(async (req: Request, res: Response) => {

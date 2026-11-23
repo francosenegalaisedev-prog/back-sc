@@ -53,6 +53,7 @@ const isDevTunnelOrigin = (origin: string) =>
 
 app.use(
   cors({
+    credentials: true,
     origin: (origin, cb) => {
       if (
         !origin ||

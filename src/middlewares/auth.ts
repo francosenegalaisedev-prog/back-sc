@@ -4,16 +4,31 @@ import { prisma } from "../database/prisma/prisma-client";
 import { forbidden, unauthorized } from "../lib/httpError";
 import { verifyToken } from "../lib/jwt";
 import { logger } from "../lib/logger";
+import { readSessionCookie } from "../lib/sessionCookie";
 
-// Exige un « Authorization: Bearer <token> » valide et recharge l'utilisateur en base
-// (un compte supprimé ou rétrogradé perd ses droits immédiatement).
+function extractAuthToken(req: Request): {
+  token: string | null;
+  reason?: string;
+} {
+  const cookieToken = readSessionCookie(req);
+  if (cookieToken) return { token: cookieToken };
+
+  const header = req.headers.authorization;
+  if (!header) return { token: null, reason: "missing_authorization_header" };
+  if (!header.startsWith("Bearer ")) {
+    return { token: null, reason: "invalid_authorization_scheme" };
+  }
+  return { token: header.slice(7) };
+}
+
+// Exige une session valide (cookie httpOnly `sc_session` en priorité, ou `Authorization: Bearer <token>`)
+// et recharge l'utilisateur en base (un compte supprimé ou rétrogradé perd ses droits immédiatement).
 export async function requireAuth(
   req: Request,
   res: Response,
   next: NextFunction
 ) {
   try {
-    const header = req.headers.authorization;
     const rejectAuthentication = (reason: string, message?: string): never => {
       logger.warn("Authentication failed", {
         requestId: res.locals.requestId,
@@ -24,13 +39,12 @@ export async function requireAuth(
       throw unauthorized(message);
     };
 
-    if (!header) return rejectAuthentication("missing_authorization_header");
-    if (!header.startsWith("Bearer "))
-      return rejectAuthentication("invalid_authorization_scheme");
+    const { token, reason } = extractAuthToken(req);
+    if (!token) return rejectAuthentication(reason ?? "missing_token");
 
     let userId: number;
     try {
-      userId = Number(verifyToken(header.slice(7)).sub);
+      userId = Number(verifyToken(token).sub);
     } catch {
       return rejectAuthentication(
         "invalid_or_expired_token",
@@ -79,11 +93,11 @@ export async function optionalAuth(
   next: NextFunction
 ) {
   try {
-    const header = req.headers.authorization;
-    if (!header?.startsWith("Bearer ")) return next();
+    const { token } = extractAuthToken(req);
+    if (!token) return next();
 
     try {
-      const userId = Number(verifyToken(header.slice(7)).sub);
+      const userId = Number(verifyToken(token).sub);
       if (!Number.isSafeInteger(userId) || userId <= 0) return next();
 
       const user = await prisma.user.findUnique({ where: { id: userId } });

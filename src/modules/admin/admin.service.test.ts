@@ -333,14 +333,14 @@ describe("AdminService.listFiches", () => {
         user: null,
         subscriptions: [{ endsAt: null, plan: { type: "PRO" } }],
         sectionStickers: [
-          { id: 8, section: "menu", quantite: 20, createdAt },
+          { id: 8, section: "menu", createdAt },
         ],
       },
     ]);
     mocks.ficheCount.mockResolvedValue(1);
 
     const result = await AdminService.listFiches({
-      sticker: "demande",
+      sticker: "actif",
       page: 1,
       limit: 20,
       tri: "recent",
@@ -349,11 +349,11 @@ describe("AdminService.listFiches", () => {
     expect(mocks.ficheFindMany).toHaveBeenCalledWith(
       expect.objectContaining({
         where: {
-          AND: [{ sectionStickers: { some: { statut: "DEMANDE" } } }],
+          AND: [{ sectionStickers: { some: { statut: "ACTIVE" } } }],
         },
         select: expect.objectContaining({
           sectionStickers: expect.objectContaining({
-            where: { statut: "DEMANDE" },
+            where: { statut: "ACTIVE" },
           }),
         }),
       })
@@ -363,7 +363,7 @@ describe("AdminService.listFiches", () => {
         {
           id: 12,
           demandesSticker: [
-            { id: 8, section: "menu", quantite: 20, createdAt },
+            { id: 8, section: "menu", createdAt },
           ],
         },
       ],

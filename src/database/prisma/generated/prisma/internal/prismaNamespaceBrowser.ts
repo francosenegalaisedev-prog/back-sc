@@ -560,8 +560,6 @@ export const SectionStickerRequestScalarFieldEnum = {
   ficheId: 'ficheId',
   userId: 'userId',
   section: 'section',
-  quantite: 'quantite',
-  message: 'message',
   statut: 'statut',
   activatedAt: 'activatedAt',
   createdAt: 'createdAt',

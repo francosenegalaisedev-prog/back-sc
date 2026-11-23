@@ -37,6 +37,10 @@ export type FicheFull = Prisma.FicheGetPayload<{
   include: typeof ficheInclude;
 }>;
 
+import { ALLOWED_STICKER_SECTIONS } from "../production/section-stickers.schemas";
+
+const ALLOWED_STICKER_SECTIONS_SET = new Set<string>(ALLOWED_STICKER_SECTIONS);
+
 const JOURS = [
   "Lundi",
   "Mardi",
@@ -59,8 +63,13 @@ export function toFicheDto(f: FicheFull, sub: EffectiveSubscription | null) {
     formule: sub ? lower(sub.plan.type) : "essentielle", // repli d'affichage si l'abonnement a expiré
     statut: lower(f.statut),
     expiree: sub === null,
-    // Sections de stickers activées par l'administration : seules celles-ci sont servies en page /s/:slug/:section.
-    stickerSections: sub ? f.sectionStickers.map(s => s.section) : [],
+    // Sections de stickers activées par l'administration : liées à l'état de la fiche (ACTIVE + abonnement valide).
+    stickerSections:
+      f.statut === "ACTIVE" && sub
+        ? f.sectionStickers
+            .map(s => s.section)
+            .filter(s => ALLOWED_STICKER_SECTIONS_SET.has(s))
+        : [],
     // Droits réels de la formule (table plan_limits) ; null si expirée : le front retombe sur son repli.
     planCapabilities: sub?.plan.limits
       ? toPlanCapabilities(sub.plan, sub.plan.limits)

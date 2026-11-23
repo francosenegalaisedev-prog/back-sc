@@ -140,7 +140,7 @@ export const AdminService = {
       prisma.fiche.count({ where: aLaFormule(now, "SIGNATURE") }),
       prisma.fiche.aggregate({ _sum: { scansTotal: true } }),
       prisma.user.count({ where: { role: "CLIENT" } }),
-      prisma.sectionStickerRequest.count({ where: { statut: "DEMANDE" } }),
+      prisma.sectionStickerRequest.count({ where: { statut: "ACTIVE" } }),
       prisma.printJob.count({
         where: { statut: { in: ["A_IMPRIMER", "IMPRIMEE", "ENCODEE", "TESTEE"] } },
       }),
@@ -427,8 +427,8 @@ export const AdminService = {
     if (q.expiration === "expiree") conditions.push(estExpiree(now));
     if (q.expiration === "bientot") conditions.push(expireBientot(now));
     if (q.userId) conditions.push({ userId: q.userId });
-    if (q.sticker === "demande") {
-      conditions.push({ sectionStickers: { some: { statut: "DEMANDE" } } });
+    if (q.sticker === "actif") {
+      conditions.push({ sectionStickers: { some: { statut: "ACTIVE" } } });
     }
 
     const where: Prisma.FicheWhereInput = conditions.length
@@ -463,9 +463,9 @@ export const AdminService = {
             select: { endsAt: true, plan: { select: { type: true } } },
           },
           sectionStickers: {
-            where: { statut: "DEMANDE" },
+            where: { statut: "ACTIVE" },
             orderBy: [{ createdAt: "desc" }, { id: "desc" }],
-            select: { id: true, section: true, quantite: true, createdAt: true },
+            select: { id: true, section: true, createdAt: true },
           },
         },
         // le 2e tri (id) garde l'ordre stable d'une page à l'autre

@@ -32,12 +32,9 @@ const ROBOTS = /bot|crawl|spider|slurp|preview|facebookexternalhit|whatsapp|tele
 
 // Transitions de statut d'une carte : avancer d'une étape, revenir d'une étape (correction), annuler.
 const TRANSITIONS: Record<PrintStatus, PrintStatus[]> = {
-  A_IMPRIMER: ["IMPRIMEE", "ANNULEE"],
-  IMPRIMEE: ["ENCODEE", "A_IMPRIMER", "ANNULEE"],
-  ENCODEE: ["TESTEE", "IMPRIMEE", "ANNULEE"],
-  TESTEE: ["LIVREE", "ENCODEE", "ANNULEE"],
-  LIVREE: ["TESTEE"],
-  ANNULEE: ["A_IMPRIMER"],
+  ENVOYEE: ["TRAITEE", "LIVREE"],
+  TRAITEE: ["LIVREE", "ENVOYEE"],
+  LIVREE: ["TRAITEE"],
 };
 
 // Codes courts lisibles (sans 0/o/1/l/i)
@@ -170,16 +167,10 @@ const abonnementValable = (now: Date): Prisma.SubscriptionWhereInput => ({
   OR: [{ endsAt: null }, { endsAt: { gt: now } }],
 });
 
-const CARD_PRICES: Record<PlanType, number> = {
-  ESSENTIELLE: 10_000,
-  PRO: 12_000,
-  SIGNATURE: 15_000,
-};
+const DEFAULT_CARD_PRICE_FCFA = 15_000;
 const ACTIVE_CARD_STATUSES: PrintStatus[] = [
-  "A_IMPRIMER",
-  "IMPRIMEE",
-  "ENCODEE",
-  "TESTEE",
+  "ENVOYEE",
+  "TRAITEE",
 ];
 
 const isSerializationConflict = (error: unknown) =>
@@ -208,7 +199,7 @@ export const ProductionService = {
   // ───────── Chiffres de l'en-tête ─────────
   async summary() {
     const [cartesAImprimer, stickersFonction, stickersTelephone, qrSansCible, scans] = await Promise.all([
-      prisma.printJob.count({ where: { statut: "A_IMPRIMER" } }),
+      prisma.printJob.count({ where: { statut: { in: ACTIVE_CARD_STATUSES } } }),
       prisma.stickerOrder.count({ where: { statut: "A_PARAMETRER", kind: "FONCTION" } }),
       prisma.stickerOrder.count({ where: { statut: "A_PARAMETRER", kind: "TELEPHONE" } }),
       prisma.qrLink.count({ where: { actif: true, targetUrl: null } }),
@@ -305,6 +296,13 @@ export const ProductionService = {
               "Une demande de carte est déjà en cours pour cette fiche.",
             );
 
+          const appSetting = await tx.appSetting.findUnique({
+            where: { id: 1 },
+            select: { cardPriceFcfa: true },
+          });
+          const cardPriceFcfa =
+            appSetting?.cardPriceFcfa ?? DEFAULT_CARD_PRICE_FCFA;
+
           const rectoUrl = input.rectoUrl
             ? CardImageService.toStoredRef(input.rectoUrl)
             : null;
@@ -327,7 +325,7 @@ export const ProductionService = {
               deliveryAddress: input.adresseLivraison,
               deliveryTelephone: input.telephoneLivraison,
               clientNotes: input.notesClient || null,
-              amountFcfa: CARD_PRICES[plan],
+              amountFcfa: cardPriceFcfa,
             },
             include: { fiche: { select: FICHE_SELECT } },
           });
@@ -369,12 +367,12 @@ export const ProductionService = {
     });
     if (!actuel) throw notFound("Carte introuvable");
     if (
-      actuel.statut !== "A_IMPRIMER" &&
+      actuel.statut !== "ENVOYEE" &&
       (input.rectoUrl !== undefined || input.versoUrl !== undefined)
     )
       throw unprocessable(
         "FICHIERS_CARTE_VERROUILLES",
-        "Les fichiers de la carte ne peuvent être modifiés qu'avant impression.",
+        "Les fichiers de la carte ne peuvent être modifiés qu'avant traitement.",
       );
 
     const rectoUrl =
@@ -403,9 +401,7 @@ export const ProductionService = {
       where: { id },
       data: {
         ...(statut && { statut }),
-        ...(statut === "IMPRIMEE" && !actuel.printedAt && { printedAt: now }),
-        ...(statut === "ENCODEE" && !actuel.encodedAt && { encodedAt: now }),
-        ...(statut === "TESTEE" && !actuel.testedAt && { testedAt: now }),
+        ...(statut === "TRAITEE" && !actuel.printedAt && { printedAt: now }),
         ...(statut === "LIVREE" && !actuel.deliveredAt && { deliveredAt: now }),
         ...(input.notes !== undefined && { notes: input.notes }),
         ...(rectoUrl !== undefined && { rectoUrl }),

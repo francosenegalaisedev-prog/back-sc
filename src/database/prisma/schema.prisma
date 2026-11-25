@@ -280,13 +280,14 @@ model AdminActionLog {
 }
 
 model AppSetting {
-  id           Int      @id @default(1)
-  platformName String   @default("Support Connecté")
-  supportEmail String?
-  supportPhone String?
-  socialLinks  Json     @default("{}")
-  maintenance  Boolean  @default(false)
-  updatedAt    DateTime @updatedAt
+  id            Int      @id @default(1)
+  platformName  String   @default("Support Connecté")
+  supportEmail  String?
+  supportPhone  String?
+  socialLinks   Json     @default("{}")
+  maintenance   Boolean  @default(false)
+  cardPriceFcfa Int      @default(15000)
+  updatedAt     DateTime @updatedAt
 
   @@map("app_settings")
 }
@@ -589,12 +590,9 @@ enum BienType {
 }
 
 enum PrintStatus {
-  A_IMPRIMER
-  IMPRIMEE
-  ENCODEE
-  TESTEE
+  ENVOYEE
+  TRAITEE
   LIVREE
-  ANNULEE
 }
 
 enum StickerKind {
@@ -638,7 +636,7 @@ model PrintJob {
   design            Json?
   rectoPath         String?
   versoPath         String?
-  statut            PrintStatus @default(A_IMPRIMER)
+  statut            PrintStatus @default(ENVOYEE)
   clientNom         String?
   clientEntreprise  String?
   clientTelephone   String?

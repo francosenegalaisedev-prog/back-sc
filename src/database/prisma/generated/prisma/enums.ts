@@ -187,12 +187,9 @@ export type BienType = (typeof BienType)[keyof typeof BienType]
 
 
 export const PrintStatus = {
-  A_IMPRIMER: 'A_IMPRIMER',
-  IMPRIMEE: 'IMPRIMEE',
-  ENCODEE: 'ENCODEE',
-  TESTEE: 'TESTEE',
-  LIVREE: 'LIVREE',
-  ANNULEE: 'ANNULEE'
+  ENVOYEE: 'ENVOYEE',
+  TRAITEE: 'TRAITEE',
+  LIVREE: 'LIVREE'
 } as const
 
 export type PrintStatus = (typeof PrintStatus)[keyof typeof PrintStatus]

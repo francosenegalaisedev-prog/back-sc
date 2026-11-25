@@ -231,7 +231,7 @@ describe("AdminService.stats", () => {
 
     expect(mocks.printJobCount).toHaveBeenCalledWith({
       where: {
-        statut: { in: ["A_IMPRIMER", "IMPRIMEE", "ENCODEE", "TESTEE"] },
+        statut: { in: ["ENVOYEE", "TRAITEE"] },
       },
     });
     expect(result.demandesCarte).toBe(3);

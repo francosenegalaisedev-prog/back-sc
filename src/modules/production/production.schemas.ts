@@ -2,7 +2,7 @@ import { z } from "zod";
 
 // ───────── Briques communes ─────────
 export const tier = z.enum(["essentielle", "pro", "signature"]);
-const statutCarte = z.enum(["a_imprimer", "imprimee", "encodee", "testee", "livree", "annulee"]);
+const statutCarte = z.enum(["envoyee", "traitee", "livree"]);
 const statutSticker = z.enum(["a_parametrer", "parametre", "teste", "imprime", "livre", "annule"]);
 const hex = z.string().regex(/^#[0-9a-fA-F]{6}$/, "couleur #RRGGBB attendue");
 const limit = z.coerce.number().int().min(1).max(200).default(100);

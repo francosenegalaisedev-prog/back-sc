@@ -3241,6 +3241,7 @@ export const AppSettingScalarFieldEnum = {
   supportPhone: 'supportPhone',
   socialLinks: 'socialLinks',
   maintenance: 'maintenance',
+  cardPriceFcfa: 'cardPriceFcfa',
   updatedAt: 'updatedAt'
 } as const
 

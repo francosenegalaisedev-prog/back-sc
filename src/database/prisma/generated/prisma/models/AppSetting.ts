@@ -28,10 +28,12 @@ export type AggregateAppSetting = {
 
 export type AppSettingAvgAggregateOutputType = {
   id: number | null
+  cardPriceFcfa: number | null
 }
 
 export type AppSettingSumAggregateOutputType = {
   id: number | null
+  cardPriceFcfa: number | null
 }
 
 export type AppSettingMinAggregateOutputType = {
@@ -40,6 +42,7 @@ export type AppSettingMinAggregateOutputType = {
   supportEmail: string | null
   supportPhone: string | null
   maintenance: boolean | null
+  cardPriceFcfa: number | null
   updatedAt: Date | null
 }
 
@@ -49,6 +52,7 @@ export type AppSettingMaxAggregateOutputType = {
   supportEmail: string | null
   supportPhone: string | null
   maintenance: boolean | null
+  cardPriceFcfa: number | null
   updatedAt: Date | null
 }
 
@@ -59,6 +63,7 @@ export type AppSettingCountAggregateOutputType = {
   supportPhone: number
   socialLinks: number
   maintenance: number
+  cardPriceFcfa: number
   updatedAt: number
   _all: number
 }
@@ -66,10 +71,12 @@ export type AppSettingCountAggregateOutputType = {
 
 export type AppSettingAvgAggregateInputType = {
   id?: true
+  cardPriceFcfa?: true
 }
 
 export type AppSettingSumAggregateInputType = {
   id?: true
+  cardPriceFcfa?: true
 }
 
 export type AppSettingMinAggregateInputType = {
@@ -78,6 +85,7 @@ export type AppSettingMinAggregateInputType = {
   supportEmail?: true
   supportPhone?: true
   maintenance?: true
+  cardPriceFcfa?: true
   updatedAt?: true
 }
 
@@ -87,6 +95,7 @@ export type AppSettingMaxAggregateInputType = {
   supportEmail?: true
   supportPhone?: true
   maintenance?: true
+  cardPriceFcfa?: true
   updatedAt?: true
 }
 
@@ -97,6 +106,7 @@ export type AppSettingCountAggregateInputType = {
   supportPhone?: true
   socialLinks?: true
   maintenance?: true
+  cardPriceFcfa?: true
   updatedAt?: true
   _all?: true
 }
@@ -194,6 +204,7 @@ export type AppSettingGroupByOutputType = {
   supportPhone: string | null
   socialLinks: runtime.JsonValue
   maintenance: boolean
+  cardPriceFcfa: number
   updatedAt: Date
   _count: AppSettingCountAggregateOutputType | null
   _avg: AppSettingAvgAggregateOutputType | null
@@ -227,6 +238,7 @@ export type AppSettingWhereInput = {
   supportPhone?: Prisma.StringNullableFilter<"AppSetting"> | string | null
   socialLinks?: Prisma.JsonFilter<"AppSetting">
   maintenance?: Prisma.BoolFilter<"AppSetting"> | boolean
+  cardPriceFcfa?: Prisma.IntFilter<"AppSetting"> | number
   updatedAt?: Prisma.DateTimeFilter<"AppSetting"> | Date | string
 }
 
@@ -237,6 +249,7 @@ export type AppSettingOrderByWithRelationInput = {
   supportPhone?: Prisma.SortOrderInput | Prisma.SortOrder
   socialLinks?: Prisma.SortOrder
   maintenance?: Prisma.SortOrder
+  cardPriceFcfa?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
 
@@ -250,6 +263,7 @@ export type AppSettingWhereUniqueInput = Prisma.AtLeast<{
   supportPhone?: Prisma.StringNullableFilter<"AppSetting"> | string | null
   socialLinks?: Prisma.JsonFilter<"AppSetting">
   maintenance?: Prisma.BoolFilter<"AppSetting"> | boolean
+  cardPriceFcfa?: Prisma.IntFilter<"AppSetting"> | number
   updatedAt?: Prisma.DateTimeFilter<"AppSetting"> | Date | string
 }, "id">
 
@@ -260,6 +274,7 @@ export type AppSettingOrderByWithAggregationInput = {
   supportPhone?: Prisma.SortOrderInput | Prisma.SortOrder
   socialLinks?: Prisma.SortOrder
   maintenance?: Prisma.SortOrder
+  cardPriceFcfa?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.AppSettingCountOrderByAggregateInput
   _avg?: Prisma.AppSettingAvgOrderByAggregateInput
@@ -278,6 +293,7 @@ export type AppSettingScalarWhereWithAggregatesInput = {
   supportPhone?: Prisma.StringNullableWithAggregatesFilter<"AppSetting"> | string | null
   socialLinks?: Prisma.JsonWithAggregatesFilter<"AppSetting">
   maintenance?: Prisma.BoolWithAggregatesFilter<"AppSetting"> | boolean
+  cardPriceFcfa?: Prisma.IntWithAggregatesFilter<"AppSetting"> | number
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"AppSetting"> | Date | string
 }
 
@@ -288,6 +304,7 @@ export type AppSettingCreateInput = {
   supportPhone?: string | null
   socialLinks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   maintenance?: boolean
+  cardPriceFcfa?: number
   updatedAt?: Date | string
 }
 
@@ -298,6 +315,7 @@ export type AppSettingUncheckedCreateInput = {
   supportPhone?: string | null
   socialLinks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   maintenance?: boolean
+  cardPriceFcfa?: number
   updatedAt?: Date | string
 }
 
@@ -308,6 +326,7 @@ export type AppSettingUpdateInput = {
   supportPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   socialLinks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   maintenance?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  cardPriceFcfa?: Prisma.IntFieldUpdateOperationsInput | number
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -318,6 +337,7 @@ export type AppSettingUncheckedUpdateInput = {
   supportPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   socialLinks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   maintenance?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  cardPriceFcfa?: Prisma.IntFieldUpdateOperationsInput | number
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -328,6 +348,7 @@ export type AppSettingCreateManyInput = {
   supportPhone?: string | null
   socialLinks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   maintenance?: boolean
+  cardPriceFcfa?: number
   updatedAt?: Date | string
 }
 
@@ -338,6 +359,7 @@ export type AppSettingUpdateManyMutationInput = {
   supportPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   socialLinks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   maintenance?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  cardPriceFcfa?: Prisma.IntFieldUpdateOperationsInput | number
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -348,6 +370,7 @@ export type AppSettingUncheckedUpdateManyInput = {
   supportPhone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   socialLinks?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   maintenance?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  cardPriceFcfa?: Prisma.IntFieldUpdateOperationsInput | number
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -358,11 +381,13 @@ export type AppSettingCountOrderByAggregateInput = {
   supportPhone?: Prisma.SortOrder
   socialLinks?: Prisma.SortOrder
   maintenance?: Prisma.SortOrder
+  cardPriceFcfa?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
 
 export type AppSettingAvgOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  cardPriceFcfa?: Prisma.SortOrder
 }
 
 export type AppSettingMaxOrderByAggregateInput = {
@@ -371,6 +396,7 @@ export type AppSettingMaxOrderByAggregateInput = {
   supportEmail?: Prisma.SortOrder
   supportPhone?: Prisma.SortOrder
   maintenance?: Prisma.SortOrder
+  cardPriceFcfa?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
 
@@ -380,11 +406,13 @@ export type AppSettingMinOrderByAggregateInput = {
   supportEmail?: Prisma.SortOrder
   supportPhone?: Prisma.SortOrder
   maintenance?: Prisma.SortOrder
+  cardPriceFcfa?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
 
 export type AppSettingSumOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  cardPriceFcfa?: Prisma.SortOrder
 }
 
 
@@ -396,6 +424,7 @@ export type AppSettingSelect<ExtArgs extends runtime.Types.Extensions.InternalAr
   supportPhone?: boolean
   socialLinks?: boolean
   maintenance?: boolean
+  cardPriceFcfa?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["appSetting"]>
 
@@ -406,6 +435,7 @@ export type AppSettingSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ex
   supportPhone?: boolean
   socialLinks?: boolean
   maintenance?: boolean
+  cardPriceFcfa?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["appSetting"]>
 
@@ -416,6 +446,7 @@ export type AppSettingSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ex
   supportPhone?: boolean
   socialLinks?: boolean
   maintenance?: boolean
+  cardPriceFcfa?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["appSetting"]>
 
@@ -426,10 +457,11 @@ export type AppSettingSelectScalar = {
   supportPhone?: boolean
   socialLinks?: boolean
   maintenance?: boolean
+  cardPriceFcfa?: boolean
   updatedAt?: boolean
 }
 
-export type AppSettingOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "platformName" | "supportEmail" | "supportPhone" | "socialLinks" | "maintenance" | "updatedAt", ExtArgs["result"]["appSetting"]>
+export type AppSettingOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "platformName" | "supportEmail" | "supportPhone" | "socialLinks" | "maintenance" | "cardPriceFcfa" | "updatedAt", ExtArgs["result"]["appSetting"]>
 
 export type $AppSettingPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "AppSetting"
@@ -441,6 +473,7 @@ export type $AppSettingPayload<ExtArgs extends runtime.Types.Extensions.Internal
     supportPhone: string | null
     socialLinks: runtime.JsonValue
     maintenance: boolean
+    cardPriceFcfa: number
     updatedAt: Date
   }, ExtArgs["result"]["appSetting"]>
   composites: {}
@@ -871,6 +904,7 @@ export interface AppSettingFieldRefs {
   readonly supportPhone: Prisma.FieldRef<"AppSetting", 'String'>
   readonly socialLinks: Prisma.FieldRef<"AppSetting", 'Json'>
   readonly maintenance: Prisma.FieldRef<"AppSetting", 'Boolean'>
+  readonly cardPriceFcfa: Prisma.FieldRef<"AppSetting", 'Int'>
   readonly updatedAt: Prisma.FieldRef<"AppSetting", 'DateTime'>
 }
     

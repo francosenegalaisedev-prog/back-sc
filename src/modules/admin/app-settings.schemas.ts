@@ -28,6 +28,7 @@ export const updateAppSettingsSchema = z
     supportPhone: z.string().trim().max(40),
     socialLinks,
     maintenance: z.boolean(),
+    cardPriceFcfa: z.coerce.number().int().min(0).max(10_000_000).optional(),
     updatedAt: z.string().datetime().optional(),
   })
   .strict();

@@ -142,7 +142,7 @@ export const AdminService = {
       prisma.user.count({ where: { role: "CLIENT" } }),
       prisma.sectionStickerRequest.count({ where: { statut: "ACTIVE" } }),
       prisma.printJob.count({
-        where: { statut: { in: ["A_IMPRIMER", "IMPRIMEE", "ENCODEE", "TESTEE"] } },
+        where: { statut: { in: ["ENVOYEE", "TRAITEE"] } },
       }),
       prisma.user.count({
         where: { role: "CLIENT", deletionScheduledAt: { not: null } },

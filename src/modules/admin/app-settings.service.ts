@@ -8,6 +8,7 @@ const DEFAULTS = {
   supportPhone: null,
   socialLinks: { instagram: "", facebook: "", linkedin: "" },
   maintenance: false,
+  cardPriceFcfa: 15_000,
 };
 
 const getOrCreate = () =>
@@ -59,6 +60,7 @@ export const AppSettingsService = {
       supportPhone: settings.supportPhone,
       socialLinks: settings.socialLinks,
       maintenance: settings.maintenance,
+      cardPriceFcfa: settings.cardPriceFcfa,
     };
   },
 };

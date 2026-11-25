@@ -33,6 +33,13 @@ const schema = z.object({
   S3_REGION: z.string(),
   S3_BUCKET: z.string().default("ficheImage"),
   FFMPEG_PATH: z.string().default("/usr/bin/ffmpeg"),
+  TWO_FA_ENCRYPTION_KEY: z
+    .string()
+    .regex(
+      /^[0-9a-fA-F]{64}$/,
+      "TWO_FA_ENCRYPTION_KEY doit être une clé hexadécimale de 64 caractères (32 octets)",
+    ),
+    
   GOOGLE_CLIENT_ID: z.string().min(1, "GOOGLE_CLIENT_ID est requis"),
   GOOGLE_CLIENT_SECRET: z.string().min(1, "GOOGLE_CLIENT_SECRET est requis"),
 

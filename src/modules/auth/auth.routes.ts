@@ -12,6 +12,9 @@ import {
   registerSchema,
   resetPasswordSchema,
   tokenSchema,
+  twoFaDisableSchema,
+  twoFaLoginSchema,
+  twoFaVerifySchema,
   updateProfileSchema,
 } from "./auth.schemas";
 
@@ -94,4 +97,31 @@ authRouter.post(
   "/cancel-deletion",
   validate({ body: cancelDeletionSchema }),
   AuthController.cancelAccountDeletion,
+);
+
+
+authRouter.post(
+  "/2fa/enable",
+  requireAuth,
+  AuthController.enableTwoFactorAuth,
+);
+
+authRouter.post(
+  "/2fa/verify",
+  requireAuth,
+  validate({ body: twoFaVerifySchema }),
+  AuthController.verifyTwoFactorAuth,
+);
+
+authRouter.post(
+  "/2fa/disable",
+  requireAuth,
+  validate({ body: twoFaDisableSchema }),
+  AuthController.disableTwoFactorAuth,
+);
+
+authRouter.post(
+  "/2fa/login",
+  validate({ body: twoFaLoginSchema }),
+  AuthController.completeTwoFaLogin,
 );

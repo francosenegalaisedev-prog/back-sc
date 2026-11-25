@@ -47,6 +47,9 @@ export type UserMinAggregateOutputType = {
   deletionScheduledAt: Date | null
   deletionRequestedBy: string | null
   createdAt: Date | null
+  two_fa_enabled: boolean | null
+  two_fa_secret: string | null
+  two_fa_last_used_at: Date | null
 }
 
 export type UserMaxAggregateOutputType = {
@@ -62,6 +65,9 @@ export type UserMaxAggregateOutputType = {
   deletionScheduledAt: Date | null
   deletionRequestedBy: string | null
   createdAt: Date | null
+  two_fa_enabled: boolean | null
+  two_fa_secret: string | null
+  two_fa_last_used_at: Date | null
 }
 
 export type UserCountAggregateOutputType = {
@@ -77,6 +83,10 @@ export type UserCountAggregateOutputType = {
   deletionScheduledAt: number
   deletionRequestedBy: number
   createdAt: number
+  two_fa_enabled: number
+  two_fa_secret: number
+  two_fa_recovery_codes: number
+  two_fa_last_used_at: number
   _all: number
 }
 
@@ -102,6 +112,9 @@ export type UserMinAggregateInputType = {
   deletionScheduledAt?: true
   deletionRequestedBy?: true
   createdAt?: true
+  two_fa_enabled?: true
+  two_fa_secret?: true
+  two_fa_last_used_at?: true
 }
 
 export type UserMaxAggregateInputType = {
@@ -117,6 +130,9 @@ export type UserMaxAggregateInputType = {
   deletionScheduledAt?: true
   deletionRequestedBy?: true
   createdAt?: true
+  two_fa_enabled?: true
+  two_fa_secret?: true
+  two_fa_last_used_at?: true
 }
 
 export type UserCountAggregateInputType = {
@@ -132,6 +148,10 @@ export type UserCountAggregateInputType = {
   deletionScheduledAt?: true
   deletionRequestedBy?: true
   createdAt?: true
+  two_fa_enabled?: true
+  two_fa_secret?: true
+  two_fa_recovery_codes?: true
+  two_fa_last_used_at?: true
   _all?: true
 }
 
@@ -234,6 +254,10 @@ export type UserGroupByOutputType = {
   deletionScheduledAt: Date | null
   deletionRequestedBy: string | null
   createdAt: Date
+  two_fa_enabled: boolean
+  two_fa_secret: string | null
+  two_fa_recovery_codes: string[]
+  two_fa_last_used_at: Date | null
   _count: UserCountAggregateOutputType | null
   _avg: UserAvgAggregateOutputType | null
   _sum: UserSumAggregateOutputType | null
@@ -272,6 +296,10 @@ export type UserWhereInput = {
   deletionScheduledAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   deletionRequestedBy?: Prisma.StringNullableFilter<"User"> | string | null
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
+  two_fa_enabled?: Prisma.BoolFilter<"User"> | boolean
+  two_fa_secret?: Prisma.StringNullableFilter<"User"> | string | null
+  two_fa_recovery_codes?: Prisma.StringNullableListFilter<"User">
+  two_fa_last_used_at?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   tokens?: Prisma.AuthTokenListRelationFilter
   fiches?: Prisma.FicheListRelationFilter
   sectionStickers?: Prisma.SectionStickerRequestListRelationFilter
@@ -294,6 +322,10 @@ export type UserOrderByWithRelationInput = {
   deletionScheduledAt?: Prisma.SortOrderInput | Prisma.SortOrder
   deletionRequestedBy?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  two_fa_enabled?: Prisma.SortOrder
+  two_fa_secret?: Prisma.SortOrderInput | Prisma.SortOrder
+  two_fa_recovery_codes?: Prisma.SortOrder
+  two_fa_last_used_at?: Prisma.SortOrderInput | Prisma.SortOrder
   tokens?: Prisma.AuthTokenOrderByRelationAggregateInput
   fiches?: Prisma.FicheOrderByRelationAggregateInput
   sectionStickers?: Prisma.SectionStickerRequestOrderByRelationAggregateInput
@@ -319,6 +351,10 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   deletionScheduledAt?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   deletionRequestedBy?: Prisma.StringNullableFilter<"User"> | string | null
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
+  two_fa_enabled?: Prisma.BoolFilter<"User"> | boolean
+  two_fa_secret?: Prisma.StringNullableFilter<"User"> | string | null
+  two_fa_recovery_codes?: Prisma.StringNullableListFilter<"User">
+  two_fa_last_used_at?: Prisma.DateTimeNullableFilter<"User"> | Date | string | null
   tokens?: Prisma.AuthTokenListRelationFilter
   fiches?: Prisma.FicheListRelationFilter
   sectionStickers?: Prisma.SectionStickerRequestListRelationFilter
@@ -341,6 +377,10 @@ export type UserOrderByWithAggregationInput = {
   deletionScheduledAt?: Prisma.SortOrderInput | Prisma.SortOrder
   deletionRequestedBy?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  two_fa_enabled?: Prisma.SortOrder
+  two_fa_secret?: Prisma.SortOrderInput | Prisma.SortOrder
+  two_fa_recovery_codes?: Prisma.SortOrder
+  two_fa_last_used_at?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.UserCountOrderByAggregateInput
   _avg?: Prisma.UserAvgOrderByAggregateInput
   _max?: Prisma.UserMaxOrderByAggregateInput
@@ -364,6 +404,10 @@ export type UserScalarWhereWithAggregatesInput = {
   deletionScheduledAt?: Prisma.DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
   deletionRequestedBy?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
+  two_fa_enabled?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
+  two_fa_secret?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
+  two_fa_recovery_codes?: Prisma.StringNullableListFilter<"User">
+  two_fa_last_used_at?: Prisma.DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
 }
 
 export type UserCreateInput = {
@@ -378,6 +422,10 @@ export type UserCreateInput = {
   deletionScheduledAt?: Date | string | null
   deletionRequestedBy?: string | null
   createdAt?: Date | string
+  two_fa_enabled?: boolean
+  two_fa_secret?: string | null
+  two_fa_recovery_codes?: Prisma.UserCreatetwo_fa_recovery_codesInput | string[]
+  two_fa_last_used_at?: Date | string | null
   tokens?: Prisma.AuthTokenCreateNestedManyWithoutUserInput
   fiches?: Prisma.FicheCreateNestedManyWithoutUserInput
   sectionStickers?: Prisma.SectionStickerRequestCreateNestedManyWithoutUserInput
@@ -400,6 +448,10 @@ export type UserUncheckedCreateInput = {
   deletionScheduledAt?: Date | string | null
   deletionRequestedBy?: string | null
   createdAt?: Date | string
+  two_fa_enabled?: boolean
+  two_fa_secret?: string | null
+  two_fa_recovery_codes?: Prisma.UserCreatetwo_fa_recovery_codesInput | string[]
+  two_fa_last_used_at?: Date | string | null
   tokens?: Prisma.AuthTokenUncheckedCreateNestedManyWithoutUserInput
   fiches?: Prisma.FicheUncheckedCreateNestedManyWithoutUserInput
   sectionStickers?: Prisma.SectionStickerRequestUncheckedCreateNestedManyWithoutUserInput
@@ -421,6 +473,10 @@ export type UserUpdateInput = {
   deletionScheduledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletionRequestedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  two_fa_enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  two_fa_secret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  two_fa_recovery_codes?: Prisma.UserUpdatetwo_fa_recovery_codesInput | string[]
+  two_fa_last_used_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   tokens?: Prisma.AuthTokenUpdateManyWithoutUserNestedInput
   fiches?: Prisma.FicheUpdateManyWithoutUserNestedInput
   sectionStickers?: Prisma.SectionStickerRequestUpdateManyWithoutUserNestedInput
@@ -443,6 +499,10 @@ export type UserUncheckedUpdateInput = {
   deletionScheduledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletionRequestedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  two_fa_enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  two_fa_secret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  two_fa_recovery_codes?: Prisma.UserUpdatetwo_fa_recovery_codesInput | string[]
+  two_fa_last_used_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   tokens?: Prisma.AuthTokenUncheckedUpdateManyWithoutUserNestedInput
   fiches?: Prisma.FicheUncheckedUpdateManyWithoutUserNestedInput
   sectionStickers?: Prisma.SectionStickerRequestUncheckedUpdateManyWithoutUserNestedInput
@@ -465,6 +525,10 @@ export type UserCreateManyInput = {
   deletionScheduledAt?: Date | string | null
   deletionRequestedBy?: string | null
   createdAt?: Date | string
+  two_fa_enabled?: boolean
+  two_fa_secret?: string | null
+  two_fa_recovery_codes?: Prisma.UserCreatetwo_fa_recovery_codesInput | string[]
+  two_fa_last_used_at?: Date | string | null
 }
 
 export type UserUpdateManyMutationInput = {
@@ -479,6 +543,10 @@ export type UserUpdateManyMutationInput = {
   deletionScheduledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletionRequestedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  two_fa_enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  two_fa_secret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  two_fa_recovery_codes?: Prisma.UserUpdatetwo_fa_recovery_codesInput | string[]
+  two_fa_last_used_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type UserUncheckedUpdateManyInput = {
@@ -494,6 +562,10 @@ export type UserUncheckedUpdateManyInput = {
   deletionScheduledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletionRequestedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  two_fa_enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  two_fa_secret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  two_fa_recovery_codes?: Prisma.UserUpdatetwo_fa_recovery_codesInput | string[]
+  two_fa_last_used_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type UserNullableScalarRelationFilter = {
@@ -514,6 +586,10 @@ export type UserCountOrderByAggregateInput = {
   deletionScheduledAt?: Prisma.SortOrder
   deletionRequestedBy?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  two_fa_enabled?: Prisma.SortOrder
+  two_fa_secret?: Prisma.SortOrder
+  two_fa_recovery_codes?: Prisma.SortOrder
+  two_fa_last_used_at?: Prisma.SortOrder
 }
 
 export type UserAvgOrderByAggregateInput = {
@@ -533,6 +609,9 @@ export type UserMaxOrderByAggregateInput = {
   deletionScheduledAt?: Prisma.SortOrder
   deletionRequestedBy?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  two_fa_enabled?: Prisma.SortOrder
+  two_fa_secret?: Prisma.SortOrder
+  two_fa_last_used_at?: Prisma.SortOrder
 }
 
 export type UserMinOrderByAggregateInput = {
@@ -548,6 +627,9 @@ export type UserMinOrderByAggregateInput = {
   deletionScheduledAt?: Prisma.SortOrder
   deletionRequestedBy?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+  two_fa_enabled?: Prisma.SortOrder
+  two_fa_secret?: Prisma.SortOrder
+  two_fa_last_used_at?: Prisma.SortOrder
 }
 
 export type UserSumOrderByAggregateInput = {
@@ -575,12 +657,21 @@ export type UserUpdateOneWithoutFichesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutFichesInput, Prisma.UserUpdateWithoutFichesInput>, Prisma.UserUncheckedUpdateWithoutFichesInput>
 }
 
+export type UserCreatetwo_fa_recovery_codesInput = {
+  set: string[]
+}
+
 export type EnumRoleFieldUpdateOperationsInput = {
   set?: $Enums.Role
 }
 
 export type NullableDateTimeFieldUpdateOperationsInput = {
   set?: Date | string | null
+}
+
+export type UserUpdatetwo_fa_recovery_codesInput = {
+  set?: string[]
+  push?: string | string[]
 }
 
 export type UserCreateNestedOneWithoutAdminActionLogsInput = {
@@ -685,6 +776,10 @@ export type UserCreateWithoutFichesInput = {
   deletionScheduledAt?: Date | string | null
   deletionRequestedBy?: string | null
   createdAt?: Date | string
+  two_fa_enabled?: boolean
+  two_fa_secret?: string | null
+  two_fa_recovery_codes?: Prisma.UserCreatetwo_fa_recovery_codesInput | string[]
+  two_fa_last_used_at?: Date | string | null
   tokens?: Prisma.AuthTokenCreateNestedManyWithoutUserInput
   sectionStickers?: Prisma.SectionStickerRequestCreateNestedManyWithoutUserInput
   qrStyles?: Prisma.QrStyleCreateNestedManyWithoutUserInput
@@ -706,6 +801,10 @@ export type UserUncheckedCreateWithoutFichesInput = {
   deletionScheduledAt?: Date | string | null
   deletionRequestedBy?: string | null
   createdAt?: Date | string
+  two_fa_enabled?: boolean
+  two_fa_secret?: string | null
+  two_fa_recovery_codes?: Prisma.UserCreatetwo_fa_recovery_codesInput | string[]
+  two_fa_last_used_at?: Date | string | null
   tokens?: Prisma.AuthTokenUncheckedCreateNestedManyWithoutUserInput
   sectionStickers?: Prisma.SectionStickerRequestUncheckedCreateNestedManyWithoutUserInput
   qrStyles?: Prisma.QrStyleUncheckedCreateNestedManyWithoutUserInput
@@ -742,6 +841,10 @@ export type UserUpdateWithoutFichesInput = {
   deletionScheduledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletionRequestedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  two_fa_enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  two_fa_secret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  two_fa_recovery_codes?: Prisma.UserUpdatetwo_fa_recovery_codesInput | string[]
+  two_fa_last_used_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   tokens?: Prisma.AuthTokenUpdateManyWithoutUserNestedInput
   sectionStickers?: Prisma.SectionStickerRequestUpdateManyWithoutUserNestedInput
   qrStyles?: Prisma.QrStyleUpdateManyWithoutUserNestedInput
@@ -763,6 +866,10 @@ export type UserUncheckedUpdateWithoutFichesInput = {
   deletionScheduledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletionRequestedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  two_fa_enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  two_fa_secret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  two_fa_recovery_codes?: Prisma.UserUpdatetwo_fa_recovery_codesInput | string[]
+  two_fa_last_used_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   tokens?: Prisma.AuthTokenUncheckedUpdateManyWithoutUserNestedInput
   sectionStickers?: Prisma.SectionStickerRequestUncheckedUpdateManyWithoutUserNestedInput
   qrStyles?: Prisma.QrStyleUncheckedUpdateManyWithoutUserNestedInput
@@ -783,6 +890,10 @@ export type UserCreateWithoutAdminActionLogsInput = {
   deletionScheduledAt?: Date | string | null
   deletionRequestedBy?: string | null
   createdAt?: Date | string
+  two_fa_enabled?: boolean
+  two_fa_secret?: string | null
+  two_fa_recovery_codes?: Prisma.UserCreatetwo_fa_recovery_codesInput | string[]
+  two_fa_last_used_at?: Date | string | null
   tokens?: Prisma.AuthTokenCreateNestedManyWithoutUserInput
   fiches?: Prisma.FicheCreateNestedManyWithoutUserInput
   sectionStickers?: Prisma.SectionStickerRequestCreateNestedManyWithoutUserInput
@@ -804,6 +915,10 @@ export type UserUncheckedCreateWithoutAdminActionLogsInput = {
   deletionScheduledAt?: Date | string | null
   deletionRequestedBy?: string | null
   createdAt?: Date | string
+  two_fa_enabled?: boolean
+  two_fa_secret?: string | null
+  two_fa_recovery_codes?: Prisma.UserCreatetwo_fa_recovery_codesInput | string[]
+  two_fa_last_used_at?: Date | string | null
   tokens?: Prisma.AuthTokenUncheckedCreateNestedManyWithoutUserInput
   fiches?: Prisma.FicheUncheckedCreateNestedManyWithoutUserInput
   sectionStickers?: Prisma.SectionStickerRequestUncheckedCreateNestedManyWithoutUserInput
@@ -840,6 +955,10 @@ export type UserUpdateWithoutAdminActionLogsInput = {
   deletionScheduledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletionRequestedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  two_fa_enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  two_fa_secret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  two_fa_recovery_codes?: Prisma.UserUpdatetwo_fa_recovery_codesInput | string[]
+  two_fa_last_used_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   tokens?: Prisma.AuthTokenUpdateManyWithoutUserNestedInput
   fiches?: Prisma.FicheUpdateManyWithoutUserNestedInput
   sectionStickers?: Prisma.SectionStickerRequestUpdateManyWithoutUserNestedInput
@@ -861,6 +980,10 @@ export type UserUncheckedUpdateWithoutAdminActionLogsInput = {
   deletionScheduledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletionRequestedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  two_fa_enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  two_fa_secret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  two_fa_recovery_codes?: Prisma.UserUpdatetwo_fa_recovery_codesInput | string[]
+  two_fa_last_used_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   tokens?: Prisma.AuthTokenUncheckedUpdateManyWithoutUserNestedInput
   fiches?: Prisma.FicheUncheckedUpdateManyWithoutUserNestedInput
   sectionStickers?: Prisma.SectionStickerRequestUncheckedUpdateManyWithoutUserNestedInput
@@ -881,6 +1004,10 @@ export type UserCreateWithoutTokensInput = {
   deletionScheduledAt?: Date | string | null
   deletionRequestedBy?: string | null
   createdAt?: Date | string
+  two_fa_enabled?: boolean
+  two_fa_secret?: string | null
+  two_fa_recovery_codes?: Prisma.UserCreatetwo_fa_recovery_codesInput | string[]
+  two_fa_last_used_at?: Date | string | null
   fiches?: Prisma.FicheCreateNestedManyWithoutUserInput
   sectionStickers?: Prisma.SectionStickerRequestCreateNestedManyWithoutUserInput
   qrStyles?: Prisma.QrStyleCreateNestedManyWithoutUserInput
@@ -902,6 +1029,10 @@ export type UserUncheckedCreateWithoutTokensInput = {
   deletionScheduledAt?: Date | string | null
   deletionRequestedBy?: string | null
   createdAt?: Date | string
+  two_fa_enabled?: boolean
+  two_fa_secret?: string | null
+  two_fa_recovery_codes?: Prisma.UserCreatetwo_fa_recovery_codesInput | string[]
+  two_fa_last_used_at?: Date | string | null
   fiches?: Prisma.FicheUncheckedCreateNestedManyWithoutUserInput
   sectionStickers?: Prisma.SectionStickerRequestUncheckedCreateNestedManyWithoutUserInput
   qrStyles?: Prisma.QrStyleUncheckedCreateNestedManyWithoutUserInput
@@ -938,6 +1069,10 @@ export type UserUpdateWithoutTokensInput = {
   deletionScheduledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletionRequestedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  two_fa_enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  two_fa_secret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  two_fa_recovery_codes?: Prisma.UserUpdatetwo_fa_recovery_codesInput | string[]
+  two_fa_last_used_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   fiches?: Prisma.FicheUpdateManyWithoutUserNestedInput
   sectionStickers?: Prisma.SectionStickerRequestUpdateManyWithoutUserNestedInput
   qrStyles?: Prisma.QrStyleUpdateManyWithoutUserNestedInput
@@ -959,6 +1094,10 @@ export type UserUncheckedUpdateWithoutTokensInput = {
   deletionScheduledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletionRequestedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  two_fa_enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  two_fa_secret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  two_fa_recovery_codes?: Prisma.UserUpdatetwo_fa_recovery_codesInput | string[]
+  two_fa_last_used_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   fiches?: Prisma.FicheUncheckedUpdateManyWithoutUserNestedInput
   sectionStickers?: Prisma.SectionStickerRequestUncheckedUpdateManyWithoutUserNestedInput
   qrStyles?: Prisma.QrStyleUncheckedUpdateManyWithoutUserNestedInput
@@ -979,6 +1118,10 @@ export type UserCreateWithoutPaymentsInput = {
   deletionScheduledAt?: Date | string | null
   deletionRequestedBy?: string | null
   createdAt?: Date | string
+  two_fa_enabled?: boolean
+  two_fa_secret?: string | null
+  two_fa_recovery_codes?: Prisma.UserCreatetwo_fa_recovery_codesInput | string[]
+  two_fa_last_used_at?: Date | string | null
   tokens?: Prisma.AuthTokenCreateNestedManyWithoutUserInput
   fiches?: Prisma.FicheCreateNestedManyWithoutUserInput
   sectionStickers?: Prisma.SectionStickerRequestCreateNestedManyWithoutUserInput
@@ -1000,6 +1143,10 @@ export type UserUncheckedCreateWithoutPaymentsInput = {
   deletionScheduledAt?: Date | string | null
   deletionRequestedBy?: string | null
   createdAt?: Date | string
+  two_fa_enabled?: boolean
+  two_fa_secret?: string | null
+  two_fa_recovery_codes?: Prisma.UserCreatetwo_fa_recovery_codesInput | string[]
+  two_fa_last_used_at?: Date | string | null
   tokens?: Prisma.AuthTokenUncheckedCreateNestedManyWithoutUserInput
   fiches?: Prisma.FicheUncheckedCreateNestedManyWithoutUserInput
   sectionStickers?: Prisma.SectionStickerRequestUncheckedCreateNestedManyWithoutUserInput
@@ -1036,6 +1183,10 @@ export type UserUpdateWithoutPaymentsInput = {
   deletionScheduledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletionRequestedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  two_fa_enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  two_fa_secret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  two_fa_recovery_codes?: Prisma.UserUpdatetwo_fa_recovery_codesInput | string[]
+  two_fa_last_used_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   tokens?: Prisma.AuthTokenUpdateManyWithoutUserNestedInput
   fiches?: Prisma.FicheUpdateManyWithoutUserNestedInput
   sectionStickers?: Prisma.SectionStickerRequestUpdateManyWithoutUserNestedInput
@@ -1057,6 +1208,10 @@ export type UserUncheckedUpdateWithoutPaymentsInput = {
   deletionScheduledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletionRequestedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  two_fa_enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  two_fa_secret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  two_fa_recovery_codes?: Prisma.UserUpdatetwo_fa_recovery_codesInput | string[]
+  two_fa_last_used_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   tokens?: Prisma.AuthTokenUncheckedUpdateManyWithoutUserNestedInput
   fiches?: Prisma.FicheUncheckedUpdateManyWithoutUserNestedInput
   sectionStickers?: Prisma.SectionStickerRequestUncheckedUpdateManyWithoutUserNestedInput
@@ -1077,6 +1232,10 @@ export type UserCreateWithoutFichePurchasesInput = {
   deletionScheduledAt?: Date | string | null
   deletionRequestedBy?: string | null
   createdAt?: Date | string
+  two_fa_enabled?: boolean
+  two_fa_secret?: string | null
+  two_fa_recovery_codes?: Prisma.UserCreatetwo_fa_recovery_codesInput | string[]
+  two_fa_last_used_at?: Date | string | null
   tokens?: Prisma.AuthTokenCreateNestedManyWithoutUserInput
   fiches?: Prisma.FicheCreateNestedManyWithoutUserInput
   sectionStickers?: Prisma.SectionStickerRequestCreateNestedManyWithoutUserInput
@@ -1098,6 +1257,10 @@ export type UserUncheckedCreateWithoutFichePurchasesInput = {
   deletionScheduledAt?: Date | string | null
   deletionRequestedBy?: string | null
   createdAt?: Date | string
+  two_fa_enabled?: boolean
+  two_fa_secret?: string | null
+  two_fa_recovery_codes?: Prisma.UserCreatetwo_fa_recovery_codesInput | string[]
+  two_fa_last_used_at?: Date | string | null
   tokens?: Prisma.AuthTokenUncheckedCreateNestedManyWithoutUserInput
   fiches?: Prisma.FicheUncheckedCreateNestedManyWithoutUserInput
   sectionStickers?: Prisma.SectionStickerRequestUncheckedCreateNestedManyWithoutUserInput
@@ -1134,6 +1297,10 @@ export type UserUpdateWithoutFichePurchasesInput = {
   deletionScheduledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletionRequestedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  two_fa_enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  two_fa_secret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  two_fa_recovery_codes?: Prisma.UserUpdatetwo_fa_recovery_codesInput | string[]
+  two_fa_last_used_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   tokens?: Prisma.AuthTokenUpdateManyWithoutUserNestedInput
   fiches?: Prisma.FicheUpdateManyWithoutUserNestedInput
   sectionStickers?: Prisma.SectionStickerRequestUpdateManyWithoutUserNestedInput
@@ -1155,6 +1322,10 @@ export type UserUncheckedUpdateWithoutFichePurchasesInput = {
   deletionScheduledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletionRequestedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  two_fa_enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  two_fa_secret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  two_fa_recovery_codes?: Prisma.UserUpdatetwo_fa_recovery_codesInput | string[]
+  two_fa_last_used_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   tokens?: Prisma.AuthTokenUncheckedUpdateManyWithoutUserNestedInput
   fiches?: Prisma.FicheUncheckedUpdateManyWithoutUserNestedInput
   sectionStickers?: Prisma.SectionStickerRequestUncheckedUpdateManyWithoutUserNestedInput
@@ -1175,6 +1346,10 @@ export type UserCreateWithoutSectionStickersInput = {
   deletionScheduledAt?: Date | string | null
   deletionRequestedBy?: string | null
   createdAt?: Date | string
+  two_fa_enabled?: boolean
+  two_fa_secret?: string | null
+  two_fa_recovery_codes?: Prisma.UserCreatetwo_fa_recovery_codesInput | string[]
+  two_fa_last_used_at?: Date | string | null
   tokens?: Prisma.AuthTokenCreateNestedManyWithoutUserInput
   fiches?: Prisma.FicheCreateNestedManyWithoutUserInput
   qrStyles?: Prisma.QrStyleCreateNestedManyWithoutUserInput
@@ -1196,6 +1371,10 @@ export type UserUncheckedCreateWithoutSectionStickersInput = {
   deletionScheduledAt?: Date | string | null
   deletionRequestedBy?: string | null
   createdAt?: Date | string
+  two_fa_enabled?: boolean
+  two_fa_secret?: string | null
+  two_fa_recovery_codes?: Prisma.UserCreatetwo_fa_recovery_codesInput | string[]
+  two_fa_last_used_at?: Date | string | null
   tokens?: Prisma.AuthTokenUncheckedCreateNestedManyWithoutUserInput
   fiches?: Prisma.FicheUncheckedCreateNestedManyWithoutUserInput
   qrStyles?: Prisma.QrStyleUncheckedCreateNestedManyWithoutUserInput
@@ -1232,6 +1411,10 @@ export type UserUpdateWithoutSectionStickersInput = {
   deletionScheduledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletionRequestedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  two_fa_enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  two_fa_secret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  two_fa_recovery_codes?: Prisma.UserUpdatetwo_fa_recovery_codesInput | string[]
+  two_fa_last_used_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   tokens?: Prisma.AuthTokenUpdateManyWithoutUserNestedInput
   fiches?: Prisma.FicheUpdateManyWithoutUserNestedInput
   qrStyles?: Prisma.QrStyleUpdateManyWithoutUserNestedInput
@@ -1253,6 +1436,10 @@ export type UserUncheckedUpdateWithoutSectionStickersInput = {
   deletionScheduledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletionRequestedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  two_fa_enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  two_fa_secret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  two_fa_recovery_codes?: Prisma.UserUpdatetwo_fa_recovery_codesInput | string[]
+  two_fa_last_used_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   tokens?: Prisma.AuthTokenUncheckedUpdateManyWithoutUserNestedInput
   fiches?: Prisma.FicheUncheckedUpdateManyWithoutUserNestedInput
   qrStyles?: Prisma.QrStyleUncheckedUpdateManyWithoutUserNestedInput
@@ -1273,6 +1460,10 @@ export type UserCreateWithoutQrStylesInput = {
   deletionScheduledAt?: Date | string | null
   deletionRequestedBy?: string | null
   createdAt?: Date | string
+  two_fa_enabled?: boolean
+  two_fa_secret?: string | null
+  two_fa_recovery_codes?: Prisma.UserCreatetwo_fa_recovery_codesInput | string[]
+  two_fa_last_used_at?: Date | string | null
   tokens?: Prisma.AuthTokenCreateNestedManyWithoutUserInput
   fiches?: Prisma.FicheCreateNestedManyWithoutUserInput
   sectionStickers?: Prisma.SectionStickerRequestCreateNestedManyWithoutUserInput
@@ -1294,6 +1485,10 @@ export type UserUncheckedCreateWithoutQrStylesInput = {
   deletionScheduledAt?: Date | string | null
   deletionRequestedBy?: string | null
   createdAt?: Date | string
+  two_fa_enabled?: boolean
+  two_fa_secret?: string | null
+  two_fa_recovery_codes?: Prisma.UserCreatetwo_fa_recovery_codesInput | string[]
+  two_fa_last_used_at?: Date | string | null
   tokens?: Prisma.AuthTokenUncheckedCreateNestedManyWithoutUserInput
   fiches?: Prisma.FicheUncheckedCreateNestedManyWithoutUserInput
   sectionStickers?: Prisma.SectionStickerRequestUncheckedCreateNestedManyWithoutUserInput
@@ -1330,6 +1525,10 @@ export type UserUpdateWithoutQrStylesInput = {
   deletionScheduledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletionRequestedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  two_fa_enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  two_fa_secret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  two_fa_recovery_codes?: Prisma.UserUpdatetwo_fa_recovery_codesInput | string[]
+  two_fa_last_used_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   tokens?: Prisma.AuthTokenUpdateManyWithoutUserNestedInput
   fiches?: Prisma.FicheUpdateManyWithoutUserNestedInput
   sectionStickers?: Prisma.SectionStickerRequestUpdateManyWithoutUserNestedInput
@@ -1351,6 +1550,10 @@ export type UserUncheckedUpdateWithoutQrStylesInput = {
   deletionScheduledAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   deletionRequestedBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  two_fa_enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  two_fa_secret?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  two_fa_recovery_codes?: Prisma.UserUpdatetwo_fa_recovery_codesInput | string[]
+  two_fa_last_used_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   tokens?: Prisma.AuthTokenUncheckedUpdateManyWithoutUserNestedInput
   fiches?: Prisma.FicheUncheckedUpdateManyWithoutUserNestedInput
   sectionStickers?: Prisma.SectionStickerRequestUncheckedUpdateManyWithoutUserNestedInput
@@ -1457,6 +1660,10 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   deletionScheduledAt?: boolean
   deletionRequestedBy?: boolean
   createdAt?: boolean
+  two_fa_enabled?: boolean
+  two_fa_secret?: boolean
+  two_fa_recovery_codes?: boolean
+  two_fa_last_used_at?: boolean
   tokens?: boolean | Prisma.User$tokensArgs<ExtArgs>
   fiches?: boolean | Prisma.User$fichesArgs<ExtArgs>
   sectionStickers?: boolean | Prisma.User$sectionStickersArgs<ExtArgs>
@@ -1480,6 +1687,10 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   deletionScheduledAt?: boolean
   deletionRequestedBy?: boolean
   createdAt?: boolean
+  two_fa_enabled?: boolean
+  two_fa_secret?: boolean
+  two_fa_recovery_codes?: boolean
+  two_fa_last_used_at?: boolean
 }, ExtArgs["result"]["user"]>
 
 export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -1495,6 +1706,10 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   deletionScheduledAt?: boolean
   deletionRequestedBy?: boolean
   createdAt?: boolean
+  two_fa_enabled?: boolean
+  two_fa_secret?: boolean
+  two_fa_recovery_codes?: boolean
+  two_fa_last_used_at?: boolean
 }, ExtArgs["result"]["user"]>
 
 export type UserSelectScalar = {
@@ -1510,9 +1725,13 @@ export type UserSelectScalar = {
   deletionScheduledAt?: boolean
   deletionRequestedBy?: boolean
   createdAt?: boolean
+  two_fa_enabled?: boolean
+  two_fa_secret?: boolean
+  two_fa_recovery_codes?: boolean
+  two_fa_last_used_at?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "googleId" | "email" | "passwordHash" | "role" | "nom" | "emailVerifiedAt" | "active" | "deletionRequestedAt" | "deletionScheduledAt" | "deletionRequestedBy" | "createdAt", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "googleId" | "email" | "passwordHash" | "role" | "nom" | "emailVerifiedAt" | "active" | "deletionRequestedAt" | "deletionScheduledAt" | "deletionRequestedBy" | "createdAt" | "two_fa_enabled" | "two_fa_secret" | "two_fa_recovery_codes" | "two_fa_last_used_at", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   tokens?: boolean | Prisma.User$tokensArgs<ExtArgs>
   fiches?: boolean | Prisma.User$fichesArgs<ExtArgs>
@@ -1550,6 +1769,10 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     deletionScheduledAt: Date | null
     deletionRequestedBy: string | null
     createdAt: Date
+    two_fa_enabled: boolean
+    two_fa_secret: string | null
+    two_fa_recovery_codes: string[]
+    two_fa_last_used_at: Date | null
   }, ExtArgs["result"]["user"]>
   composites: {}
 }
@@ -1992,6 +2215,10 @@ export interface UserFieldRefs {
   readonly deletionScheduledAt: Prisma.FieldRef<"User", 'DateTime'>
   readonly deletionRequestedBy: Prisma.FieldRef<"User", 'String'>
   readonly createdAt: Prisma.FieldRef<"User", 'DateTime'>
+  readonly two_fa_enabled: Prisma.FieldRef<"User", 'Boolean'>
+  readonly two_fa_secret: Prisma.FieldRef<"User", 'String'>
+  readonly two_fa_recovery_codes: Prisma.FieldRef<"User", 'String[]'>
+  readonly two_fa_last_used_at: Prisma.FieldRef<"User", 'DateTime'>
 }
     
 

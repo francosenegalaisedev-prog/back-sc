@@ -1,10 +1,8 @@
 import type { Request, Response } from "express";
 import { prisma } from "../../database/prisma/prisma-client";
 import { asyncHandler } from "../../lib/asyncHandler";
-import {
-  clearSessionCookie,
-  setSessionCookie,
-} from "../../lib/sessionCookie";
+import { clearSessionCookie, setSessionCookie } from "../../lib/sessionCookie";
+import { twoFaService } from "../twoFa/twoFa.service";
 import {
   cancelSelfDeletion,
   requestSelfDeletion,
@@ -21,28 +19,36 @@ export const AuthController = {
   // Connexion classique conservée pour compatibilité avec les clients existants.
   login: asyncHandler(async (req: Request, res: Response) => {
     const result = await auth.login(req.body);
-    setSessionCookie(res, result.token);
+    if (!("requires2fa" in result)) {
+      setSessionCookie(res, result.token);
+    }
     res.json(result);
   }),
 
   // Connexion dédiée à l’espace client : seuls les comptes CLIENT sont acceptés.
   googleLogin: asyncHandler(async (req: Request, res: Response) => {
     const result = await auth.loginWithGoogle(req.body.credential);
-    setSessionCookie(res, result.token);
+    if (!("requires2fa" in result)) {
+      setSessionCookie(res, result.token);
+    }
     res.json(result);
   }),
 
   // Connexion dédiée à l’espace client : seuls les comptes CLIENT sont acceptés.
   clientLogin: asyncHandler(async (req: Request, res: Response) => {
     const result = await auth.login(req.body, "CLIENT");
-    setSessionCookie(res, result.token);
+    if (!("requires2fa" in result)) {
+      setSessionCookie(res, result.token);
+    }
     res.json(result);
   }),
 
   // Connexion dédiée à l’espace administration : seuls les comptes ADMIN sont acceptés.
   adminLogin: asyncHandler(async (req: Request, res: Response) => {
     const result = await auth.login(req.body, "ADMIN");
-    setSessionCookie(res, result.token);
+    if (!("requires2fa" in result)) {
+      setSessionCookie(res, result.token);
+    }
     res.json(result);
   }),
 
@@ -96,6 +102,37 @@ export const AuthController = {
 
   cancelAccountDeletion: asyncHandler(async (req: Request, res: Response) => {
     const result = await cancelSelfDeletion(req.body);
+    setSessionCookie(res, result.token);
+    res.json(result);
+  }),
+
+  enableTwoFactorAuth: asyncHandler(async (req: Request, res: Response) => {
+    const result = await twoFaService.setup2fa(
+      req.user!.id,
+      req.user!.email as string,
+    );
+    res.json(result);
+  }),
+
+  verifyTwoFactorAuth: asyncHandler(async (req: Request, res: Response) => {
+    const { otpCode } = req.body;
+    const result = await twoFaService.confirmAndEnable2FA(
+      req.user!.id,
+      otpCode,
+    );
+    res.json(result);
+  }),
+
+  disableTwoFactorAuth: asyncHandler(async (req: Request, res: Response) => {
+    const result = await twoFaService.disable2FA(req.user!.id, req.body);
+    res.json(result);
+  }),
+
+  completeTwoFaLogin: asyncHandler(async (req: Request, res: Response) => {
+    const result = await auth.completeTwoFaLogin(
+      req.body.tempToken,
+      req.body.code,
+    );
     setSessionCookie(res, result.token);
     res.json(result);
   }),

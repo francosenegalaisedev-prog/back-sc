@@ -288,7 +288,11 @@ export const UserScalarFieldEnum = {
   deletionRequestedAt: 'deletionRequestedAt',
   deletionScheduledAt: 'deletionScheduledAt',
   deletionRequestedBy: 'deletionRequestedBy',
-  createdAt: 'createdAt'
+  createdAt: 'createdAt',
+  two_fa_enabled: 'two_fa_enabled',
+  two_fa_secret: 'two_fa_secret',
+  two_fa_recovery_codes: 'two_fa_recovery_codes',
+  two_fa_last_used_at: 'two_fa_last_used_at'
 } as const
 
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]

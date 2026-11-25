@@ -10,13 +10,14 @@ import {
   unauthorized,
   unprocessable,
 } from "../../lib/httpError";
-import { signToken } from "../../lib/jwt";
+import { signToken, signTwoFaToken, verifyTwoFaToken } from "../../lib/jwt";
 import { logger } from "../../lib/logger";
 import {
   sendForgotPasswordMail,
   sendVerificationEmail,
 } from "../../lib/mailer";
 import { hashPassword, verifyPassword } from "../../lib/password";
+import { twoFaService } from "../twoFa/twoFa.service";
 
 export const publicUser = (u: User) => ({
   id: u.id,
@@ -25,6 +26,7 @@ export const publicUser = (u: User) => ({
   role: u.role,
   emailVerified: u.emailVerifiedAt !== null,
   hasPassword: u.passwordHash !== null,
+  twoFaEnabled: u.two_fa_enabled,
 });
 
 // Hash factice : on compare toujours un mot de passe, même si l'e-mail n'existe pas (limite l'énumération par le temps de réponse).
@@ -111,6 +113,16 @@ export const AuthService = {
       });
       throw unauthorized("Identifiants invalides");
     }
+
+
+    if (user.two_fa_enabled) {
+      logger.info("2FA challenge issued", { userId: user.id });
+      return {
+        requires2fa: true as const,
+        tempToken: signTwoFaToken(user.id, expectedRole),
+      };
+    }
+
     logger.info("User authenticated", { userId: user.id });
     return { user: publicUser(user), token: signToken(user.id) };
   },
@@ -188,6 +200,14 @@ export const AuthService = {
     }
     if (user.role !== "CLIENT") {
       throw unauthorized("Connexion Google non autorisée pour ce compte.");
+    }
+
+    if (user.two_fa_enabled) {
+      logger.info("2FA challenge issued via Google", { userId: user.id });
+      return {
+        requires2fa: true as const,
+        tempToken: signTwoFaToken(user.id, "CLIENT"),
+      };
     }
 
     logger.info("User authenticated via Google", { userId: user.id });
@@ -308,5 +328,43 @@ export const AuthService = {
       },
     });
     logger.info("User password reset", { userId });
+  },
+
+  completeTwoFaLogin: async (tempToken: string, code: string) => {
+    let payload: ReturnType<typeof verifyTwoFaToken>;
+    try {
+      payload = verifyTwoFaToken(tempToken);
+    } catch {
+      throw unauthorized(
+        "Session de vérification 2FA expirée. Veuillez vous reconnecter.",
+      );
+    }
+
+    const userId = Number(payload.sub);
+    if (!Number.isSafeInteger(userId) || userId <= 0) {
+      throw unauthorized("Session de vérification 2FA invalide.");
+    }
+
+    const user = await prisma.user.findUnique({ where: { id: userId } });
+    if (!user || !user.active) {
+      throw unauthorized("Compte introuvable ou désactivé.");
+    }
+    if (payload.expectedRole && user.role !== payload.expectedRole) {
+      throw unauthorized("Identifiants invalides");
+    }
+    if (!user.two_fa_enabled) {
+      throw unauthorized(
+        "La double authentification n'est pas activée sur ce compte.",
+      );
+    }
+
+    const valid = await twoFaService.verifyLogin2FA(user.id, code);
+    if (!valid) {
+      logger.warn("2FA login verification failed", { userId: user.id });
+      throw unauthorized("Code de vérification invalide.");
+    }
+
+    logger.info("User authenticated with 2FA", { userId: user.id });
+    return { user: publicUser(user), token: signToken(user.id) };
   },
 };

@@ -8,10 +8,10 @@ datasource db {
 }
 
 model Fiche {
-  id                Int                @id @default(autoincrement())
-  slug              String             @unique
+  id                Int                     @id @default(autoincrement())
+  slug              String                  @unique
   prenom            String
-  nom               String             @default("")
+  nom               String                  @default("")
   fonction          String?
   entreprise        String?
   photo             String?
@@ -22,22 +22,22 @@ model Fiche {
   site              String?
   adresse           String?
   googlePlaceId     String?
-  premierBouton     PremierBouton      @default(WHATSAPP)
+  premierBouton     PremierBouton           @default(WHATSAPP)
   messageWhatsapp   String?
-  statut            StatutFiche        @default(BROUILLON)
-  enLigneSeule      Boolean            @default(false)
-  scansTotal        Int                @default(0)
+  statut            StatutFiche             @default(BROUILLON)
+  enLigneSeule      Boolean                 @default(false)
+  scansTotal        Int                     @default(0)
   userId            Int?
   secteur           Secteur?
   presentation      String?
   rdvLabel          String?
   rdvUrl            String?
-  enteteDisposition Disposition        @default(PORTRAIT)
-  enteteTaille      Taille             @default(M)
+  enteteDisposition Disposition             @default(PORTRAIT)
+  enteteTaille      Taille                  @default(M)
   enteteTheme       Theme?
   enteteCouverture  String?
-  createdAt         DateTime           @default(now())
-  updatedAt         DateTime           @updatedAt
+  createdAt         DateTime                @default(now())
+  updatedAt         DateTime                @updatedAt
   biens             Bien[]
   catalogueSections CatalogueSection[]
   horaires          FicheHoraire[]
@@ -45,7 +45,7 @@ model Fiche {
   medias            FicheMedia[]
   onglets           FicheOnglet[]
   reseaux           FicheReseau[]
-  user              User?              @relation(fields: [userId], references: [id], onDelete: SetNull)
+  user              User?                   @relation(fields: [userId], references: [id], onDelete: SetNull)
   menuSections      MenuSection[]
   printJobs         PrintJob[]
   stickers          StickerOrder[]
@@ -212,32 +212,37 @@ model BienPhoto {
 }
 
 model User {
-  id                  Int                     @id @default(autoincrement())
-  googleId            String?                 @unique
-  email               String                  @unique
-  passwordHash        String?
-  role                Role                    @default(CLIENT)
-  nom                 String?
-  emailVerifiedAt     DateTime?
-  active              Boolean                 @default(true)
-  deletionRequestedAt DateTime?
-  deletionScheduledAt DateTime?
-  deletionRequestedBy String?
-  createdAt           DateTime                @default(now())
-  tokens              AuthToken[]
-  fiches              Fiche[]
-  sectionStickers     SectionStickerRequest[]
-  qrStyles            QrStyle[]
-  fichePurchases      FichePurchase[]
-  payments            Payment[]
-  adminActionLogs     AdminActionLog[]
+  id                    Int                     @id @default(autoincrement())
+  googleId              String?                 @unique
+  email                 String                  @unique
+  passwordHash          String?
+  role                  Role                    @default(CLIENT)
+  nom                   String?
+  emailVerifiedAt       DateTime?
+  active                Boolean                 @default(true)
+  deletionRequestedAt   DateTime?
+  deletionScheduledAt   DateTime?
+  deletionRequestedBy   String?
+  createdAt             DateTime                @default(now())
+  tokens                AuthToken[]
+  fiches                Fiche[]
+  sectionStickers       SectionStickerRequest[]
+  qrStyles              QrStyle[]
+  fichePurchases        FichePurchase[]
+  payments              Payment[]
+  adminActionLogs       AdminActionLog[]
+  two_fa_enabled        Boolean                 @default(false)
+  two_fa_secret         String?
+  two_fa_recovery_codes String[]
+  two_fa_last_used_at    DateTime?
+  
 
   @@index([deletionScheduledAt])
   @@map("users")
 }
 
 model AccountDeletionLog {
-  id                     Int      @id @default(autoincrement())
+  id                     Int       @id @default(autoincrement())
   targetUserId           Int
   targetEmailHash        String
   targetRole             Role
@@ -247,10 +252,10 @@ model AccountDeletionLog {
   actorAdminId           Int?
   actorAdminEmail        String?
   reason                 String?
-  fichesDeletedCount     Int      @default(0)
-  paymentsPreservedCount Int      @default(0)
+  fichesDeletedCount     Int       @default(0)
+  paymentsPreservedCount Int       @default(0)
   scheduledFor           DateTime?
-  createdAt              DateTime @default(now())
+  createdAt              DateTime  @default(now())
 
   @@index([createdAt])
   @@index([targetUserId, createdAt])
@@ -275,12 +280,12 @@ model AdminActionLog {
 }
 
 model AppSetting {
-  id           Int     @id @default(1)
-  platformName String  @default("Support Connecté")
+  id           Int      @id @default(1)
+  platformName String   @default("Support Connecté")
   supportEmail String?
   supportPhone String?
-  socialLinks  Json    @default("{}")
-  maintenance  Boolean @default(false)
+  socialLinks  Json     @default("{}")
+  maintenance  Boolean  @default(false)
   updatedAt    DateTime @updatedAt
 
   @@map("app_settings")
@@ -299,20 +304,20 @@ model AuthToken {
 }
 
 model Plan {
-  id            Int            @id @default(autoincrement())
-  type          PlanType       @unique
-  nom           String
-  themeDefaut   Theme
+  id              Int             @id @default(autoincrement())
+  type            PlanType        @unique
+  nom             String
+  themeDefaut     Theme
   prixMensuelFcfa Int?
-  prixFcfa      Int?
-  dureeMois     Int?
-  actif         Boolean        @default(true)
-  limits        PlanLimit?
-  subscriptions Subscription[]
-  payments      Payment[]
-  purchases     FichePurchase[]
-  durees        PlanDuree[]
-  remises       PlanRemise[]
+  prixFcfa        Int?
+  dureeMois       Int?
+  actif           Boolean         @default(true)
+  limits          PlanLimit?
+  subscriptions   Subscription[]
+  payments        Payment[]
+  purchases       FichePurchase[]
+  durees          PlanDuree[]
+  remises         PlanRemise[]
 
   @@map("plans")
 }
@@ -364,13 +369,12 @@ model Subscription {
   amountFcfa Int?
   paymentRef String?
   createdAt  DateTime           @default(now())
-  fiche      Fiche?              @relation(fields: [ficheId], references: [id], onDelete: SetNull)
+  fiche      Fiche?             @relation(fields: [ficheId], references: [id], onDelete: SetNull)
   plan       Plan               @relation(fields: [planId], references: [id])
 
-
-  ficheNomSnapshot  String? 
-  ficheSlugSnapshot String? @default("valeur-par-defaut")
-  payments   Payment[]
+  ficheNomSnapshot  String?
+  ficheSlugSnapshot String?   @default("valeur-par-defaut")
+  payments          Payment[]
 
   @@index([ficheId, status])
   @@index([endsAt])
@@ -394,10 +398,9 @@ model Payment {
   createdAt         DateTime        @default(now())
   updatedAt         DateTime        @updatedAt
   user              User?           @relation(fields: [userId], references: [id], onDelete: SetNull)
-  fiche             Fiche?           @relation(fields: [ficheId], references: [id], onDelete: SetNull)
+  fiche             Fiche?          @relation(fields: [ficheId], references: [id], onDelete: SetNull)
   plan              Plan            @relation(fields: [planId], references: [id])
   subscription      Subscription?   @relation(fields: [subscriptionId], references: [id], onDelete: SetNull)
-
 
   ficheNomSnapshot  String?
   ficheSlugSnapshot String? @default("valeur-par-defaut")
@@ -408,20 +411,20 @@ model Payment {
 }
 
 model FichePurchase {
-  id          Int                @id @default(autoincrement())
-  userId      Int
-  planId      Int
-  quantity    Int
-  freeQuantity Int               @default(0)
-  dureeMois   Int?
-  amountFcfa  Int
-  status      FichePurchaseStatus @default(PENDING)
-  reference   String             @unique
-  expiresAt   DateTime
-  createdAt   DateTime           @default(now())
-  confirmedAt DateTime?
-  user        User               @relation(fields: [userId], references: [id], onDelete: Cascade)
-  plan        Plan               @relation(fields: [planId], references: [id])
+  id           Int                 @id @default(autoincrement())
+  userId       Int
+  planId       Int
+  quantity     Int
+  freeQuantity Int                 @default(0)
+  dureeMois    Int?
+  amountFcfa   Int
+  status       FichePurchaseStatus @default(PENDING)
+  reference    String              @unique
+  expiresAt    DateTime
+  createdAt    DateTime            @default(now())
+  confirmedAt  DateTime?
+  user         User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  plan         Plan                @relation(fields: [planId], references: [id])
 
   @@index([userId, status, expiresAt])
   @@map("fiche_purchases")
@@ -626,35 +629,36 @@ enum QrMode {
 
 // Carte NFC à imprimer (Evolis, CR80) : l'adresse écrite dans la puce est figée à la création.
 model PrintJob {
-  id               Int         @id @default(autoincrement())
-  ficheId          Int?
-  tier             PlanType?
-  formule          String?
-  slug             String?
-  nfcUrl           String
-  design           Json?
-  rectoPath        String?
-  versoPath        String?
-  statut           PrintStatus @default(A_IMPRIMER)
-  clientNom        String?
-  clientEntreprise String?
-  clientTelephone  String?
-  clientEmail      String?
-  clientFonction   String?
-  deliveryAddress  String?
+  id                Int         @id @default(autoincrement())
+  ficheId           Int?
+  tier              PlanType?
+  formule           String?
+  slug              String?
+  nfcUrl            String
+  design            Json?
+  rectoPath         String?
+  versoPath         String?
+  statut            PrintStatus @default(A_IMPRIMER)
+  clientNom         String?
+  clientEntreprise  String?
+  clientTelephone   String?
+  clientEmail       String?
+  clientFonction    String?
+  deliveryAddress   String?
   deliveryTelephone String?
-  clientNotes      String?
-  amountFcfa       Int?
-  printedAt        DateTime?
-  testedAt         DateTime?
-  notes            String?
-  createdAt        DateTime    @default(now())
-  updatedAt        DateTime    @updatedAt
-  fiche            Fiche?      @relation(fields: [ficheId], references: [id], onDelete: SetNull)
-   rectoUrl    String?
-   versoUrl    String?
-   encodedAt   DateTime?
-   deliveredAt DateTime?
+  clientNotes       String?
+  amountFcfa        Int?
+  printedAt         DateTime?
+  testedAt          DateTime?
+  notes             String?
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
+  fiche             Fiche?      @relation(fields: [ficheId], references: [id], onDelete: SetNull)
+  rectoUrl          String?
+  versoUrl          String?
+  encodedAt         DateTime?
+  deliveredAt       DateTime?
+
   @@index([statut, createdAt])
   @@index([ficheId])
   @@map("print_jobs")
@@ -775,6 +779,7 @@ model EmplacementPack {
 
   @@map("emplacement_packs")
 }
+
 model QrStyle {
   id        Int      @id @default(autoincrement())
   userId    Int      @map("user_id")

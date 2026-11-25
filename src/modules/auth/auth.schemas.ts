@@ -59,3 +59,34 @@ export const cancelDeletionSchema = z
     data => Boolean(data.credential) || Boolean(data.email && data.password),
     "Fournissez vos identifiants ou votre connexion Google."
   );
+
+export const twoFaVerifySchema = z
+  .object({
+    otpCode: z
+      .string()
+      .trim()
+      .regex(/^\d{6}$/, "Le code doit contenir exactement 6 chiffres."),
+  })
+  .strict();
+
+export const twoFaLoginSchema = z
+  .object({
+    tempToken: z.string().trim().min(20).max(2048),
+    code: z
+      .string()
+      .trim()
+      .min(6, "Code de vérification invalide.")
+      .max(20, "Code de vérification invalide."),
+  })
+  .strict();
+
+export const twoFaDisableSchema = z
+  .object({
+    password: z.string().min(1).max(128).optional(),
+    code: z.string().trim().min(6).max(20).optional(),
+  })
+  .strict()
+  .refine(
+    data => Boolean(data.password) || Boolean(data.code),
+    "Fournissez votre mot de passe ou un code 2FA."
+  );

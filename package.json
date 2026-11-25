@@ -9,11 +9,12 @@
     "build": "tsc",
     "start:prod": "dotenv run -f .env.prod -- node dist/server.js",
     "typecheck": "tsc -p tsconfig.json --noEmit",
+    "generate-tfa-key": "node -e \"console.log(require('crypto').randomBytes(32).toString('hex'))\"",
+    "create-admin": "tsx ./src/scripts/create-admin.ts",
     "db:generate": "prisma generate",
     "db:migrate": "prisma migrate dev",
     "db:deploy": "prisma migrate deploy",
     "db:seed": "tsx ./src/scripts/seed.ts",
-    "create-admin": "tsx ./src/scripts/create-admin.ts",
     "db:studio": "prisma studio",
     "test": "vitest run"
   },
@@ -24,6 +25,7 @@
     "@aws-sdk/client-s3": "^3.1152.0",
     "@prisma/adapter-pg": "^7.10.0",
     "@prisma/client": "^7.10.0",
+    "bcrypt": "^6.0.0",
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.6",
     "dotenv": "^18.0.6",
@@ -34,6 +36,7 @@
     "jsonwebtoken": "^9.0.3",
     "mailtrap": "^4.10.0",
     "nodemailer": "^10.0.15",
+    "otplib": "^13.6.0",
     "pdfkit": "^0.20.2",
     "qrcode": "^1.5.4",
     "sharp": "^0.35.5",
@@ -41,6 +44,7 @@
     "zod": "^3.25.76"
   },
   "devDependencies": {
+    "@types/bcrypt": "^6.0.0",
     "@types/bcryptjs": "^2.4.6",
     "@types/cors": "^2.8.19",
     "@types/express": "^4.17.25",

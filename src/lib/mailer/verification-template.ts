@@ -1,13 +1,4 @@
-import { env } from "../../config/env";
-import { s3Storage } from "../../infrastructure/storage/s3.storage";
-
-const escapeHtml = (value: string): string =>
-  value
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#39;");
+import { escapeHtml, formatGreeting, isPublicImageUrl } from "./base-layout";
 
 export function verificationEmailTemplate(
   logo_url: string,
@@ -16,10 +7,11 @@ export function verificationEmailTemplate(
   expiration: string,
   annee: string = String(new Date().getFullYear())
 ) {
-  const safePrenom = escapeHtml(prenom);
-  const safeUrl = escapeHtml(verification_url); // protège les "&" dans les query params
-  const safeLogo = escapeHtml(logo_url);
-  const getStorage = s3Storage();
+  const safeGreeting = escapeHtml(formatGreeting(prenom));
+  const safeUrl = escapeHtml(verification_url);
+  const safeExpiration = escapeHtml(expiration);
+  const showLogo = isPublicImageUrl(logo_url);
+  const safeLogo = showLogo ? escapeHtml(logo_url.trim()) : "";
 
   return `
     <!DOCTYPE html>
@@ -50,8 +42,12 @@ export function verificationEmailTemplate(
 
           <!-- Logo -->
           <tr>
-            <td align="center" style="padding:32px 24px 8px 24px;background-color:#ffffff;">
-              <img src="${env.S3_ENDPOINT}/ficheimage/logo.png" alt="Support Connecté" width="200" style="display:block;width:200px;max-width:100%;height:auto;border:0;outline:none;" />
+            <td align="center" style="padding:32px 24px 8px 24px;background-color:#ffffff;font-family:Arial,Helvetica,sans-serif;">
+              ${
+                showLogo
+                  ? `<img src="${safeLogo}" alt="Support Connecté" width="180" style="display:block;width:180px;max-width:100%;height:auto;border:0;outline:none;" />`
+                  : `<span style="font-size:15px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#111111;">Support <span style="color:#b91c1c;">Connecté</span></span>`
+              }
             </td>
           </tr>
 
@@ -62,7 +58,7 @@ export function verificationEmailTemplate(
                 Vérifiez votre adresse e-mail
               </h1>
               <p style="margin:0 0 16px 0;font-size:16px;line-height:24px;color:#374151;">
-                Bonjour ${safePrenom},
+                ${safeGreeting}
               </p>
               <p style="margin:0 0 24px 0;font-size:16px;line-height:24px;color:#374151;">
                 Merci de votre inscription sur <strong style="color:#111111;">Support Connecté</strong>.
@@ -93,7 +89,7 @@ export function verificationEmailTemplate(
           <tr>
             <td style="padding:0 40px 24px 40px;font-family:Arial,Helvetica,sans-serif;">
               <p style="margin:0;font-size:14px;line-height:22px;color:#6b7280;text-align:center;">
-                Ce lien est valable <strong>${expiration}</strong>.
+                Ce lien est valable <strong>${safeExpiration}</strong>.
               </p>
             </td>
           </tr>

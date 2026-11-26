@@ -9,6 +9,7 @@ import {
 } from "../../lib/crypto.lib";
 import { conflict, notFound, unprocessable } from "../../lib/httpError";
 import { logger } from "../../lib/logger";
+import { sendSecurityAlertEmail } from "../../lib/mailer";
 import { verifyPassword } from "../../lib/password";
 
 const issuer = "LogCard"; // The issuer name for the 2FA setup, typically the name of your application or service.
@@ -94,6 +95,13 @@ export const twoFaService = {
     });
 
     logger.info("2FA enabled for user", { userId });
+    if (user.email) {
+      void sendSecurityAlertEmail({
+        to: user.email,
+        name: user.nom,
+        event: "2fa_enabled",
+      });
+    }
 
     // Renvoyer les codes en clair UNE SEULE FOIS à l'utilisateur
     return { recoveryCodes: plainCodes };
@@ -211,6 +219,13 @@ export const twoFaService = {
     });
 
     logger.info("2FA disabled for user", { userId });
+    if (user.email) {
+      void sendSecurityAlertEmail({
+        to: user.email,
+        name: user.nom,
+        event: "2fa_disabled",
+      });
+    }
     return { ok: true };
   },
 };

@@ -2,6 +2,7 @@ import { app } from "./app";
 import { env } from "./config/env";
 import { prisma } from "./database/prisma/prisma-client";
 import { logger } from "./lib/logger";
+import { verifyMailTransport } from "./lib/mailer";
 import { expireDueSubscriptions } from "./modules/subscriptions/subscriptions.service";
 import { cleanupOrphanedMedia } from "./modules/media/media.cleanup";
 import { purgeDueAccounts } from "./modules/auth/accountDeletion.service";
@@ -11,6 +12,7 @@ const server = app.listen(env.PORT, () => {
     port: env.PORT,
     environment: env.NODE_ENV,
   });
+  void verifyMailTransport();
 });
 
 // Marque « expirés » les abonnements arrivés à échéance (au démarrage puis toutes les heures).

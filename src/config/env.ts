@@ -25,7 +25,18 @@ const schema = z.object({
   MAILTRAP_SMTP_PASSWORD: z
     .string()
     .min(1, "MAILTRAP_SMTP_PASSWORD est requis"),
-  MAILTRAP_API_TOKEN: z.string().min(1, "MAILTRAP_API_TOKEN est requis"),
+  MAILTRAP_API_TOKEN: z.string().optional(),
+  MAIL_FROM_ADDRESS: z
+    .string()
+    .trim()
+    .email("MAIL_FROM_ADDRESS doit être une adresse e-mail valide")
+    .default("no-reply@support-connecte.com"),
+  MAIL_FROM_NAME: z
+    .string()
+    .trim()
+    .min(1)
+    .max(100)
+    .default("Support Connecté"),
   SERVER: z.string(),
   S3_ENDPOINT: z.string(),
   S3_ACCESS_KEY_ID: z.string(),
@@ -39,12 +50,18 @@ const schema = z.object({
       /^[0-9a-fA-F]{64}$/,
       "TWO_FA_ENCRYPTION_KEY doit être une clé hexadécimale de 64 caractères (32 octets)",
     ),
-    
+
   GOOGLE_CLIENT_ID: z.string().min(1, "GOOGLE_CLIENT_ID est requis"),
   GOOGLE_CLIENT_SECRET: z.string().min(1, "GOOGLE_CLIENT_SECRET est requis"),
 
-  // lOGO PATH
-  LOGO_PATH: z.string().default(`${process.env.SERVER}/logo.png`),
+  // URL publique du logo affiché dans les e-mails (optionnelle)
+  LOGO_PATH: z
+    .string()
+    .default(
+      process.env.PUBLIC_SITE_URL
+        ? `${process.env.PUBLIC_SITE_URL.replace(/\/$/, "")}/images/Logo.png`
+        : "",
+    ),
 });
 
 const parsed = schema.safeParse(process.env);

@@ -27,6 +27,10 @@ vi.mock("../../database/prisma/prisma-client", () => ({
   },
 }));
 
+vi.mock("../../lib/mailer", () => ({
+  sendCardOrderEmail: vi.fn().mockResolvedValue(undefined),
+}));
+
 import { env } from "../../config/env";
 import type { AuthUser } from "../../types/user";
 import { ProductionService } from "./production.service";

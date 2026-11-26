@@ -14,6 +14,7 @@ import { signToken, signTwoFaToken, verifyTwoFaToken } from "../../lib/jwt";
 import { logger } from "../../lib/logger";
 import {
   sendForgotPasswordMail,
+  sendSecurityAlertEmail,
   sendVerificationEmail,
 } from "../../lib/mailer";
 import { hashPassword, verifyPassword } from "../../lib/password";
@@ -60,7 +61,7 @@ export const AuthService = {
     });
 
     logger.info("User registered", { userId: user.id });
-    await sendVerificationEmail(user);
+    await sendVerificationEmail(user, { bestEffort: true });
     return { user: publicUser(user), token: signToken(user.id) };
   },
 
@@ -305,6 +306,11 @@ export const AuthService = {
       data: { passwordHash: await hashPassword(input.password) },
     });
     logger.info("User password changed", { userId });
+    void sendSecurityAlertEmail({
+      to: user.email,
+      name: user.nom,
+      event: "password_changed",
+    });
   },
 
   forgotPassword: async (email: string) => {

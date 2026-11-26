@@ -11,6 +11,7 @@ import {
   HttpError,
   notFound,
 } from "../../lib/httpError";
+import { sendSubscriptionConfirmedEmail } from "../../lib/mailer";
 import type { AuthUser } from "../../types/user";
 import { ficheInclude, toFicheDto } from "../fiches/fiches.dto";
 import { ParametresService } from "../parametres/parametres.service";
@@ -294,7 +295,7 @@ export async function confirmSimulatedPayment(
       "Confirme ton adresse e-mail avant de changer de formule"
     );
 
-  return prisma.$transaction(async tx => {
+  const result = await prisma.$transaction(async tx => {
     const payment = await tx.payment.findUnique({
       where: { id: paymentId },
       include: {
@@ -413,6 +414,7 @@ export async function confirmSimulatedPayment(
       tx
     );
     return {
+      planNom: payment.plan.nom,
       subscription,
       fiche: toFicheDto(updatedFiche, effectiveSubscription),
       payment: {
@@ -423,6 +425,28 @@ export async function confirmSimulatedPayment(
       },
     };
   });
+
+  if (user.email) {
+    const ficheName =
+      result.fiche.entreprise ||
+      [result.fiche.prenom, result.fiche.nom].filter(Boolean).join(" ").trim() ||
+      result.fiche.slug;
+    void sendSubscriptionConfirmedEmail({
+      to: user.email,
+      name: user.name,
+      ficheName,
+      planName: result.planNom,
+      amountFcfa: result.subscription.amountFcfa ?? 0,
+      endsAt: result.subscription.endsAt,
+      reference: result.payment.reference,
+    });
+  }
+
+  return {
+    subscription: result.subscription,
+    fiche: result.fiche,
+    payment: result.payment,
+  };
 }
 
 export const subscriptionKpi = async (user: AuthUser): Promise<Kpi> => {

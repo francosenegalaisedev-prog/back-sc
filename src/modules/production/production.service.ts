@@ -9,6 +9,7 @@ import type {
 import { prisma } from "../../database/prisma/prisma-client";
 import { CardImageService, isCardImageRef } from "../media/card-images.service";
 import { conflict, forbidden, notFound, unprocessable } from "../../lib/httpError";
+import { sendCardOrderEmail } from "../../lib/mailer";
 import type { AuthUser } from "../../types/user";
 import type {
   ClientCarteRequestInput,
@@ -254,7 +255,7 @@ export const ProductionService = {
   ) {
     const now = new Date();
     try {
-      return await prisma.$transaction(
+      const result = await prisma.$transaction(
         async tx => {
           const fiche = await tx.fiche.findFirst({
             where: { id: ficheId, userId: user.id },
@@ -333,6 +334,25 @@ export const ProductionService = {
         },
         { isolationLevel: "Serializable" },
       );
+
+      const recipient = user.email || result.carte.fiche?.email;
+      if (recipient) {
+        void sendCardOrderEmail({
+          to: recipient,
+          ownerName: user.name ?? result.carte.fiche?.nom,
+          ficheName:
+            result.carte.fiche?.entreprise ||
+            result.carte.fiche?.nom ||
+            result.carte.fiche?.slug ||
+            `Fiche #${ficheId}`,
+          orderId: result.carte.id,
+          statut: "envoyee",
+          montantFcfa: result.carte.montantFcfa,
+          adresseLivraison: result.carte.adresseLivraison,
+        });
+      }
+
+      return result;
     } catch (error) {
       if (isSerializationConflict(error))
         throw conflict(
@@ -419,7 +439,33 @@ export const ProductionService = {
         : []),
     ];
     if (replaced.length) await releaseUnusedCardImages(replaced);
-    return { carte: carteDto(job) };
+
+    const dto = carteDto(job);
+    if (
+      statut &&
+      statut !== actuel.statut &&
+      (statut === "TRAITEE" || statut === "LIVREE")
+    ) {
+      const recipient = job.clientEmail || job.fiche?.email;
+      if (recipient) {
+        void sendCardOrderEmail({
+          to: recipient,
+          ownerName: job.clientNom ?? dto.fiche?.nom,
+          ficheName:
+            job.clientEntreprise ||
+            dto.fiche?.entreprise ||
+            dto.fiche?.nom ||
+            job.slug ||
+            `Carte #${job.id}`,
+          orderId: job.id,
+          statut: lower(statut) as "traitee" | "livree",
+          montantFcfa: job.amountFcfa,
+          adresseLivraison: job.deliveryAddress,
+        });
+      }
+    }
+
+    return { carte: dto };
   },
 
   // ───────── Stickers ─────────

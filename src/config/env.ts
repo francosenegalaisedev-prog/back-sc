@@ -19,11 +19,16 @@ const schema = z.object({
     .default("false")
     .transform((v) => v === "true"),
   MAX_FICHES_PER_USER: z.coerce.number().int().positive().default(3),
-  MAILTRAP_SMTP_HOST: z.string().min(1, "MAILTRAP_SMTP_HOST est requis"),
-  MAILTRAP_SMTP_PORT: z.string().min(1, "MAILTRAP_SMTP_PORT est requis"),
-  MAILTRAP_SMTP_USER: z.string().min(1, "MAILTRAP_SMTP_USER est requis"),
+  MAILTRAP_SMTP_HOST: z
+    .string()
+    .trim()
+    .min(1, "MAILTRAP_SMTP_HOST est requis")
+    .refine(v => !/[\s,"']/.test(v), "MAILTRAP_SMTP_HOST contient des caractères invalides"),
+  MAILTRAP_SMTP_PORT: z.string().trim().min(1, "MAILTRAP_SMTP_PORT est requis"),
+  MAILTRAP_SMTP_USER: z.string().trim().min(1, "MAILTRAP_SMTP_USER est requis"),
   MAILTRAP_SMTP_PASSWORD: z
     .string()
+    .trim()
     .min(1, "MAILTRAP_SMTP_PASSWORD est requis"),
   MAILTRAP_API_TOKEN: z.string().optional(),
   MAIL_FROM_ADDRESS: z

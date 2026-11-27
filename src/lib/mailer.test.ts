@@ -48,7 +48,7 @@ describe("mailer helpers", () => {
     expect(isPublicImageUrl("http://localhost:5173/images/Logo.png")).toBe(
       false,
     );
-    expect(isPublicImageUrl("https://supportconnecte.sn/images/Logo.png")).toBe(
+    expect(isPublicImageUrl("https://www.logcard.io/images/Logo.png")).toBe(
       true,
     );
     expect(isPublicImageUrl("")).toBe(false);
@@ -56,12 +56,12 @@ describe("mailer helpers", () => {
 
   it("renders verification template without internal S3_ENDPOINT URL", () => {
     const html = verificationEmailTemplate(
-      "https://supportconnecte.sn/images/Logo.png",
+      "https://www.logcard.io/images/Logo.png",
       "Awa",
-      "https://supportconnecte.sn/verify-email?token=abc",
+      "https://www.logcard.io/verify-email?token=abc",
       "24 heures",
     );
-    expect(html).toContain("https://supportconnecte.sn/images/Logo.png");
+    expect(html).toContain("https://www.logcard.io/images/Logo.png");
     expect(html).toContain("Bonjour Awa,");
     expect(html).not.toContain("172.17.");
   });

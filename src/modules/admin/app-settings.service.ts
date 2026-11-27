@@ -3,7 +3,7 @@ import type { UpdateAppSettingsInput } from "./app-settings.schemas";
 
 const DEFAULTS = {
   id: 1,
-  platformName: "Support Connecté",
+  platformName: "LogCard",
   supportEmail: null,
   supportPhone: null,
   socialLinks: { instagram: "", facebook: "", linkedin: "" },

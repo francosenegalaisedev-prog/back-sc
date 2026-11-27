@@ -21,12 +21,12 @@ export function resetPasswordEmailTemplate(
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="color-scheme" content="light" />
-  <title>${isInvitation ? "Votre accès administrateur" : "Réinitialisation de votre mot de passe"} – Support Connecté</title>
+  <title>${isInvitation ? "Votre accès administrateur" : "Réinitialisation de votre mot de passe"} – LogCard</title>
 </head>
 <body style="margin:0;padding:0;background-color:#f3f4f6;-webkit-text-size-adjust:100%;">
 
   <div style="display:none;max-height:0;overflow:hidden;opacity:0;color:#f3f4f6;">
-    ${isInvitation ? "Un accès administrateur Support Connecté a été créé pour vous." : "Vous avez demandé à réinitialiser votre mot de passe Support Connecté."}
+    ${isInvitation ? "Un accès administrateur LogCard a été créé pour vous." : "Vous avez demandé à réinitialiser votre mot de passe LogCard."}
   </div>
 
   <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#f3f4f6;">
@@ -43,8 +43,8 @@ export function resetPasswordEmailTemplate(
             <td align="center" style="padding:32px 24px 8px 24px;background-color:#ffffff;font-family:Arial,Helvetica,sans-serif;">
               ${
                 showLogo
-                  ? `<img src="${safeLogo}" alt="Support Connecté" width="180" style="display:block;width:180px;max-width:100%;height:auto;border:0;outline:none;" />`
-                  : `<span style="font-size:15px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#111111;">Support <span style="color:#b91c1c;">Connecté</span></span>`
+                  ? `<img src="${safeLogo}" alt="LogCard" width="180" style="display:block;width:180px;max-width:100%;height:auto;border:0;outline:none;" />`
+                  : `<span style="font-size:15px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#111111;">Log<span style="color:#b91c1c;">Card</span></span>`
               }
             </td>
           </tr>
@@ -59,8 +59,8 @@ export function resetPasswordEmailTemplate(
               </p>
               <p style="margin:0 0 24px 0;font-size:16px;line-height:24px;color:#374151;">
                 ${isInvitation
-                  ? `Un accès administrateur a été créé pour votre adresse sur <strong style="color:#111111;">Support Connecté</strong>. Choisissez un mot de passe pour activer votre compte.`
-                  : `Nous avons reçu une demande de réinitialisation du mot de passe de votre compte <strong style="color:#111111;">Support Connecté</strong>. Cliquez sur le bouton ci-dessous pour choisir un nouveau mot de passe.`}
+                  ? `Un accès administrateur a été créé pour votre adresse sur <strong style="color:#111111;">LogCard</strong>. Choisissez un mot de passe pour activer votre compte.`
+                  : `Nous avons reçu une demande de réinitialisation du mot de passe de votre compte <strong style="color:#111111;">LogCard</strong>. Cliquez sur le bouton ci-dessous pour choisir un nouveau mot de passe.`}
               </p>
             </td>
           </tr>
@@ -116,7 +116,7 @@ export function resetPasswordEmailTemplate(
               <p style="margin:0;font-size:13px;line-height:20px;color:#6b7280;">
                 ${isInvitation
                   ? "Ignorez cet e-mail si vous n’attendiez pas cette invitation. Ne partagez ce lien avec personne."
-                  : "Ignorez cet e-mail : votre mot de passe actuel reste inchangé. Ne partagez ce lien avec personne, l'équipe Support Connecté ne vous demandera jamais votre mot de passe."}
+                  : "Ignorez cet e-mail : votre mot de passe actuel reste inchangé. Ne partagez ce lien avec personne, l'équipe LogCard ne vous demandera jamais votre mot de passe."}
               </p>
             </td>
           </tr>
@@ -127,7 +127,7 @@ export function resetPasswordEmailTemplate(
                 Connecter <span style="color:#dc2626;">&bull;</span> Partager <span style="color:#dc2626;">&bull;</span> Simplifier
               </p>
               <p style="margin:0;font-size:12px;line-height:18px;color:#9ca3af;">
-                &copy; ${annee} Support Connecté. Tous droits réservés.<br />
+                &copy; ${annee} LogCard. Tous droits réservés.<br />
                 Cet e-mail a été envoyé automatiquement, merci de ne pas y répondre.
               </p>
             </td>

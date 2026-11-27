@@ -1,8 +1,8 @@
 {
-  "name": "support-connecte-server",
+  "name": "logcard-server",
   "version": "1.0.0",
   "private": true,
-  "description": "API Support Connecté — Node.js, Express, TypeScript, Prisma, PostgreSQL",
+  "description": "API LogCard — Node.js, Express, TypeScript, Prisma, PostgreSQL",
   "main": "dist/server.js",
   "scripts": {
     "dev": "tsx watch src/server.ts",

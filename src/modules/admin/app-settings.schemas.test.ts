@@ -2,12 +2,12 @@ import { describe, expect, it } from "vitest";
 import { updateAppSettingsSchema } from "./app-settings.schemas";
 
 const validPayload = {
-  platformName: "Support Connecté",
-  supportEmail: "support@supportconnecte.sn",
+  platformName: "LogCard",
+  supportEmail: "support@logcard.io",
   supportPhone: "+221 77 000 00 00",
   socialLinks: {
-    instagram: "https://instagram.com/supportconnecte",
-    facebook: "https://facebook.com/supportconnecte",
+    instagram: "https://instagram.com/logcard",
+    facebook: "https://facebook.com/logcard",
     linkedin: "",
   },
   maintenance: false,
@@ -17,10 +17,10 @@ describe("updateAppSettingsSchema", () => {
   it("accepts a valid payload and trims strings", () => {
     const parsed = updateAppSettingsSchema.parse({
       ...validPayload,
-      platformName: "  Support Connecté  ",
+      platformName: "  LogCard  ",
       supportEmail: "",
     });
-    expect(parsed.platformName).toBe("Support Connecté");
+    expect(parsed.platformName).toBe("LogCard");
     expect(parsed.supportEmail).toBe("");
   });
 

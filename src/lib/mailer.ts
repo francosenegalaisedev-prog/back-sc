@@ -46,7 +46,7 @@ export function getMailTransport(): Transporter {
     cachedTransport = nodemailer.createTransport({
       host: env.MAILTRAP_SMTP_HOST,
       port,
-      secure: port === 465,
+      secure: port === 587,
       connectionTimeout: 10_000,
       greetingTimeout: 10_000,
       socketTimeout: 15_000,
@@ -128,7 +128,7 @@ export const sendVerificationEmail = async (
   await sendMail(
     {
       to: user.email,
-      subject: "Confirmez votre adresse e-mail — Support Connecté",
+      subject: "Confirmez votre adresse e-mail — LogCard",
       html: verificationEmailTemplate(
         logoUrl(),
         user.nom ?? "",
@@ -150,7 +150,7 @@ export const sendForgotPasswordMail = async (
   const greeting = formatGreeting(user.nom);
   await sendMail({
     to: user.email,
-    subject: "Réinitialisation de votre mot de passe — Support Connecté",
+    subject: "Réinitialisation de votre mot de passe — LogCard",
     html: resetPasswordEmailTemplate(
       logoUrl(),
       user.nom ?? "",
@@ -170,7 +170,7 @@ export const sendAdminInvitationEmail = async (
   const greeting = formatGreeting(user.nom);
   await sendMail({
     to: user.email,
-    subject: "Votre accès administrateur — Support Connecté",
+    subject: "Votre accès administrateur — LogCard",
     html: resetPasswordEmailTemplate(
       logoUrl(),
       user.nom ?? "",
@@ -179,7 +179,7 @@ export const sendAdminInvitationEmail = async (
       String(new Date().getFullYear()),
       "admin-invitation",
     ),
-    text: `${greeting}\n\nUn accès administrateur Support Connecté a été créé pour vous. Définissez votre mot de passe dans les 24 heures : ${setupUrl}`,
+    text: `${greeting}\n\nUn accès administrateur LogCard a été créé pour vous. Définissez votre mot de passe dans les 24 heures : ${setupUrl}`,
   });
 };
 
@@ -265,7 +265,7 @@ export const sendAccountDeletionScheduledEmail = async (params: {
   await sendMail(
     {
       to: params.to,
-      subject: "Demande de suppression de votre compte — Support Connecté",
+      subject: "Demande de suppression de votre compte — LogCard",
       html: renderBaseEmail({
         title: "Suppression de compte programmée",
         preheader: `Suppression définitive prévue le ${formattedDate}.`,
@@ -294,23 +294,23 @@ export const sendAccountDeletedByAdminEmail = async (params: {
     ? escapeHtml(params.reason.trim())
     : "";
 
-  const bodyHtml = `<p style="margin:0 0 14px 0;">Votre compte Support Connecté ainsi que les fiches associées ont été supprimés définitivement par un administrateur.</p>
+  const bodyHtml = `<p style="margin:0 0 14px 0;">Votre compte LogCard ainsi que les fiches associées ont été supprimés définitivement par un administrateur.</p>
 ${safeReason ? `<p style="margin:0 0 14px 0;"><strong>Motif :</strong> ${safeReason}</p>` : ""}
 <p style="margin:0;">Conformément aux obligations comptables, l’historique de facturation est conservé de manière anonymisée.</p>`;
 
   await sendMail(
     {
       to: params.to,
-      subject: "Suppression définitive de votre compte — Support Connecté",
+      subject: "Suppression définitive de votre compte — LogCard",
       html: renderBaseEmail({
         title: "Suppression définitive de votre compte",
-        preheader: "Votre compte Support Connecté a été supprimé.",
+        preheader: "Votre compte LogCard a été supprimé.",
         heading: "Compte supprimé définitivement",
         greetingName: params.name,
         bodyHtml,
         logoUrl: logoUrl(),
       }),
-      text: `${greeting}\n\nVotre compte Support Connecté et ses fiches associées ont été supprimés définitivement par un administrateur.${
+      text: `${greeting}\n\nVotre compte LogCard et ses fiches associées ont été supprimés définitivement par un administrateur.${
         params.reason?.trim() ? `\nMotif : ${params.reason.trim()}` : ""
       }\nL'historique comptable est conservé de manière anonymisée.`,
     },
@@ -406,7 +406,7 @@ export const sendCardOrderEmail = async (params: {
   await sendMail(
     {
       to: params.to,
-      subject: `${copy.subject} (#${params.orderId}) — Support Connecté`,
+      subject: `${copy.subject} (#${params.orderId}) — LogCard`,
       html: renderBaseEmail({
         title: copy.subject,
         preheader: `${copy.heading} — Commande #${params.orderId}.`,
@@ -427,7 +427,7 @@ const SECURITY_EVENT_COPY = {
   password_changed: {
     subject: "Votre mot de passe a été modifié",
     heading: "Mot de passe modifié",
-    body: "Le mot de passe de votre compte Support Connecté vient d’être modifié avec succès.",
+    body: "Le mot de passe de votre compte LogCard vient d’être modifié avec succès.",
   },
   "2fa_enabled": {
     subject: "Double authentification (2FA) activée",
@@ -453,7 +453,7 @@ export const sendSecurityAlertEmail = async (params: {
   await sendMail(
     {
       to: params.to,
-      subject: `${copy.subject} — Support Connecté`,
+      subject: `${copy.subject} — LogCard`,
       html: renderBaseEmail({
         title: copy.subject,
         preheader: copy.body,
@@ -509,7 +509,7 @@ export const sendSubscriptionConfirmedEmail = async (params: {
   await sendMail(
     {
       to: params.to,
-      subject: `Formule ${params.planName} activée — Support Connecté`,
+      subject: `Formule ${params.planName} activée — LogCard`,
       html: renderBaseEmail({
         title: `Formule ${params.planName} activée`,
         preheader: `Votre formule ${params.planName} pour ${params.ficheName} est active.`,

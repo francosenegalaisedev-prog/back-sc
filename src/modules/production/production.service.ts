@@ -22,8 +22,8 @@ import type {
 } from "./production.schemas";
 
 // ───────── Adresses encodées dans les supports imprimés ─────────
-// Définir PUBLIC_SITE_URL dans .env (ex. https://supportconnecte.com) ; jamais d'adresse technique.
-const base = () => (process.env.PUBLIC_SITE_URL ?? "https://supportconnecte.com").replace(/\/$/, "");
+// Définir PUBLIC_SITE_URL dans .env (ex. https://www.logcard.io) ; jamais d'adresse technique.
+const base = () => (process.env.PUBLIC_SITE_URL ?? "https://www.logcard.io").replace(/\/$/, "");
 export const ficheUrl = (slug: string) => `${base()}/f/${slug}`;
 export const shortUrl = (code: string) => `${base()}/q/${code}`;
 

@@ -20,13 +20,13 @@ export function verificationEmailTemplate(
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="color-scheme" content="light" />
-  <title>Vérifiez votre adresse e-mail – Support Connecté</title>
+  <title>Vérifiez votre adresse e-mail – LogCard</title>
 </head>
 <body style="margin:0;padding:0;background-color:#f3f4f6;-webkit-text-size-adjust:100%;">
 
   <!-- Préheader (aperçu dans la boîte de réception) -->
   <div style="display:none;max-height:0;overflow:hidden;opacity:0;color:#f3f4f6;">
-    Confirmez votre adresse e-mail pour activer votre compte Support Connecté.
+    Confirmez votre adresse e-mail pour activer votre compte LogCard.
   </div>
 
   <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#f3f4f6;">
@@ -45,8 +45,8 @@ export function verificationEmailTemplate(
             <td align="center" style="padding:32px 24px 8px 24px;background-color:#ffffff;font-family:Arial,Helvetica,sans-serif;">
               ${
                 showLogo
-                  ? `<img src="${safeLogo}" alt="Support Connecté" width="180" style="display:block;width:180px;max-width:100%;height:auto;border:0;outline:none;" />`
-                  : `<span style="font-size:15px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#111111;">Support <span style="color:#b91c1c;">Connecté</span></span>`
+                  ? `<img src="${safeLogo}" alt="LogCard" width="180" style="display:block;width:180px;max-width:100%;height:auto;border:0;outline:none;" />`
+                  : `<span style="font-size:15px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#111111;">Log<span style="color:#b91c1c;">Card</span></span>`
               }
             </td>
           </tr>
@@ -61,7 +61,7 @@ export function verificationEmailTemplate(
                 ${safeGreeting}
               </p>
               <p style="margin:0 0 24px 0;font-size:16px;line-height:24px;color:#374151;">
-                Merci de votre inscription sur <strong style="color:#111111;">Support Connecté</strong>.
+                Merci de votre inscription sur <strong style="color:#111111;">LogCard</strong>.
                 Pour activer votre compte, confirmez votre adresse e-mail en cliquant sur le bouton ci-dessous.
               </p>
             </td>
@@ -128,7 +128,7 @@ export function verificationEmailTemplate(
                 Connecter <span style="color:#dc2626;">&bull;</span> Partager <span style="color:#dc2626;">&bull;</span> Simplifier
               </p>
               <p style="margin:0;font-size:12px;line-height:18px;color:#9ca3af;">
-                &copy; ${annee} Support Connecté. Tous droits réservés.<br />
+                &copy; ${annee} LogCard. Tous droits réservés.<br />
                 Cet e-mail a été envoyé automatiquement, merci de ne pas y répondre.
               </p>
             </td>

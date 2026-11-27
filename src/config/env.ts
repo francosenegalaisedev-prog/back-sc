@@ -35,13 +35,13 @@ const schema = z.object({
     .string()
     .trim()
     .email("MAIL_FROM_ADDRESS doit être une adresse e-mail valide")
-    .default("no-reply@support-connecte.com"),
+    .default("no-reply@logcard.io"),
   MAIL_FROM_NAME: z
     .string()
     .trim()
     .min(1)
     .max(100)
-    .default("Support Connecté"),
+    .default("LogCard"),
   SERVER: z.string(),
   S3_ENDPOINT: z.string(),
   S3_ACCESS_KEY_ID: z.string(),

@@ -281,7 +281,7 @@ model AdminActionLog {
 
 model AppSetting {
   id            Int      @id @default(1)
-  platformName  String   @default("Support Connecté")
+  platformName  String   @default("LogCard")
   supportEmail  String?
   supportPhone  String?
   socialLinks   Json     @default("{}")

@@ -9,7 +9,7 @@ Le module d'envoi d'e-mails repose sur **Nodemailer (SMTP)** avec :
   - Timeouts configurés (`connectionTimeout: 10s`, `greetingTimeout: 10s`, `socketTimeout: 15s`) pour éviter tout blocage de requête HTTP si le serveur SMTP ne répond pas.
   - Vérification non bloquante au démarrage via `verifyMailTransport()` dans [server.ts](../src/server.ts).
 - **Layout HTML unifié** ([base-layout.ts](../src/lib/mailer/base-layout.ts)) :
-  - Charte responsive Support Connecté + version texte brut (`text`) systématique.
+  - Charte responsive LogCard + version texte brut (`text`) systématique.
   - Échappement HTML (`escapeHtml`) sur toutes les données dynamiques (protection XSS).
   - Salutation propre via `formatGreeting(name)` (`"Bonjour Awa,"` ou `"Bonjour,"`).
   - Logo affiché uniquement si `LOGO_PATH` est une URL publique `http(s)://` (les IP locales/Docker sont automatiquement ignorées afin d'éviter les images cassées dans Gmail/Outlook).
@@ -26,8 +26,8 @@ Configurées et validées au démarrage dans [env.ts](../src/config/env.ts) (exe
 | `MAILTRAP_SMTP_PORT` | Oui | — | Port SMTP (`2525` Mailtrap, `587` STARTTLS, `465` SMTPS) |
 | `MAILTRAP_SMTP_USER` | Oui | — | Identifiant SMTP |
 | `MAILTRAP_SMTP_PASSWORD` | Oui | — | Mot de passe / clé API SMTP |
-| `MAIL_FROM_ADDRESS` | Non | `no-reply@support-connecte.com` | Adresse d'expédition (`From`) |
-| `MAIL_FROM_NAME` | Non | `Support Connecté` | Nom d'expéditeur affiché |
+| `MAIL_FROM_ADDRESS` | Non | `no-reply@logcard.io` | Adresse d'expédition (`From`) |
+| `MAIL_FROM_NAME` | Non | `LogCard` | Nom d'expéditeur affiché |
 | `PUBLIC_SITE_URL` | Oui | — | Base publique pour les liens (vérification, reset, suivi carte, prospects) |
 | `LOGO_PATH` | Non | `${PUBLIC_SITE_URL}/images/Logo.png` | URL publique HTTPS du logo dans les e-mails |
 

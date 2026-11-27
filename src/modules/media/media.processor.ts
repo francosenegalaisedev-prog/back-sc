@@ -32,7 +32,7 @@ export async function optimizeMedia(
             : ".mp4";
   const outputMime: SupportedMediaMime = isImage ? "image/webp" : "video/mp4";
   const outputExtension = isImage ? ".webp" : ".mp4";
-  const directory = await mkdtemp(join(tmpdir(), "support-connecte-media-"));
+  const directory = await mkdtemp(join(tmpdir(), "logcard-media-"));
   const inputPath = join(directory, "input" + inputExtension);
   const outputPath = join(directory, "output" + outputExtension);
   try {
@@ -150,7 +150,7 @@ export async function probeDurationSeconds(
   mime: SupportedMediaMime,
   ffmpegPath = process.env.FFMPEG_PATH || "ffmpeg"
 ): Promise<number | null> {
-  const directory = await mkdtemp(join(tmpdir(), "support-connecte-probe-"));
+  const directory = await mkdtemp(join(tmpdir(), "logcard-probe-"));
   const inputPath = join(
     directory,
     mime === "video/webm" ? "input.webm" : "input.mp4"
